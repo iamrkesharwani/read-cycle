@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { getUsersCollection } from '../utils/collections.js';
 import type { User } from '../types/user.js';
 import type { Request, Response } from 'express';
-import { registerSchema } from '../schemas/auth.schema.js';
+import { registerSchema } from '../schemas/register.schema.js';
 
 export const registerUser = async (req: Request, res: Response) => {
   const validatedData = registerSchema.parse(req.body);
