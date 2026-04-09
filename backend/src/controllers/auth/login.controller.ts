@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
-import { loginSchema } from '../schemas/login.schema.js';
-import { getUsersCollection } from '../utils/collections.js';
+import { loginSchema } from '../../schemas/login.schema.js';
+import { getUsersCollection } from '../../utils/collections.js';
 import type { Request, Response } from 'express';
 
 export const loginUser = async (req: Request, res: Response) => {
