@@ -4,7 +4,7 @@ export const registerSchema = z.object({
   name: z
     .string()
     .trim()
-    .nonempty({ message: 'Full name is required' })
+    .min(1, { message: 'Full name is required' })
     .min(3, {
       message: 'Full name must be at least 3 characters',
     })
@@ -13,7 +13,7 @@ export const registerSchema = z.object({
   email: z
     .string()
     .trim()
-    .nonempty({ message: 'Email address is required' })
+    .min(1, { message: 'Email address is required' })
     .email({ message: 'Please enter a valid email address' })
     .max(100, {
       message: 'Email cannot exceed 100 characters',
@@ -39,7 +39,7 @@ export const registerSchema = z.object({
   city: z
     .string()
     .trim()
-    .nonempty({ message: 'City name is required' })
+    .min(1, { message: 'City name is required' })
     .min(3, {
       message: 'City name must be at least 3 characters',
     })
