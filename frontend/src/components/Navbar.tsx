@@ -1,67 +1,61 @@
 import { NavLink, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { logout } from '../store/auth/authSlice';
-import { Book, LogOut, User, LogIn } from 'lucide-react';
-import { UserPlus, LayoutDashboard } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
 
-  const navLinkClass = ({ isActive }: { isActive: boolean }) => {
-    return `flex items-center gap-2 transition-colors ${
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `text-sm transition-colors ${
       isActive
-        ? 'text-blue-600 font-semibold'
-        : 'text-gray-600 hover:text-blue-500'
+        ? 'text-teal-600 font-bold'
+        : 'text-slate-500 hover:text-teal-600 font-medium'
     }`;
-  };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
+    <nav className="bg-white border-b border-slate-200 border-l-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-xl font-bold text-blue-600"
-          >
-            <Book size={28} />
-            <span>Read Cycle</span>
+          <Link to="/" className="flex items-center gap-2">
+            <BookOpen size={22} strokeWidth={2.4} className="text-teal-600" />
+            <span className="text-[17px] font-extrabold tracking-tight">
+              Read <span className="text-teal-600">Cycle</span>
+            </span>
           </Link>
 
-          {/* Navigation Links */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-7">
             <NavLink to="/" className={navLinkClass}>
-              <LayoutDashboard size={18} />
-              <span>Explore</span>
+              Explore
             </NavLink>
 
             {user ? (
               <>
                 <NavLink to="/profile" className={navLinkClass}>
-                  <User size={18} />
-                  <span>{user.name}</span>
+                  {user.name}
                 </NavLink>
                 <button
                   onClick={() => dispatch(logout())}
-                  className="flex items-center gap-2 text-red-500 hover:text-red-700 font-medium"
+                  className="text-sm font-medium text-slate-500 hover:text-red-500 transition-colors"
                 >
-                  <LogOut size={18} />
-                  <span>Logout</span>
+                  Logout
                 </button>
               </>
             ) : (
               <>
                 <NavLink to="/login" className={navLinkClass}>
-                  <LogIn size={18} />
-                  <span>Login</span>
+                  Login
                 </NavLink>
                 <NavLink
                   to="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  className="text-sm font-bold text-white px-5 py-2 rounded-lg transition-opacity hover:opacity-90"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
+                  }}
                 >
-                  <UserPlus size={18} />
-                  <span>Sign Up</span>
+                  Sign Up →
                 </NavLink>
               </>
             )}
