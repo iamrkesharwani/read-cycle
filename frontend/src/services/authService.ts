@@ -4,7 +4,7 @@ import type {
   LoginInput,
   RegisterInput,
   User,
-} from '../types/auth';
+} from '../../../shared/types/user';
 
 const authService = {
   register: async (userData: RegisterInput): Promise<AuthResponse> => {

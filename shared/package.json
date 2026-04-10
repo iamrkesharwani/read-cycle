@@ -1,0 +1,9 @@
+{
+  "name": "@read-cycle/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "mongodb": "*"
+  }
+}

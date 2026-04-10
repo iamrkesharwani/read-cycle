@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import authService from '../../services/authService';
 import { getErrorMessage } from '../../errors/axiosError';
-import type { LoginInput, RegisterInput } from '../../types/auth';
+import type { LoginInput, RegisterInput } from '../../../../shared/types/user';
 
 export const loginUser = createAsyncThunk(
   'auth/login',

@@ -2,9 +2,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import z from 'zod';
 import { getUsersCollection } from '../../utils/collections.js';
-import type { User } from '../../types/user.js';
 import type { Request, Response } from 'express';
-import { registerSchema } from '../../schemas/auth/register.schema.js';
+import type { UserDocument } from '../../../../shared/types/user.js';
+import { registerSchema } from '../../../../shared/schemas/auth/register.schema.js';
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -29,7 +29,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const newUser: User = {
+    const newUser: UserDocument = {
       name,
       email,
       passwordHash,

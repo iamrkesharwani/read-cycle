@@ -1,7 +1,11 @@
 import { createSlice, isRejected, isAnyOf, isPending } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { AuthState, User, AuthResponse } from '../../types/auth';
 import { getMe, loginUser, registerUser } from './authThunk';
+import type {
+  AuthState,
+  User,
+  AuthResponse,
+} from '../../../../shared/types/user';
 
 const initialState: AuthState = {
   user: null,

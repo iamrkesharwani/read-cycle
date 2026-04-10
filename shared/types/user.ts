@@ -1,3 +1,15 @@
+import type { ObjectId } from 'mongodb';
+
+export interface UserDocument {
+  _id?: ObjectId;
+  name: string;
+  email: string;
+  passwordHash: string;
+  city: string;
+  createdAt: Date;
+  rating?: number;
+}
+
 export interface User {
   id: string;
   name: string;

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": "../",
     "outDir": "./dist",
     "module": "nodenext",
     "target": "esnext",
@@ -8,11 +8,14 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "strict": true,
-    "jsx": "react-jsx",
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*", "../shared/**/*"],
+  "paths": {
+    "@shared/*": ["../shared/*"]
   }
 }

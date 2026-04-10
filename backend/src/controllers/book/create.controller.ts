@@ -2,8 +2,8 @@ import z from 'zod';
 import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { getBooksCollection } from '../../utils/collections.js';
-import type { Book } from '../../types/book.js';
-import { createBookSchema } from '../../schemas/book/create.schema.js';
+import type { Book } from '../../../../shared/types/book.js';
+import { createBookSchema } from '../../../../shared/schemas/book/create.schema.js';
 
 export const createListing = async (req: Request, res: Response) => {
   try {

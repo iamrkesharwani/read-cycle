@@ -1,10 +1,10 @@
 import { connectDb } from '../config/db.js';
-import type { Book } from '../types/book.js';
-import type { User } from '../types/user.js';
+import type { Book } from '../../../shared/types/book.js';
+import type { UserDocument } from '../../../shared/types/user.js';
 
 export const getUsersCollection = async () => {
   const db = await connectDb();
-  return db.collection<User>('users');
+  return db.collection<UserDocument>('users');
 };
 
 export const getBooksCollection = async () => {
