@@ -1,12 +1,6 @@
 import { z } from 'zod';
 import { GENRES, CONDITIONS } from '../../types/book.js';
 
-const OBJECT_ID_REGEX = /^[a-f\d]{24}$/i;
-
-export const objectIdSchema = z
-  .string()
-  .regex(OBJECT_ID_REGEX, 'Must be a valid ObjectId');
-
 export const titleSchema = z
   .string()
   .min(1, 'Title is required')
@@ -36,10 +30,11 @@ export const descriptionSchema = z
   .trim();
 
 export const coverImageUrlSchema = z
-  .url('Cover image must be a valid URL')
+  .string()
   .max(2048, 'URL is too long')
+  .check(z.url({ error: 'Cover image must be a valid URL' }))
   .refine(
-    (url) => /\.(jpg|jpeg|png|webp|avif)(\?.*)?$/i.test(url),
+    (url) => /\.(jpg|jpeg|png|webp|webp|avif)(\?.*)?$/i.test(url),
     'Cover image must link to a jpg, png, webp, or avif file'
   )
   .optional()
