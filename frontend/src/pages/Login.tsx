@@ -3,17 +3,20 @@ import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Loader2, ArrowRight } from 'lucide-react';
 import { loginUser } from '../store/auth/authThunk';
+import DecorativeRegisterLogin from '../components/DecorativeRegisterLogin';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user, isLoading, error } = useAppSelector((state) => state.auth);
+  const { user, token, isLoading, error } = useAppSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
-    if (user) navigate('/');
-  }, [user, navigate]);
+    if (user && token) navigate('/');
+  }, [user, token, navigate]);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -21,7 +24,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-70px)]">
+    <div className="flex flex-1">
       {/* Image panel */}
       <div className="hidden lg:flex flex-col flex-[0_0_50%] relative overflow-hidden">
         <img
@@ -29,7 +32,6 @@ const Login = () => {
           alt="Library"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        {/* Teal gradient overlay */}
         <div
           className="absolute inset-0"
           style={{
@@ -57,42 +59,22 @@ const Login = () => {
         {/* Quote */}
         <div className="relative z-10 p-8">
           <div className="border-l-2 border-amber-400 pl-4">
-            <p className="text-white/90 text-sm italic leading-relaxed">
+            <p className="text-white/90 text-sm font-semibold italic leading-relaxed">
               "Until I feared I would lose it, I never loved to read."
             </p>
-            <p className="text-white/50 text-xs mt-2">— Harper Lee</p>
+            <p className="text-white/50 text-sm mt-1 font-semibold">
+              — Harper Lee
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Form panel — right */}
+      {/* Form panel */}
       <div
         className="flex-1 flex items-center justify-center px-8 py-10 relative overflow-hidden"
         style={{ background: '#fafaf8' }}
       >
-        {/* Decorative book spines */}
-        <div className="absolute top-0 right-0 bottom-0 w-14 flex gap-1 px-1.5 opacity-[0.07] pointer-events-none">
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#0d9488' }}
-          />
-          <div
-            className="flex-1 rounded-sm self-center"
-            style={{ background: '#f59e0b', height: '65%' }}
-          />
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#0d9488', height: '80%', marginTop: '10%' }}
-          />
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#f59e0b' }}
-          />
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#0d9488', height: '55%', marginTop: '25%' }}
-          />
-        </div>
+        <DecorativeRegisterLogin />
 
         <div className="relative z-10 w-full max-w-sm">
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-1">

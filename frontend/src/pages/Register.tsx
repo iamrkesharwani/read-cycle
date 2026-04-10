@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { registerUser } from '../store/auth/authThunk';
 import { User, Mail, Lock, MapPin, Loader2, ArrowRight } from 'lucide-react';
+import DecorativeRegisterLogin from '../components/DecorativeRegisterLogin';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -27,35 +28,13 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-70px)]">
-      {/* Form panel — left */}
+    <div className="flex flex-1">
+      {/* Form panel */}
       <div
-        className="flex-1 flex items-center justify-center px-8 py-10 relative overflow-hidden"
+        className="flex-1 flex items-center justify-center px-8 relative overflow-hidden"
         style={{ background: '#fafaf8' }}
       >
-        {/* Decorative book spines */}
-        <div className="absolute top-0 right-0 bottom-0 w-14 flex gap-1 px-1.5 opacity-[0.07] pointer-events-none">
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#0d9488' }}
-          />
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#f59e0b', height: '65%', marginTop: '10%' }}
-          />
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#0d9488', height: '85%', marginTop: '5%' }}
-          />
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#f59e0b' }}
-          />
-          <div
-            className="flex-1 rounded-sm"
-            style={{ background: '#0d9488', height: '50%', marginTop: '30%' }}
-          />
-        </div>
+        <DecorativeRegisterLogin />
 
         <div className="relative z-10 w-full max-w-sm">
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-1">
@@ -196,7 +175,7 @@ const Register = () => {
         </div>
       </div>
 
-      {/* Image panel — right */}
+      {/* Image panel */}
       <div className="hidden lg:flex flex-col flex-[0_0_50%] relative overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&auto=format&fit=crop"
@@ -211,7 +190,6 @@ const Register = () => {
           }}
         />
 
-        {/* Top badge */}
         <div className="relative z-10 p-8">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
@@ -219,7 +197,6 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Center headline */}
         <div className="relative z-10 flex-1 flex items-center justify-center px-10">
           <h1 className="text-4xl font-extrabold text-white leading-tight tracking-tight text-center">
             Your shelf is someone's{' '}
@@ -227,7 +204,6 @@ const Register = () => {
           </h1>
         </div>
 
-        {/* Quote */}
         <div className="relative z-10 p-8">
           <div className="border-l-2 border-amber-400 pl-4">
             <p className="text-white/90 text-sm italic leading-relaxed">

@@ -7,9 +7,13 @@ const MainLayout = () => {
   const isAuthPage = ['/login', '/register'].includes(pathname);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
       {isAuthPage ? <MinimalHeader /> : <Navbar />}
-      <main className={isAuthPage ? '' : 'max-w-7xl mx-auto px-4 py-8'}>
+      <main
+        className={
+          isAuthPage ? 'flex-1 flex flex-col' : 'max-w-7xl mx-auto px-4 py-8'
+        }
+      >
         <Outlet />
       </main>
     </div>
