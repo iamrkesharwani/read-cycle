@@ -10,6 +10,7 @@ import {
 } from '../../../shared/schemas/auth/login.schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import loginImg from '../assets/login.jpg';
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -39,7 +40,7 @@ const Login = () => {
       {/* Image panel */}
       <div className="hidden lg:flex flex-col flex-[0_0_50%] relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200&auto=format&fit=crop"
+          src={loginImg}
           alt="Library"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />

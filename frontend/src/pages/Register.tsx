@@ -11,6 +11,7 @@ import {
 } from '../../../shared/schemas/auth/register.schema.js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { RegisterInput } from '../../../shared/types/user.js';
+import registerImg from '../assets/register.jpg';
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -201,7 +202,7 @@ const Register = () => {
       {/* Image panel */}
       <div className="hidden lg:flex flex-col flex-[0_0_50%] relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&auto=format&fit=crop"
+          src={registerImg}
           alt="Books"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
@@ -232,7 +233,9 @@ const Register = () => {
             <p className="text-white/90 text-sm font-semibold italic leading-relaxed">
               "A reader lives a thousand lives before he dies."
             </p>
-            <p className="text-white/50 font-semibold text-xs mt-2">— George R.R. Martin</p>
+            <p className="text-white/50 font-semibold text-xs mt-2">
+              — George R.R. Martin
+            </p>
           </div>
         </div>
       </div>
