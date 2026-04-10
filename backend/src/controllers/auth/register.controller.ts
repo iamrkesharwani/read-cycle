@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { getUsersCollection } from '../../utils/collections.js';
 import type { User } from '../../types/user.js';
 import type { Request, Response } from 'express';
@@ -29,8 +30,20 @@ export const registerUser = async (req: Request, res: Response) => {
 
   const result = await usersCollection.insertOne(newUser);
 
+  const token = jwt.sign(
+    { userId: result.insertedId.toString() },
+    process.env.JWT_SECRET!,
+    { expiresIn: '7d' }
+  );
+
   res.status(201).json({
     message: 'User registered successfully',
-    userId: result.insertedId,
+    token,
+    userId: {
+      id: result.insertedId.toString(),
+      name: newUser.name,
+      email: newUser.email,
+      city: newUser.city,
+    },
   });
 };

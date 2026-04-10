@@ -13,11 +13,13 @@ const Register = () => {
   });
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isLoading, error, user } = useAppSelector((state) => state.auth);
+  const { isLoading, error, user, token } = useAppSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
-    if (user) navigate('/');
-  }, [user, navigate]);
+    if (user && token) navigate('/');
+  }, [user, token, navigate]);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
