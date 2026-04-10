@@ -6,9 +6,14 @@ import authRoutes from './routes/auth.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = Number(process.env.PORT) || 5000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
@@ -18,7 +23,9 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await connectDb();
-    console.log(`Server running on http://localhost:${port}`);
+    app.listen(port, '127.0.0.1', () => {
+      console.log(`Server listening on http://127.0.0.1:${port}`);
+    });
   } catch (error) {
     console.error('Failed to initialize app:', error);
     process.exit(1);
