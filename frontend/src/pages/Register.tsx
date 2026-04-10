@@ -2,14 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { registerUser } from '../store/auth/authThunk';
-import {
-  User,
-  Mail,
-  Lock,
-  MapPin,
-  Loader2,
-  ArrowRight,
-} from 'lucide-react';
+import { User, Mail, Lock, MapPin, Loader2, ArrowRight } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({
