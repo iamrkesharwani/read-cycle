@@ -1,30 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { registerUser } from '../store/auth/authThunk';
 import { User, Mail, Lock, MapPin, Loader2, ArrowRight } from 'lucide-react';
 import DecorativeRegisterLogin from '../components/DecorativeRegisterLogin';
+import { useForm } from 'react-hook-form';
+import {
+  registerSchema,
+  type RegisterType,
+} from '../../../shared/schemas/auth/register.schema.js';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { RegisterInput } from '../../../shared/types/user.js';
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    city: '',
-  });
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isLoading, error, user, token } = useAppSelector(
     (state) => state.auth
   );
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterType>({
+    resolver: zodResolver(registerSchema),
+  });
+
   useEffect(() => {
     if (user && token) navigate('/');
   }, [user, token, navigate]);
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    dispatch(registerUser(formData));
+  const onSubmit = (data: RegisterInput) => {
+    dispatch(registerUser(data));
   };
 
   return (
@@ -50,7 +58,7 @@ const Register = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">
                 Full Name
@@ -62,15 +70,20 @@ const Register = () => {
                 />
                 <input
                   type="text"
-                  required
-                  placeholder="John Doe"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all"
+                  placeholder="Full Name"
+                  {...register('name')}
+                  className={`w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] rounded-xl text-sm outline-none transition-all ${
+                    errors.name
+                      ? 'border-red-500 focus:ring-red-100'
+                      : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
+                  }`}
                 />
               </div>
+              {errors.name && (
+                <p className="text-red-500 text-[10px] mt-1 font-bold uppercase">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -83,16 +96,21 @@ const Register = () => {
                   size={16}
                 />
                 <input
-                  type="email"
-                  required
+                  type="text"
                   placeholder="you@example.com"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all"
+                  {...register('email')}
+                  className={`w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] rounded-xl text-sm outline-none transition-all ${
+                    errors.email
+                      ? 'border-red-500 focus:ring-red-100'
+                      : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
+                  }`}
                 />
               </div>
+              {errors.email && (
+                <p className="text-red-500 text-[10px] mt-1 font-bold uppercase">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -106,13 +124,13 @@ const Register = () => {
                 />
                 <input
                   type="text"
-                  required
                   placeholder="Kolkata"
-                  value={formData.city}
-                  onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
-                  }
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all"
+                  {...register('city')}
+                  className={`w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] rounded-xl text-sm outline-none transition-all ${
+                    errors.city
+                      ? 'border-red-500 focus:ring-red-100'
+                      : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
+                  }`}
                 />
               </div>
             </div>
@@ -128,15 +146,20 @@ const Register = () => {
                 />
                 <input
                   type="password"
-                  required
+                  {...register('password')}
                   placeholder="Minimum 8 characters"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all"
+                  className={`w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] rounded-xl text-sm outline-none transition-all ${
+                    errors.password
+                      ? 'border-red-500 focus:ring-red-100'
+                      : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
+                  }`}
                 />
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-[10px] mt-1 font-bold uppercase">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <button
@@ -206,10 +229,10 @@ const Register = () => {
 
         <div className="relative z-10 p-8">
           <div className="border-l-2 border-amber-400 pl-4">
-            <p className="text-white/90 text-sm italic leading-relaxed">
+            <p className="text-white/90 text-sm font-semibold italic leading-relaxed">
               "A reader lives a thousand lives before he dies."
             </p>
-            <p className="text-white/50 text-xs mt-2">— George R.R. Martin</p>
+            <p className="text-white/50 font-semibold text-xs mt-2">— George R.R. Martin</p>
           </div>
         </div>
       </div>

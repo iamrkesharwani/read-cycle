@@ -1,26 +1,37 @@
-import { useEffect, useState, type SyntheticEvent } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Loader2, ArrowRight } from 'lucide-react';
 import { loginUser } from '../store/auth/authThunk';
 import DecorativeRegisterLogin from '../components/DecorativeRegisterLogin';
+import {
+  loginSchema,
+  type LoginInput,
+} from '../../../shared/schemas/auth/login.schema';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user, token, isLoading, error } = useAppSelector(
     (state) => state.auth
   );
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+  });
+
   useEffect(() => {
     if (user && token) navigate('/');
   }, [user, token, navigate]);
 
-  const handleSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault();
-    dispatch(loginUser({ email, password }));
+  const onSubmit = (data: LoginInput) => {
+    dispatch(loginUser(data));
   };
 
   return (
@@ -40,7 +51,6 @@ const Login = () => {
           }}
         />
 
-        {/* Top badge */}
         <div className="relative z-10 p-8">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
@@ -48,7 +58,6 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Center headline */}
         <div className="relative z-10 flex-1 flex items-center justify-center px-10">
           <h1 className="text-4xl font-extrabold text-white leading-tight tracking-tight text-center">
             Every book deserves <span className="text-amber-300">another</span>{' '}
@@ -56,7 +65,6 @@ const Login = () => {
           </h1>
         </div>
 
-        {/* Quote */}
         <div className="relative z-10 p-8">
           <div className="border-l-2 border-amber-400 pl-4">
             <p className="text-white/90 text-sm font-semibold italic leading-relaxed">
@@ -90,7 +98,7 @@ const Login = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">
                 Email
@@ -101,14 +109,21 @@ const Login = () => {
                   size={16}
                 />
                 <input
-                  type="email"
-                  required
+                  type="text"
                   placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all"
+                  {...register('email')}
+                  className={`w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] rounded-xl text-sm text-slate-900 transition-all outline-none ${
+                    errors.email
+                      ? 'border-red-500 focus:ring-red-100'
+                      : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
+                  }`}
                 />
               </div>
+              {errors.email && (
+                <p className="text-red-500 text-[10px] mt-1 font-bold uppercase">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -122,13 +137,20 @@ const Login = () => {
                 />
                 <input
                   type="password"
-                  required
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all"
+                  {...register('password')}
+                  className={`w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] rounded-xl text-sm text-slate-900 transition-all outline-none ${
+                    errors.password
+                      ? 'border-red-500 focus:ring-red-100'
+                      : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
+                  }`}
                 />
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-[10px] mt-1 font-bold uppercase">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <button
