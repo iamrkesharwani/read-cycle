@@ -8,7 +8,6 @@ import {
   Lock,
   MapPin,
   Loader2,
-  BookOpen,
   ArrowRight,
 } from 'lucide-react';
 
