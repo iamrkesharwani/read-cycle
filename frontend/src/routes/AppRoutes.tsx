@@ -3,6 +3,7 @@ import MainLayout from '../layouts/MainLayout';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import CreateListing from '../pages/CreateListing';
 
 const Explore = () => <div className="text-2xl font-bold">Explore</div>;
 const Profile = () => <div className="text-2xl font-bold">User Profile</div>;
@@ -17,6 +18,7 @@ const AppRoutes = () => {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/create-listing" element={<CreateListing />} />
         </Route>
 
         <Route

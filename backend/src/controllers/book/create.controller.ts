@@ -2,8 +2,8 @@ import z from 'zod';
 import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { getBooksCollection } from '../../utils/collections.js';
-import type { Book } from '../../../../shared/types/book.js';
 import { createBookSchema } from '../../../../shared/schemas/book/create.schema.js';
+import type { BookDoc } from '../../types/book.doc.js';
 
 export const createListing = async (req: Request, res: Response) => {
   try {
@@ -17,9 +17,9 @@ export const createListing = async (req: Request, res: Response) => {
     }
 
     const { title, author, genre, condition, description } = validation.data;
-    const booksCollection = await getBooksCollection();
+    const booksCollection = await getBooksCollection<BookDoc>();
 
-    const newBook: Book = {
+    const newBook: BookDoc = {
       ownerId: new ObjectId(req.userId),
       title,
       author,
