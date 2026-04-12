@@ -1,8 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { registerUser } from '../store/auth/authThunk';
-import { User, Mail, Lock, MapPin, Loader2, ArrowRight } from 'lucide-react';
+import {
+  User,
+  Mail,
+  Lock,
+  MapPin,
+  Loader2,
+  ArrowRight,
+  EyeOff,
+  Eye,
+} from 'lucide-react';
 import DecorativeRegisterLogin from '../components/DecorativeRegisterLogin';
 import { useForm } from 'react-hook-form';
 import {
@@ -19,6 +28,8 @@ const Register = () => {
   const { isLoading, error, user, token } = useAppSelector(
     (state) => state.auth
   );
+
+  const [show, setShow] = useState(false);
 
   const {
     register,
@@ -146,15 +157,22 @@ const Register = () => {
                   size={16}
                 />
                 <input
-                  type="password"
+                  type={show ? 'text' : 'password'}
                   {...register('password')}
                   placeholder="Minimum 8 characters"
-                  className={`w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] rounded-xl text-sm outline-none transition-all ${
+                  className={`w-full pl-10 pr-10 py-2.5 bg-white border-[1.5px] rounded-xl text-sm outline-none transition-all ${
                     errors.password
                       ? 'border-red-500 focus:ring-red-100'
                       : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
                   }`}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShow(!show)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+                >
+                  {show ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
               {errors.password && (
                 <p className="text-red-500 text-[10px] mt-1 font-bold uppercase">
