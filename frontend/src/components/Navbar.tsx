@@ -1,7 +1,7 @@
 import { NavLink, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { logout } from '../store/auth/authSlice';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, PlusCircle } from 'lucide-react';
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -33,8 +33,15 @@ const Navbar = () => {
             {user ? (
               <>
                 <NavLink to="/profile" className={navLinkClass}>
-                  {user.name}
+                  Hi, {user.name}
                 </NavLink>
+                <Link
+                  to="/create-listing"
+                  className="flex items-center gap-2 px-4 py-2 bg-teal-50 text-teal-600 rounded-lg font-bold text-sm hover:bg-teal-100 transition-all"
+                >
+                  <PlusCircle size={18} />
+                  List a Book
+                </Link>
                 <button
                   onClick={() => dispatch(logout())}
                   className="text-sm font-medium text-slate-500 hover:text-red-500 transition-colors"

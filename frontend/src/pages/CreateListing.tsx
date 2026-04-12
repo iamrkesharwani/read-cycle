@@ -10,11 +10,19 @@ import {
   createBookSchema,
   type CreateBookInput,
 } from '../../../shared/schemas/book/create.schema';
+import { useEffect } from 'react';
+import { resetBookStatus } from '../store/book/bookSlice';
 
 const CreateListing = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isLoading, error } = useAppSelector((state) => state.book);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetBookStatus());
+    };
+  }, [dispatch]);
 
   const {
     register,
@@ -182,7 +190,7 @@ const CreateListing = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-teal-600 text-white rounded-xl font-bold shadow-lg shadow-teal-600/20 hover:bg-teal-700 transition-all flex justify-center items-center gap-2"
+              className="w-full py-3 bg-teal-600 text-white rounded-xl font-bold shadow-lg shadow-teal-600/20 hover:bg-teal-700 transition-all flex justify-center items-center gap-2 mt-3"
             >
               {isLoading ? (
                 <Loader2 className="animate-spin" size={20} />
