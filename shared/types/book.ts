@@ -31,3 +31,10 @@ export interface Book {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface BookState {
+  books: Book[];
+  isLoading: boolean;
+  error: string | null | undefined;
+  success: boolean;
+}
