@@ -3,10 +3,13 @@ import MainLayout from '../layouts/MainLayout';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import CreateListing from '../pages/CreateListing';
+// import CreateListing from '../pages/CreateListing';
 
 const Explore = () => <div className="text-2xl font-bold">Explore</div>;
 const Profile = () => <div className="text-2xl font-bold">User Profile</div>;
+const CreateListing = () => (
+  <div className="text-2xl font-bold">Create Listing</div>
+);
 
 const AppRoutes = () => {
   return (
