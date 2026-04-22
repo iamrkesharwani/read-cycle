@@ -19,17 +19,17 @@ export const titleSchema = z
 
 export const authorSchema = z
   .string()
-  .min(1, 'Author is required')
+  .min(1, 'Author name is required')
   .max(100, 'Author name is too long')
   .trim()
   .transform((val) => val.replace(/\s+/g, ' '));
 
 export const genreSchema = z.enum(GENRES, {
-  error: 'Please select a valid genre from the list',
+  error: 'Select a genre from the list',
 });
 
 export const conditionSchema = z.enum(CONDITIONS, {
-  error: 'Please select a valid book condition',
+  error: 'Select a book condition',
 });
 
 export const descriptionSchema = z
