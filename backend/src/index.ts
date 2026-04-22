@@ -5,6 +5,7 @@ import { connectDb } from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
 import bookRoutes from './routes/book.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
+import path from 'node:path';
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
@@ -19,6 +20,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use(errorHandler);
 

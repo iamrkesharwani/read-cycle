@@ -1,4 +1,5 @@
 import z from 'zod';
+import fs from 'node:fs';
 import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { getBooksCollection } from '../../utils/collections.js';
@@ -16,6 +17,7 @@ export const createListing = async (req: Request, res: Response) => {
 
     const validation = createBookSchema.safeParse(req.body);
     if (!validation.success) {
+      files.forEach((f) => fs.unlinkSync(f.path));
       return res.status(400).json({
         message: 'Validation failed',
         errors: z.treeifyError(validation.error),
