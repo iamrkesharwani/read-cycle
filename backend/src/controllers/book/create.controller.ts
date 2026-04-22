@@ -1,23 +1,35 @@
-import z from 'zod';
+import { z } from 'zod';
 import fs from 'node:fs';
 import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { getBooksCollection } from '../../utils/collections.js';
-import { createBookSchema } from '../../../../shared/schemas/book/create.schema.js';
 import type { BookDoc } from '../../types/book.doc.js';
+import {
+  serverBookSchema,
+  draftBookSchema,
+} from '../../../../shared/schemas/book/create.schema.js';
 
 export const createListing = async (req: Request, res: Response) => {
+  const files = req.files as Express.Multer.File[] | undefined;
+
   try {
-    const files = req.files as Express.Multer.File[];
+    const isDraft = req.body.status === 'draft';
+
     if (!files || files.length < 2) {
+      if (files) files.forEach((f) => fs.unlinkSync(f.path));
       return res
         .status(400)
         .json({ message: 'At least 2 images are required' });
     }
 
-    const validation = createBookSchema.safeParse(req.body);
+    const schema = isDraft ? draftBookSchema : serverBookSchema;
+    const validation = serverBookSchema.safeParse(req.body);
+
     if (!validation.success) {
-      files.forEach((f) => fs.unlinkSync(f.path));
+      if (!isDraft) {
+        files.forEach((f) => fs.unlinkSync(f.path));
+      }
+
       return res.status(400).json({
         message: 'Validation failed',
         errors: z.treeifyError(validation.error),
@@ -25,18 +37,14 @@ export const createListing = async (req: Request, res: Response) => {
     }
 
     const imageUrls = files.map((file) => `/uploads/${file.filename}`);
-    const { title, author, genre, condition, description } = validation.data;
     const booksCollection = await getBooksCollection<BookDoc>();
 
     const newBook: BookDoc = {
+      ...validation.data,
       ownerId: new ObjectId(req.userId),
-      title,
-      author,
-      genre,
-      condition,
-      description,
       imageUrls,
       isSwapped: false,
+      status: isDraft ? 'draft' : 'published',
       createdAt: new Date(),
       updatedAt: new Date(),
     };

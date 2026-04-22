@@ -16,17 +16,19 @@ export const CONDITIONS = ['New', 'Like New', 'Used', 'Worn'] as const;
 
 export type BookGenre = (typeof GENRES)[number];
 export type BookCondition = (typeof CONDITIONS)[number];
+export type BookStatus = 'draft' | 'published';
 
 export interface Book {
   _id?: string;
   ownerId: string;
   title: string;
   author: string;
-  genre: BookGenre;
-  condition: BookCondition;
+  genre?: BookGenre;
+  condition?: BookCondition;
   description: string;
   imageUrls: string[];
   isSwapped: boolean;
+  status: BookStatus;
   createdAt: string | Date;
   updatedAt: string | Date;
 }
