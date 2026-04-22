@@ -25,6 +25,7 @@ export interface Book {
   genre: BookGenre;
   condition: BookCondition;
   description: string;
+  imageUrls: string[];
   isSwapped: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;

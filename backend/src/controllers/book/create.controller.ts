@@ -7,8 +7,14 @@ import type { BookDoc } from '../../types/book.doc.js';
 
 export const createListing = async (req: Request, res: Response) => {
   try {
-    const validation = createBookSchema.safeParse(req.body);
+    const files = req.files as Express.Multer.File[];
+    if (!files || files.length < 2) {
+      return res
+        .status(400)
+        .json({ message: 'At least 2 images are required' });
+    }
 
+    const validation = createBookSchema.safeParse(req.body);
     if (!validation.success) {
       return res.status(400).json({
         message: 'Validation failed',
@@ -16,6 +22,7 @@ export const createListing = async (req: Request, res: Response) => {
       });
     }
 
+    const imageUrls = files.map((file) => `/uploads/${file.filename}`);
     const { title, author, genre, condition, description } = validation.data;
     const booksCollection = await getBooksCollection<BookDoc>();
 
@@ -26,6 +33,7 @@ export const createListing = async (req: Request, res: Response) => {
       genre,
       condition,
       description,
+      imageUrls,
       isSwapped: false,
       createdAt: new Date(),
       updatedAt: new Date(),
