@@ -14,6 +14,10 @@ const Navbar = () => {
         : 'text-slate-500 hover:text-teal-600 font-medium'
     }`;
 
+  const firstName = user?.name?.split(' ')[0] || 'Guest';
+  const formattedName =
+    firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+
   return (
     <nav className="bg-white border-b border-slate-200 border-l-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +37,7 @@ const Navbar = () => {
             {user ? (
               <>
                 <NavLink to="/profile" className={navLinkClass}>
-                  Hi, {user.name}
+                  Hi, {formattedName}
                 </NavLink>
                 <Link
                   to="/create-listing"

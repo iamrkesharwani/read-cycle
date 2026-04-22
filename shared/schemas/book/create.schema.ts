@@ -2,7 +2,7 @@ import z from 'zod';
 import {
   authorSchema,
   conditionSchema,
-  coverImageUrlSchema,
+  bookImagesSchema,
   descriptionSchema,
   genreSchema,
   titleSchema,
@@ -14,7 +14,7 @@ export const createBookSchema = z.object({
   genre: genreSchema,
   condition: conditionSchema,
   description: descriptionSchema,
-  coverImageUrl: coverImageUrlSchema,
+  images: bookImagesSchema,
 });
 
 export type CreateBookInput = z.infer<typeof createBookSchema>;

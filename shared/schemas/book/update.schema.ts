@@ -2,7 +2,7 @@ import z from 'zod';
 import {
   authorSchema,
   conditionSchema,
-  coverImageUrlSchema,
+  bookImagesSchema,
   descriptionSchema,
   genreSchema,
   titleSchema,
@@ -15,7 +15,7 @@ export const updateBookSchema = z
     genre: genreSchema.optional(),
     condition: conditionSchema.optional(),
     description: descriptionSchema.optional(),
-    coverImageUrl: coverImageUrlSchema,
+    coverImageUrl: bookImagesSchema,
     isSwapped: z.boolean().optional(),
   })
   .refine((data) => Object.values(data).some((v) => v !== undefined), {
