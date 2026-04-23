@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   fullFormSchema,
@@ -33,27 +33,30 @@ const Listing = () => {
     mode: 'onChange',
   });
 
-  const steps: StepConfig[] = [
-    {
-      component: <Image />,
-      fields: ['images'],
-    },
-    {
-      component: <TitleAuthor />,
-      fields: ['title', 'author'],
-    },
-    {
-      component: <Detail />,
-      fields: ['genre', 'condition'],
-    },
-    {
-      component: <Description />,
-      fields: ['description'],
-    },
-    {
-      component: <Preview />,
-    },
-  ];
+  const steps: StepConfig[] = useMemo(
+    () => [
+      {
+        component: <Image />,
+        fields: ['images'],
+      },
+      {
+        component: <TitleAuthor />,
+        fields: ['title', 'author'],
+      },
+      {
+        component: <Detail />,
+        fields: ['genre', 'condition'],
+      },
+      {
+        component: <Description />,
+        fields: ['description'],
+      },
+      {
+        component: <Preview />,
+      },
+    ],
+    []
+  );
 
   const totalSteps = steps.length;
   const isFirstStep = step === 0;

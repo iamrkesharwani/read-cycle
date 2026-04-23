@@ -1,11 +1,14 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { CreateBookInput } from '../../../../shared/schemas/book/create.schema';
-import type { ChangeEvent } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { ImagePlus, X, AlertCircle } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 const SLOTS = [0, 1, 2, 3] as const;
 
-const ImageUpload = () => {
+const Image = () => {
+  const [preview, setPreview] = useState<string | null>(null);
+
   const {
     setValue,
     control,
@@ -13,6 +16,23 @@ const ImageUpload = () => {
   } = useFormContext<CreateBookInput>();
 
   const images: File[] = useWatch({ control, name: 'images' }) || [];
+
+  const objectUrls = useMemo(
+    () => images.map((file) => URL.createObjectURL(file)),
+    [images]
+  );
+
+  useEffect(() => {
+    return () => {
+      objectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [objectUrls]);
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, slot: number) => {
     if (!e.target.files?.[0]) return;
@@ -35,6 +55,16 @@ const ImageUpload = () => {
     });
   };
 
+  const openPreview = (url: string) => {
+    setPreview(url);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closePreview = () => {
+    setPreview(null);
+    document.body.style.overflow = '';
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -49,31 +79,25 @@ const ImageUpload = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {SLOTS.map((slot) => {
           const file = images[slot];
+          const url = objectUrls[slot];
 
           return (
             <div key={slot} className="relative group h-28">
-              <input
-                id={`image-slot-${slot}`}
-                type="file"
-                accept="image/png, image/jpeg, image/webp, image/avif"
-                onChange={(e) => handleFileChange(e, slot)}
-                className="hidden"
-              />
+              {!file && (
+                <input
+                  id={`image-slot-${slot}`}
+                  type="file"
+                  accept="image/png, image/jpeg, image/webp, image/avif"
+                  onChange={(e) => handleFileChange(e, slot)}
+                  className="hidden"
+                />
+              )}
 
-              <label
-                htmlFor={`image-slot-${slot}`}
-                className="block w-28 h-28 cursor-pointer"
-              >
-                {file ? (
-                  <div className="relative w-full h-full rounded-xl overflow-hidden ring-1 ring-gray-200 hover:ring-teal-400 transition-all duration-200">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Book image ${slot + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200" />
-                  </div>
-                ) : (
+              {!file ? (
+                <label
+                  htmlFor={`image-slot-${slot}`}
+                  className="block w-28 h-28 cursor-pointer"
+                >
                   <div
                     className="w-full h-full flex flex-col items-center justify-center gap-2
                       rounded-xl border-[1.5px] border-dashed border-gray-300
@@ -88,8 +112,22 @@ const ImageUpload = () => {
                       Photo {slot + 1}
                     </span>
                   </div>
-                )}
-              </label>
+                </label>
+              ) : (
+                <div
+                  onClick={() => openPreview(url)}
+                  className="block w-28 h-28 cursor-pointer"
+                >
+                  <div className="relative w-full h-full rounded-xl overflow-hidden ring-1 ring-gray-200 hover:ring-teal-400 transition-all duration-200">
+                    <img
+                      src={url}
+                      alt={`Book image ${slot + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200" />
+                  </div>
+                </div>
+              )}
 
               {file && (
                 <button
@@ -115,8 +153,34 @@ const ImageUpload = () => {
           {errors.images.message as string}
         </p>
       )}
+
+      {preview &&
+        createPortal(
+          <div
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]"
+            onClick={closePreview}
+          >
+            <div
+              className="relative max-w-3xl w-full p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={preview}
+                className="w-full h-auto rounded-lg"
+                alt="Preview"
+              />
+              <button
+                onClick={closePreview}
+                className="absolute top-2 right-2 bg-white rounded-full p-2"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 };
 
-export default ImageUpload;
+export default Image;
