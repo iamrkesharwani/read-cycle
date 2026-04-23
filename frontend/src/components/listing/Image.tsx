@@ -16,7 +16,6 @@ const Image = () => {
   } = useFormContext<CreateBookInput>();
 
   const images: File[] = useWatch({ control, name: 'images' }) || [];
-
   const urlCacheRef = useRef<Map<File, string>>(new Map());
 
   const objectUrls = useMemo(() => {
@@ -81,7 +80,6 @@ const Image = () => {
 
   return (
     <div className="space-y-4">
-      {/* Header row */}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-bold text-gray-800">Book Images</p>
@@ -100,7 +98,6 @@ const Image = () => {
         </span>
       </div>
 
-      {/* Upload grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {SLOTS.map((slot) => {
           const file = images[slot];
@@ -177,14 +174,12 @@ const Image = () => {
                       alt={`Book image ${slot + 1}`}
                       className="w-full h-full object-cover"
                     />
-                    {/* Hover overlay */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-200 flex items-center justify-center">
                       <ZoomIn
                         size={20}
                         className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 drop-shadow"
                       />
                     </div>
-                    {/* Cover badge */}
                     {isCover && (
                       <div className="absolute bottom-1.5 left-1.5 bg-teal-600/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md tracking-wide backdrop-blur-sm">
                         COVER
@@ -194,12 +189,11 @@ const Image = () => {
                 </button>
               )}
 
-              {/* Remove button */}
               {file && (
                 <button
                   type="button"
                   onClick={(e) => removeImage(e, slot)}
-                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border border-slate-200 hover:bg-red-500 hover:border-red-500 text-slate-400 hover:text-white flex items-center justify-center shadow-md transition-all duration-150 z-10 opacity-0 group-hover:opacity-100"
+                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border border-slate-200 hover:bg-red-500 hover:border-red-500 text-slate-400 hover:text-white flex items-center justify-center shadow-md transition-all duration-150 z-10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                 >
                   <X size={11} strokeWidth={2.5} />
                 </button>
@@ -209,13 +203,6 @@ const Image = () => {
         })}
       </div>
 
-      {/* Hint text */}
-      <p className="text-[11px] text-slate-400 leading-relaxed">
-        The first photo will be used as the cover. Tap any uploaded image to
-        preview it.
-      </p>
-
-      {/* Validation error */}
       {errors.images && (
         <div className="flex items-center gap-2 text-sm text-red-500 bg-red-50 border border-red-100 rounded-xl px-3 py-2.5">
           <AlertCircle size={14} className="shrink-0" />
@@ -223,7 +210,6 @@ const Image = () => {
         </div>
       )}
 
-      {/* Lightbox portal */}
       {preview &&
         createPortal(
           <div

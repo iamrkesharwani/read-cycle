@@ -29,9 +29,7 @@ const Preview = () => {
 
   return (
     <div className="space-y-5">
-      {/* Main preview card */}
       <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
-        {/* Image strip */}
         {imageUrls.length > 0 && (
           <div className="flex gap-2 p-3 bg-slate-50 border-b border-slate-100 overflow-x-auto">
             {imageUrls.map((url, i) => (
@@ -53,9 +51,7 @@ const Preview = () => {
           </div>
         )}
 
-        {/* Details grid */}
         <div className="p-5 space-y-5">
-          {/* Title + author */}
           <div>
             <SectionLabel icon={BookOpen}>Book Details</SectionLabel>
             <h3 className="text-lg font-bold text-gray-900 leading-tight">
@@ -66,7 +62,6 @@ const Preview = () => {
             </p>
           </div>
 
-          {/* Genre + condition inline */}
           <div className="flex gap-6">
             <div>
               <SectionLabel icon={Tag}>Category</SectionLabel>
@@ -82,7 +77,6 @@ const Preview = () => {
             </div>
           </div>
 
-          {/* Description */}
           <div>
             <SectionLabel icon={FileText}>Description</SectionLabel>
             <p className="text-sm text-slate-600 leading-relaxed line-clamp-4">

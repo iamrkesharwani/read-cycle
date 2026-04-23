@@ -20,7 +20,6 @@ const Description = () => {
 
   return (
     <div className="space-y-3">
-      {/* Label row */}
       <div className="flex items-center justify-between">
         <label
           htmlFor="description"
@@ -42,7 +41,6 @@ const Description = () => {
         </span>
       </div>
 
-      {/* Textarea */}
       <div className="relative">
         <textarea
           {...register('description')}
@@ -55,8 +53,6 @@ const Description = () => {
               : 'border-slate-200 focus:border-teal-400 focus:ring-1 focus:ring-teal-400 focus:bg-white'
           }`}
         />
-
-        {/* Character progress bar at bottom of textarea */}
         <div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-b-xl overflow-hidden">
           <div
             className={`h-full transition-all duration-200 ${
@@ -71,7 +67,6 @@ const Description = () => {
         </div>
       </div>
 
-      {/* Error or hint */}
       {errors.description ? (
         <p className="flex items-center gap-1.5 text-xs text-red-500">
           <AlertCircle size={12} className="shrink-0" />

@@ -63,7 +63,6 @@ const TitleAuthor = () => {
         error={errors.title?.message}
         registration={register('title')}
       />
-
       <InputField
         id="author"
         label="Author Name"
@@ -72,16 +71,6 @@ const TitleAuthor = () => {
         error={errors.author?.message}
         registration={register('author')}
       />
-
-      {/* Pro tip */}
-      <div className="flex gap-3 bg-teal-50 border border-teal-100 rounded-xl px-4 py-3.5">
-        <div className="w-1 rounded-full bg-teal-400 shrink-0" />
-        <p className="text-xs text-teal-700 leading-relaxed">
-          <span className="font-bold">Pro tip:</span> Use the exact title and
-          author name as it appears on the book cover — this helps buyers find
-          your listing more easily.
-        </p>
-      </div>
     </div>
   );
 };

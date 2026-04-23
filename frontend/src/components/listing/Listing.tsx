@@ -93,9 +93,8 @@ const Listing = () => {
 
   return (
     <FormProvider {...methods}>
-      {/* Outer shell — fills exactly the space below the navbar */}
       <div className="h-[calc(100vh-4rem)] flex overflow-hidden bg-slate-50">
-        {/* ── Sidebar (lg+) ─────────────────────────────────── */}
+        {/* Sidebar */}
         <aside className="hidden lg:flex flex-col w-64 xl:w-72 bg-white border-r border-slate-100 shrink-0 px-6 py-8">
           <div className="mb-10">
             <h1 className="text-[15px] font-bold text-gray-900 tracking-tight">
@@ -106,7 +105,6 @@ const Listing = () => {
             </p>
           </div>
 
-          {/* Step list with connector lines */}
           <nav className="flex flex-col">
             {steps.map((s, i) => {
               const isCompleted = i < step;
@@ -137,14 +135,10 @@ const Listing = () => {
                     )}
                   </div>
                   <div
-                    className={`pb-10 transition-all duration-200 ${
-                      isActive ? 'opacity-100' : 'opacity-35'
-                    }`}
+                    className={`pb-10 transition-all duration-200 ${isActive ? 'opacity-100' : 'opacity-35'}`}
                   >
                     <p
-                      className={`text-sm font-semibold leading-tight ${
-                        isActive ? 'text-gray-900' : 'text-gray-600'
-                      }`}
+                      className={`text-sm font-semibold leading-tight ${isActive ? 'text-gray-900' : 'text-gray-600'}`}
                     >
                       {s.label}
                     </p>
@@ -155,7 +149,6 @@ const Listing = () => {
             })}
           </nav>
 
-          {/* Progress bar */}
           <div className="mt-auto pt-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-gray-400">Progress</span>
@@ -172,9 +165,8 @@ const Listing = () => {
           </div>
         </aside>
 
-        {/* ── Main Panel ────────────────────────────────────── */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Mobile: top progress strip */}
+          {/* Mobile progress strip */}
           <div className="lg:hidden bg-white border-b border-slate-100 px-5 pt-4 pb-3 shrink-0">
             <div className="flex justify-between items-center mb-2.5">
               <span className="text-sm font-bold text-gray-800">
@@ -188,9 +180,7 @@ const Listing = () => {
               {steps.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                    i <= step ? 'bg-teal-500' : 'bg-slate-200'
-                  }`}
+                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= step ? 'bg-teal-500' : 'bg-slate-200'}`}
                 />
               ))}
             </div>
@@ -198,7 +188,7 @@ const Listing = () => {
 
           {/* Desktop step header */}
           <div className="hidden lg:block px-8 pt-7 pb-5 shrink-0 border-b border-slate-100 bg-slate-50">
-            <div className="max-w-xl mx-auto">
+            <div className="max-w-3xl mx-auto">
               <p className="text-[10px] font-bold text-teal-600 uppercase tracking-[0.12em] mb-1">
                 Step {step + 1} of {totalSteps}
               </p>
@@ -211,9 +201,9 @@ const Listing = () => {
             </div>
           </div>
 
-          {/* Scrollable content area */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="px-5 lg:px-8 py-6 max-w-xl mx-auto">
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-0">
+            <div className="px-5 lg:px-8 py-6 max-w-3xl mx-auto">
               <form id="listing-form" onSubmit={onSubmit}>
                 {steps.map((s, i) => (
                   <div key={i} className={i === step ? 'block' : 'hidden'}>
@@ -224,16 +214,16 @@ const Listing = () => {
             </div>
           </div>
 
-          {/* Pinned bottom navigation */}
-          <div className="shrink-0 bg-white border-t border-slate-100 px-5 lg:px-8 py-3.5 flex items-center justify-between gap-3">
+          {/* Bottom navigation */}
+          <div className="shrink-0 bg-white border-t border-slate-100 px-4 lg:px-8 py-3.5 flex items-center justify-between gap-2">
             <button
               type="button"
               disabled={isFirstStep}
               onClick={() => setStep((prev) => Math.max(prev - 1, 0))}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-500 border border-gray-200 hover:bg-gray-50 disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-500 border border-gray-200 hover:bg-gray-50 disabled:opacity-25 disabled:cursor-not-allowed transition-all whitespace-nowrap shrink-0"
             >
               <ChevronLeft size={15} />
-              Previous
+              <span className="hidden sm:inline">Previous</span>
             </button>
 
             <div className="flex items-center gap-2">
@@ -241,7 +231,7 @@ const Listing = () => {
                 <button
                   type="button"
                   onClick={() => console.log('Save as draft')}
-                  className="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-500 border border-gray-200 hover:bg-gray-50 transition-all"
+                  className="px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-500 border border-gray-200 hover:bg-gray-50 transition-all whitespace-nowrap"
                 >
                   Save Draft
                 </button>
@@ -251,7 +241,7 @@ const Listing = () => {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
                 >
                   Continue
                   <ChevronRight size={15} />
@@ -260,7 +250,7 @@ const Listing = () => {
                 <button
                   type="submit"
                   form="listing-form"
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
                 >
                   Publish Listing
                   <ChevronRight size={15} />

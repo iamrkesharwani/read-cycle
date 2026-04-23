@@ -3,13 +3,6 @@ import { AlertCircle, Layers, Activity, ChevronDown } from 'lucide-react';
 import { GENRES, CONDITIONS } from '../../../../shared/types/book';
 import type { CreateBookInput } from '../../../../shared/schemas/book/create.schema.js';
 
-const CONDITION_DESCRIPTIONS: Record<string, string> = {
-  'Like New': 'No signs of use',
-  'Very Good': 'Minor wear only',
-  Good: 'Some wear, fully readable',
-  Acceptable: 'Heavy wear, intact',
-};
-
 const Detail = () => {
   const {
     register,
@@ -22,7 +15,6 @@ const Detail = () => {
 
   return (
     <div className="space-y-7">
-      {/* Genre select */}
       <div className="space-y-1.5">
         <label
           htmlFor="genre"
@@ -63,13 +55,12 @@ const Detail = () => {
         )}
       </div>
 
-      {/* Condition picker */}
       <div className="space-y-2.5">
         <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
           <Activity size={14} className="text-slate-400" />
           Book Condition
         </label>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
           {CONDITIONS.map((c) => {
             const isSelected = selectedCondition === c;
             return (
@@ -86,22 +77,10 @@ const Detail = () => {
                 }`}
               >
                 <p
-                  className={`text-sm font-bold leading-tight ${
-                    isSelected ? 'text-teal-700' : 'text-gray-700'
-                  }`}
+                  className={`text-sm font-bold leading-tight ${isSelected ? 'text-teal-700' : 'text-gray-700'}`}
                 >
                   {c}
                 </p>
-                {CONDITION_DESCRIPTIONS[c] && (
-                  <p
-                    className={`text-[11px] mt-0.5 ${
-                      isSelected ? 'text-teal-500' : 'text-slate-400'
-                    }`}
-                  >
-                    {CONDITION_DESCRIPTIONS[c]}
-                  </p>
-                )}
-                {/* Selected checkmark */}
                 {isSelected && (
                   <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-teal-500 flex items-center justify-center">
                     <svg
