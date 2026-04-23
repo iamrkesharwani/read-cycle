@@ -4,10 +4,9 @@ import { ProtectedRoute } from '../components/routes/ProtectedRoute';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Listing from '../components/listing/Listing';
-// import CreateListing from '../pages/CreateListing';
+import Profile from '../pages/Profile';
 
 const Explore = () => <div className="text-2xl font-bold">Explore</div>;
-const Profile = () => <div className="text-2xl font-bold">User Profile</div>;
 
 const AppRoutes = () => {
   return (

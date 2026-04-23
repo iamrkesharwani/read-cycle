@@ -8,6 +8,7 @@ export interface UserDocument {
   city: string;
   createdAt: Date;
   rating?: number;
+  bio?: string;
 }
 
 export interface User {
@@ -15,6 +16,7 @@ export interface User {
   name: string;
   email: string;
   city: string;
+  bio?: string;
 }
 
 export interface AuthResponse {
