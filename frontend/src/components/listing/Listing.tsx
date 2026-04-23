@@ -83,7 +83,13 @@ const Listing = () => {
           </p>
         </header>
 
-        <form>{steps[step].component}</form>
+        <form>
+          {steps.map((s, i) => (
+            <div key={i} className={i === step ? 'block' : 'hidden'}>
+              {s.component}
+            </div>
+          ))}
+        </form>
 
         <div className="flex justify-between mt-6">
           <button

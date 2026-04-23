@@ -1,6 +1,6 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { CreateBookInput } from '../../../../shared/schemas/book/create.schema';
-import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { ImagePlus, X, AlertCircle } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
@@ -17,14 +17,32 @@ const Image = () => {
 
   const images: File[] = useWatch({ control, name: 'images' }) || [];
 
-  const objectUrls = useMemo(
-    () => images.map((file) => URL.createObjectURL(file)),
-    [images]
-  );
+  const urlCacheRef = useRef<Map<File, string>>(new Map());
+
+  const objectUrls = useMemo(() => {
+    const cache = urlCacheRef.current;
+
+    images.forEach((file) => {
+      if (!cache.has(file)) {
+        cache.set(file, URL.createObjectURL(file));
+      }
+    });
+
+    cache.forEach((url, file) => {
+      if (!images.includes(file)) {
+        URL.revokeObjectURL(url);
+        cache.delete(file);
+      }
+    });
+
+    return images.map((file) => cache.get(file)!);
+  }, [images]);
 
   useEffect(() => {
+    const cache = urlCacheRef.current;
     return () => {
       objectUrls.forEach((url) => URL.revokeObjectURL(url));
+      cache.clear();
     };
   }, [objectUrls]);
 
