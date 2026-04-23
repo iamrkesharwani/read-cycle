@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Loader2, ArrowRight, EyeOff, Eye } from 'lucide-react';
 import { loginUser } from '../store/auth/authThunk';
-import DecorativeRegisterLogin from '../components/DecorativeRegisterLogin';
+import DecorativeRegisterLogin from '../components/misc/DecorativeRegisterLogin';
 import {
   loginSchema,
   type LoginInput,

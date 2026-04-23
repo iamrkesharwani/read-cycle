@@ -12,7 +12,7 @@ import {
   EyeOff,
   Eye,
 } from 'lucide-react';
-import DecorativeRegisterLogin from '../components/DecorativeRegisterLogin';
+import DecorativeRegisterLogin from '../components/misc/DecorativeRegisterLogin.js';
 import { useForm } from 'react-hook-form';
 import {
   registerSchema,
