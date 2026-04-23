@@ -5,16 +5,20 @@ import MinimalHeader from '../components/navbar/MinimalHeader';
 const MainLayout = () => {
   const { pathname } = useLocation();
   const isAuthPage = ['/login', '/register'].includes(pathname);
+  const isListingPage = pathname === '/create-listing';
+
+  const mainClass = isAuthPage
+    ? 'flex-1 flex flex-col'
+    : isListingPage
+      ? 'flex-1 flex flex-col overflow-hidden'
+      : 'flex-1 max-w-7xl mx-auto w-full px-4 py-8';
 
   return (
-    <div className="min-h-screen text-gray-900 flex flex-col">
+    <div
+      className={`flex flex-col text-gray-900 ${isListingPage ? 'h-screen overflow-hidden' : 'min-h-screen'}`}
+    >
       {isAuthPage ? <MinimalHeader /> : <Navbar />}
-
-      <main
-        className={
-          isAuthPage ? 'flex-1 flex flex-col' : 'max-w-7xl mx-auto px-4 py-8'
-        }
-      >
+      <main className={mainClass}>
         <Outlet />
       </main>
     </div>
