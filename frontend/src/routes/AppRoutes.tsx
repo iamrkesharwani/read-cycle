@@ -3,13 +3,11 @@ import MainLayout from '../layouts/MainLayout';
 import { ProtectedRoute } from '../components/routes/ProtectedRoute';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import Listing from '../components/listing/Listing';
 // import CreateListing from '../pages/CreateListing';
 
 const Explore = () => <div className="text-2xl font-bold">Explore</div>;
 const Profile = () => <div className="text-2xl font-bold">User Profile</div>;
-const CreateListing = () => (
-  <div className="text-2xl font-bold">Create Listing</div>
-);
 
 const AppRoutes = () => {
   return (
@@ -21,7 +19,7 @@ const AppRoutes = () => {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
-          <Route path="/create-listing" element={<CreateListing />} />
+          <Route path="/create-listing" element={<Listing />} />
         </Route>
 
         <Route

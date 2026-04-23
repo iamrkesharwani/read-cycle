@@ -30,15 +30,8 @@ export const serverBookSchema = stepTwoSchema
   .extend(stepThreeSchema.shape)
   .extend(stepFourSchema.shape);
 
-export const createBookSchema = z.object({
-  title: titleSchema,
-  author: authorSchema,
-  genre: genreSchema,
-  condition: conditionSchema,
-  description: descriptionSchema,
-  images: bookImagesSchema,
-});
+export const fullFormSchema = serverBookSchema.extend(stepOneSchema.shape);
 
 export const draftBookSchema = serverBookSchema.partial();
-export type CreateBookInput = z.infer<typeof createBookSchema>;
+export type CreateBookInput = z.infer<typeof fullFormSchema>;
 export type ServerBookInput = z.infer<typeof serverBookSchema>;
