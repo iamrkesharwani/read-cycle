@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import MinimalHeader from '../components/MinimalHeader';
+import Navbar from '../components/navbar/Navbar';
+import MinimalHeader from '../components/navbar/MinimalHeader';
 
 const MainLayout = () => {
   const { pathname } = useLocation();

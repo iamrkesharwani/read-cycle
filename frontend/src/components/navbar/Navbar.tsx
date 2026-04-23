@@ -1,6 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
-import { logout } from '../store/auth/authSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
+import { logout } from '../../store/auth/authSlice';
 import { BookOpen, PlusCircle } from 'lucide-react';
 
 const Navbar = () => {
