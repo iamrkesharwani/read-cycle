@@ -10,7 +10,6 @@ interface Props {
 
 const BookImageGallery = ({ images = [], title }: Props) => {
   const [active, setActive] = useState(0);
-  console.log('Image src:', `${BASE_URL}${images[active]}`);
 
   return (
     <div className="flex flex-col gap-3 h-full w-full">
