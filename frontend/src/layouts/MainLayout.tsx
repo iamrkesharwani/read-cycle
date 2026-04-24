@@ -9,6 +9,7 @@ const MainLayout = () => {
 
   const isFullBleed =
     isListingPage ||
+    pathname.startsWith('/listing/') ||
     [
       '/profile',
       '/personal',

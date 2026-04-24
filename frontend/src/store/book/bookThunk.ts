@@ -24,7 +24,10 @@ export const fetchUserBooks = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await api.get('/books/me');
-      return response.data;
+      return response.data.map((b: any) => ({
+        ...b,
+        images: b.imageUrls ?? [],
+      }));
     } catch (error) {
       return thunkAPI.rejectWithValue(
         getErrorMessage(error, 'Failed to load your books')
@@ -38,7 +41,8 @@ export const fetchBookById = createAsyncThunk(
   async (id: string, thunkAPI) => {
     try {
       const response = await api.get(`/books/${id}`);
-      return response.data;
+      const data = response.data;
+      return { ...data, images: data.imageUrls ?? [] };
     } catch (error) {
       return thunkAPI.rejectWithValue(
         getErrorMessage(error, 'Failed to load listing details')

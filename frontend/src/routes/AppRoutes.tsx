@@ -11,7 +11,7 @@ import ActiveListings from '../components/profile/tabs/ActiveListings';
 import SwappedListings from '../components/profile/tabs/SwappedListings';
 import InactiveListings from '../components/profile/tabs/InactiveListings';
 import AccountSettings from '../components/profile/tabs/AccountSettings';
-import ListingDetail from '../components/listing/ListingDetail';
+import MainListing from '../components/live/MainListing';
 
 const Explore = () => <div className="text-2xl font-bold">Explore</div>;
 
@@ -34,7 +34,7 @@ const AppRoutes = () => {
           </Route>
 
           <Route path="/create-listing" element={<Listing />} />
-          <Route path="/listing/:id" element={<ListingDetail />} />
+          <Route path="/listing/:id" element={<MainListing />} />
         </Route>
 
         <Route

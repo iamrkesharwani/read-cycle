@@ -36,13 +36,13 @@ export const createListing = async (req: Request, res: Response) => {
       });
     }
 
-    const imageUrls = files.map((file) => `/uploads/${file.filename}`);
+    const images = files.map((file) => `/uploads/${file.filename}`);
     const booksCollection = await getBooksCollection<BookDoc>();
 
     const newBook: BookDoc = {
       ...(validation.data as z.infer<typeof serverBookSchema>),
       ownerId: new ObjectId(req.userId),
-      imageUrls,
+      images,
       isSwapped: false,
       status: isDraft ? 'draft' : 'published',
       createdAt: new Date(),
