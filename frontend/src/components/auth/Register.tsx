@@ -235,7 +235,7 @@ const Register = () => {
         <div className="relative z-10 p-8">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
-            Book Exchange Platform
+            Ready To Start Swapping
           </div>
         </div>
 
