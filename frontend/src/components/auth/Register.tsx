@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
-import { registerUser } from '../store/auth/authThunk';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks.js';
+import { registerUser } from '../../store/auth/authThunk.js';
 import {
   User,
   Mail,
@@ -12,15 +12,15 @@ import {
   EyeOff,
   Eye,
 } from 'lucide-react';
-import DecorativeRegisterLogin from '../components/misc/DecorativeRegisterLogin.js';
+import DecorativeRegisterLogin from '../misc/DecorativeRegisterLogin.js';
 import { useForm } from 'react-hook-form';
 import {
   registerSchema,
   type RegisterType,
-} from '../../../shared/schemas/auth/register.schema.js';
+} from '../../../../shared/schemas/auth/register.schema.js';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { RegisterInput } from '../../../shared/types/user.js';
-import registerImg from '../assets/register.jpg';
+import type { RegisterInput } from '../../../../shared/types/user.js';
+import registerImg from '../../assets/register.jpg';
 
 const Register = () => {
   const dispatch = useAppDispatch();

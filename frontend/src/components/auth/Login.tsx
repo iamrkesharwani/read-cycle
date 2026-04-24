@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Loader2, ArrowRight, EyeOff, Eye } from 'lucide-react';
-import { loginUser } from '../store/auth/authThunk';
-import DecorativeRegisterLogin from '../components/misc/DecorativeRegisterLogin';
+import { loginUser } from '../../store/auth/authThunk';
+import DecorativeRegisterLogin from '../misc/DecorativeRegisterLogin';
 import {
   loginSchema,
   type LoginInput,
-} from '../../../shared/schemas/auth/login.schema';
+} from '../../../../shared/schemas/auth/login.schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import loginImg from '../assets/login.jpg';
+import loginImg from '../../assets/login.jpg';
 
 const Login = () => {
   const dispatch = useAppDispatch();

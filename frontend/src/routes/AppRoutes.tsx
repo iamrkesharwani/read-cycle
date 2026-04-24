@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import { ProtectedRoute } from '../components/routes/ProtectedRoute';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
+import Login from '../components/auth/Login';
+import Register from '../components/auth/Register';
 import Listing from '../components/listing/Listing';
-import Profile from '../pages/Profile';
+import Profile from '../components/profile/Profile';
 
 const Explore = () => <div className="text-2xl font-bold">Explore</div>;
 
