@@ -42,6 +42,7 @@ export const fetchBookById = createAsyncThunk(
     try {
       const response = await api.get(`/books/${id}`);
       const data = response.data;
+      console.log('raw book data:', data);
       return { ...data, images: data.imageUrls ?? [] };
     } catch (error) {
       return thunkAPI.rejectWithValue(

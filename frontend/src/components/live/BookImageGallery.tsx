@@ -10,6 +10,7 @@ interface Props {
 
 const BookImageGallery = ({ images = [], title }: Props) => {
   const [active, setActive] = useState(0);
+  console.log('Image src:', `${BASE_URL}${images[active]}`);
 
   return (
     <div className="flex flex-col gap-3 h-full w-full">
@@ -18,6 +19,9 @@ const BookImageGallery = ({ images = [], title }: Props) => {
           <img
             src={`${BASE_URL}${images[active]}`}
             alt={title}
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
             className="w-full h-full object-cover transition-opacity duration-300"
           />
         ) : (
