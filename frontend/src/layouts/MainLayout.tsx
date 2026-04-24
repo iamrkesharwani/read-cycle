@@ -6,9 +6,17 @@ const MainLayout = () => {
   const { pathname } = useLocation();
   const isAuthPage = ['/login', '/register'].includes(pathname);
   const isListingPage = pathname === '/create-listing';
-  const isProfilePage = pathname === '/profile';
 
-  const isFullBleed = isListingPage || isProfilePage;
+  const isFullBleed =
+    isListingPage ||
+    [
+      '/profile',
+      '/personal',
+      '/active',
+      '/swapped',
+      '/inactive',
+      '/settings',
+    ].includes(pathname);
 
   const mainClass = isAuthPage
     ? 'flex-1 flex flex-col'

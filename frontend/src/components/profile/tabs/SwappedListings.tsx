@@ -84,22 +84,30 @@ const SwappedListings = () => {
       <div className="space-y-2.5">
         {mockSwaps.map((swap) => (
           <div key={swap.id} className={cls.card}>
-            {/* Two covers with arrow */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center">
-                <BookMarked size={16} className="text-teal-500" />
+            {/* Covers + titles below on mobile */}
+            <div className="shrink-0">
+              <div className={cls.coversRow}>
+                <div className={cls.coverGave}>
+                  <BookMarked size={16} className="text-teal-500" />
+                </div>
+                <ArrowLeftRight size={12} className="text-slate-300 shrink-0" />
+                <div className={cls.coverReceived}>
+                  <BookMarked size={16} className="text-slate-400" />
+                </div>
               </div>
-              <ArrowLeftRight size={12} className="text-slate-300 shrink-0" />
-              <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center">
-                <BookMarked size={16} className="text-slate-400" />
+
+              <div className={cls.mobileTitlesRow}>
+                <p className={cls.mobileTitleText}>{swap.gave}</p>
+                <span className={cls.mobileTitleSpacer} />
+                <p className={cls.mobileTitleText}>{swap.received}</p>
               </div>
             </div>
 
             {/* Info */}
-            <div className="flex-1 min-w-0 space-y-1.5">
-              <div className="flex items-center gap-1.5 min-w-0">
+            <div className={cls.infoBlock}>
+              <div className={cls.desktopTitleRow}>
                 <p className={cls.title}>{swap.gave}</p>
-                <span className="text-slate-300 text-xs shrink-0">→</span>
+                <span className={cls.desktopTitleArrow}>→</span>
                 <p className={cls.title}>{swap.received}</p>
               </div>
               <p className={cls.author}>
