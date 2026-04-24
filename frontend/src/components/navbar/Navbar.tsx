@@ -1,10 +1,8 @@
 import { NavLink, Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { logout } from '../../store/auth/authSlice';
+import { useAppSelector } from '../../hooks/reduxHooks';
 import { BookOpen, PlusCircle } from 'lucide-react';
 
 const Navbar = () => {
-  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -46,12 +44,6 @@ const Navbar = () => {
                   <PlusCircle size={18} />
                   List a Book
                 </Link>
-                <button
-                  onClick={() => dispatch(logout())}
-                  className="text-sm font-medium text-slate-500 hover:text-red-500 transition-colors"
-                >
-                  Logout
-                </button>
               </>
             ) : (
               <>
