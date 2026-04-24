@@ -46,7 +46,7 @@ const Listing = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [step, setStep] = useState<number>(0);
-  const { isLoading, error, success } = useAppSelector((state) => state.book);
+  const { isLoading } = useAppSelector((state) => state.book);
 
   const methods = useForm<CreateBookInput>({
     resolver: zodResolver(fullFormSchema),

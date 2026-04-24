@@ -1,9 +1,5 @@
-import React from 'react'
-
 const ListingDetail = () => {
-  return (
-    <div>ListingDetail</div>
-  )
-}
+  return <div>ListingDetail</div>;
+};
 
-export default ListingDetail
+export default ListingDetail;
