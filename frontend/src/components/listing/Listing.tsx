@@ -1,10 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks.js';
+import { createBookListing } from '../../store/book/bookThunk.js';
+import { resetBookStatus } from '../../store/book/bookSlice.js';
+import { useNavigate } from 'react-router-dom';
 import {
   fullFormSchema,
   type CreateBookInput,
 } from '../../../../shared/schemas/book/create.schema.js';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ChevronLeft,
   ChevronRight,
@@ -14,6 +18,7 @@ import {
   Tag,
   AlignLeft,
   Eye,
+  Loader2,
 } from 'lucide-react';
 
 import Image from './Image';
@@ -38,7 +43,10 @@ const STEPS_META = [
 ];
 
 const Listing = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [step, setStep] = useState<number>(0);
+  const { isLoading, error, success } = useAppSelector((state) => state.book);
 
   const methods = useForm<CreateBookInput>({
     resolver: zodResolver(fullFormSchema),
@@ -52,6 +60,9 @@ const Listing = () => {
     },
     mode: 'onChange',
   });
+
+  const { isSubmitting } = methods.formState;
+  const isPublishing = isSubmitting || isLoading;
 
   const steps: StepConfig[] = useMemo(
     () => [
@@ -85,8 +96,27 @@ const Listing = () => {
     setStep((prev) => Math.min(prev + 1, totalSteps - 1));
   };
 
-  const onSubmit = methods.handleSubmit((data) => {
-    console.log('Publish listing:', data);
+  const onSubmit = methods.handleSubmit(async (data) => {
+    const formData = new FormData();
+
+    formData.append('title', data.title);
+    formData.append('author', data.author);
+    formData.append('genre', data.genre);
+    formData.append('condition', data.condition);
+    formData.append('description', data.description);
+
+    data.images.forEach((file) => {
+      formData.append('images', file);
+    });
+
+    const resultAction = await dispatch(createBookListing(formData));
+    if (createBookListing.fulfilled.match(resultAction)) {
+      const newBookId = resultAction.payload.book?._id;
+      if (newBookId) {
+        navigate(`/listing/${newBookId}`);
+        dispatch(resetBookStatus());
+      }
+    }
   });
 
   const progressPct = Math.round((step / (totalSteps - 1)) * 100);
@@ -250,10 +280,20 @@ const Listing = () => {
                 <button
                   type="submit"
                   form="listing-form"
+                  disabled={isPublishing}
                   className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
                 >
-                  Publish Listing
-                  <ChevronRight size={15} />
+                  {isPublishing ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" />
+                      Publishing...
+                    </>
+                  ) : (
+                    <>
+                      Publish Listing
+                      <ChevronRight size={15} />
+                    </>
+                  )}
                 </button>
               )}
             </div>

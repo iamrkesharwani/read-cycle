@@ -36,6 +36,7 @@ export interface Book {
 export interface BookState {
   books: Book[];
   isLoading: boolean;
+  currentBook: null | Book
   error: string | null | undefined;
   success: boolean;
 }

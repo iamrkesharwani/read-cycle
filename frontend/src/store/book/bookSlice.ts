@@ -1,14 +1,16 @@
-import { createSlice, isRejected, isAnyOf, isPending } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createBookListing } from './bookThunk';
-import type { Book, BookState } from '../../../../shared/types/book';
+import { createSlice, isRejected, isPending } from '@reduxjs/toolkit';
+import { createBookListing, fetchBookById, fetchUserBooks } from './bookThunk';
+import type { BookState } from '../../../../shared/types/book';
 
 const initialState: BookState = {
   books: [],
   isLoading: false,
+  currentBook: null,
   error: null,
   success: false,
 };
+
+const bookThunks = [createBookListing, fetchUserBooks, fetchBookById] as const;
 
 const bookSlice = createSlice({
   name: 'books',
@@ -22,21 +24,27 @@ const bookSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addMatcher(
-        isAnyOf(createBookListing.fulfilled),
-        (state, action: PayloadAction<{ book: Book }>) => {
-          state.isLoading = false;
-          state.success = true;
-          state.error = null;
-          state.books.unshift(action.payload.book);
-        }
-      )
-      .addMatcher(isPending(createBookListing), (state) => {
+      .addCase(createBookListing.fulfilled, (state) => {
+        state.isLoading = false;
+        state.success = true;
+        state.error = null;
+      })
+      .addCase(fetchUserBooks.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.books = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchBookById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentBook = action.payload;
+        state.error = null;
+      })
+      .addMatcher(isPending(...bookThunks), (state) => {
         state.isLoading = true;
         state.error = null;
         state.success = false;
       })
-      .addMatcher(isRejected(createBookListing), (state, action) => {
+      .addMatcher(isRejected(...bookThunks), (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         state.success = false;

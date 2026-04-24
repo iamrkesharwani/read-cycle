@@ -23,7 +23,7 @@ export const createListing = async (req: Request, res: Response) => {
     }
 
     const schema = isDraft ? draftBookSchema : serverBookSchema;
-    const validation = serverBookSchema.safeParse(req.body);
+    const validation = schema.safeParse(req.body);
 
     if (!validation.success) {
       if (!isDraft) {
@@ -40,7 +40,7 @@ export const createListing = async (req: Request, res: Response) => {
     const booksCollection = await getBooksCollection<BookDoc>();
 
     const newBook: BookDoc = {
-      ...validation.data,
+      ...(validation.data as z.infer<typeof serverBookSchema>),
       ownerId: new ObjectId(req.userId),
       imageUrls,
       isSwapped: false,
@@ -53,7 +53,7 @@ export const createListing = async (req: Request, res: Response) => {
 
     res.status(201).json({
       message: 'Listing created successfully',
-      bookId: result.insertedId,
+      book: { _id: result.insertedId },
     });
   } catch (error) {
     console.error('Create listing error:', error);
