@@ -31,3 +31,17 @@ export const getListingById = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const getUserListings = async (req: Request, res: Response) => {
+  try {
+    const booksCollection = await getBooksCollection<BookDoc>();
+    const books = await booksCollection
+      .find({ ownerId: new ObjectId(req.userId) })
+      .sort({ createdAt: -1 })
+      .toArray();
+    res.status(200).json(books);
+  } catch (error) {
+    console.error('Fetch user listings error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

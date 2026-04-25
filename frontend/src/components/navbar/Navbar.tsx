@@ -54,7 +54,7 @@ const Navbar = () => {
                     Hi, {formattedName}
                   </NavLink>
                   <Link
-                    to="/create-listing"
+                    to="/create"
                     className="flex items-center gap-1.5 px-3.5 py-2 bg-teal-50 text-teal-600 rounded-xl font-bold text-sm hover:bg-teal-100 transition-all"
                   >
                     <PlusCircle size={15} />

@@ -5,7 +5,7 @@ import MinimalHeader from '../components/navbar/MinimalHeader';
 const MainLayout = () => {
   const { pathname } = useLocation();
   const isAuthPage = ['/login', '/register'].includes(pathname);
-  const isListingPage = pathname === '/create-listing';
+  const isListingPage = pathname === '/create';
 
   const isFullBleed =
     isListingPage ||

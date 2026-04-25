@@ -33,7 +33,7 @@ const AppRoutes = () => {
             <Route path="/settings" element={<AccountSettings />} />
           </Route>
 
-          <Route path="/create-listing" element={<Listing />} />
+          <Route path="/create" element={<Listing />} />
           <Route path="/listing/:id" element={<MainListing />} />
         </Route>
 

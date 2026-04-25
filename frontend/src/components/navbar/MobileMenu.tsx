@@ -118,11 +118,11 @@ const MobileMenu = ({ isOpen, onClose }: Props) => {
           )}
         </div>
 
-        {/* List a Book CTA */}
+        {/* List a Book */}
         {user && (
           <div className="px-4 py-4 border-t border-slate-100">
             <Link
-              to="/create-listing"
+              to="/create"
               onClick={onClose}
               className="flex items-center justify-center gap-2 w-full py-3 bg-teal-600 text-white rounded-xl font-bold text-sm hover:bg-teal-700 transition-all"
             >

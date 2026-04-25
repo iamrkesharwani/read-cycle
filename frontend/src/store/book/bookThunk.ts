@@ -46,3 +46,17 @@ export const fetchBookById = createAsyncThunk(
     }
   }
 );
+
+export const deleteBookListing = createAsyncThunk(
+  'book/deleteBookListing',
+  async (id: string, thunkAPI) => {
+    try {
+      await api.delete(`/books/${id}`);
+      return id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        getErrorMessage(error, 'Failed to delete listing')
+      );
+    }
+  }
+);

@@ -1,5 +1,10 @@
 import { createSlice, isRejected, isPending } from '@reduxjs/toolkit';
-import { createBookListing, fetchBookById, fetchUserBooks } from './bookThunk';
+import {
+  createBookListing,
+  deleteBookListing,
+  fetchBookById,
+  fetchUserBooks,
+} from './bookThunk';
 import type { BookState } from '../../../../shared/types/book';
 
 const initialState: BookState = {
@@ -10,7 +15,12 @@ const initialState: BookState = {
   success: false,
 };
 
-const bookThunks = [createBookListing, fetchUserBooks, fetchBookById] as const;
+const bookThunks = [
+  createBookListing,
+  fetchUserBooks,
+  fetchBookById,
+  deleteBookListing,
+] as const;
 
 const bookSlice = createSlice({
   name: 'books',
@@ -38,6 +48,11 @@ const bookSlice = createSlice({
         state.isLoading = false;
         state.currentBook = action.payload;
         state.error = null;
+      })
+      .addCase(deleteBookListing.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.books = state.books.filter((b) => b._id !== action.payload);
+        state.success = true;
       })
       .addMatcher(isPending(...bookThunks), (state) => {
         state.isLoading = true;
