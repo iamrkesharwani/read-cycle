@@ -18,7 +18,6 @@ import {
   Tag,
   AlignLeft,
   Eye,
-  Loader2,
 } from 'lucide-react';
 
 import Image from './Image';
@@ -26,6 +25,7 @@ import TitleAuthor from './TitleAuthor';
 import Detail from './Detail';
 import Description from './Description';
 import Preview from './Preview';
+import ConfirmModal from './ConfirmModal';
 
 type StepConfig = {
   component: React.ReactNode;
@@ -45,8 +45,10 @@ const STEPS_META = [
 const Listing = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [step, setStep] = useState<number>(0);
   const { isLoading } = useAppSelector((state) => state.book);
+
+  const [step, setStep] = useState(0);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const methods = useForm<CreateBookInput>({
     resolver: zodResolver(fullFormSchema),
@@ -86,6 +88,7 @@ const Listing = () => {
   const totalSteps = steps.length;
   const isFirstStep = step === 0;
   const isLastStep = step === totalSteps - 1;
+  const progressPct = Math.round((step / (totalSteps - 1)) * 100);
 
   const handleNext = async () => {
     const currentStep = steps[step];
@@ -96,33 +99,41 @@ const Listing = () => {
     setStep((prev) => Math.min(prev + 1, totalSteps - 1));
   };
 
-  const onSubmit = methods.handleSubmit(async (data) => {
+  const handleConfirm = async () => {
+    const data = methods.getValues();
     const formData = new FormData();
-
     formData.append('title', data.title);
     formData.append('author', data.author);
     formData.append('genre', data.genre);
     formData.append('condition', data.condition);
     formData.append('description', data.description);
-
-    data.images.forEach((file) => {
-      formData.append('images', file);
-    });
+    data.images.forEach((file) => formData.append('images', file));
 
     const resultAction = await dispatch(createBookListing(formData));
     if (createBookListing.fulfilled.match(resultAction)) {
       const newBookId = resultAction.payload.book?._id;
       if (newBookId) {
-        navigate(`/listing/${newBookId}`);
         dispatch(resetBookStatus());
+        navigate(`/listing/${newBookId}`);
       }
     }
-  });
+  };
 
-  const progressPct = Math.round((step / (totalSteps - 1)) * 100);
+  const formValues = methods.getValues();
 
   return (
     <FormProvider {...methods}>
+      <ConfirmModal
+        isOpen={confirmOpen}
+        isPublishing={isPublishing}
+        title={formValues.title}
+        author={formValues.author}
+        condition={formValues.condition}
+        genre={formValues.genre}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleConfirm}
+      />
+
       <div className="h-[calc(100vh-4rem)] flex overflow-hidden bg-slate-50">
         {/* Sidebar */}
         <aside className="hidden lg:flex flex-col w-64 xl:w-72 bg-white border-r border-slate-100 shrink-0 px-6 py-8">
@@ -165,10 +176,14 @@ const Listing = () => {
                     )}
                   </div>
                   <div
-                    className={`pb-10 transition-all duration-200 ${isActive ? 'opacity-100' : 'opacity-35'}`}
+                    className={`pb-10 transition-all duration-200 ${
+                      isActive ? 'opacity-100' : 'opacity-35'
+                    }`}
                   >
                     <p
-                      className={`text-sm font-semibold leading-tight ${isActive ? 'text-gray-900' : 'text-gray-600'}`}
+                      className={`text-sm font-semibold leading-tight ${
+                        isActive ? 'text-gray-900' : 'text-gray-600'
+                      }`}
                     >
                       {s.label}
                     </p>
@@ -210,7 +225,9 @@ const Listing = () => {
               {steps.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= step ? 'bg-teal-500' : 'bg-slate-200'}`}
+                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                    i <= step ? 'bg-teal-500' : 'bg-slate-200'
+                  }`}
                 />
               ))}
             </div>
@@ -234,13 +251,22 @@ const Listing = () => {
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-0">
             <div className="px-5 lg:px-8 py-6 max-w-3xl mx-auto">
-              <form id="listing-form" onSubmit={onSubmit}>
+              <div
+                onKeyDown={(e) => {
+                  if (
+                    e.key === 'Enter' &&
+                    (e.target as HTMLElement).tagName !== 'TEXTAREA'
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
+              >
                 {steps.map((s, i) => (
                   <div key={i} className={i === step ? 'block' : 'hidden'}>
                     {s.component}
                   </div>
                 ))}
-              </form>
+              </div>
             </div>
           </div>
 
@@ -278,22 +304,12 @@ const Listing = () => {
                 </button>
               ) : (
                 <button
-                  type="submit"
-                  form="listing-form"
-                  disabled={isPublishing}
+                  type="button"
+                  onClick={() => setConfirmOpen(true)}
                   className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
                 >
-                  {isPublishing ? (
-                    <>
-                      <Loader2 size={15} className="animate-spin" />
-                      Publishing...
-                    </>
-                  ) : (
-                    <>
-                      Publish Listing
-                      <ChevronRight size={15} />
-                    </>
-                  )}
+                  Publish Listing
+                  <ChevronRight size={15} />
                 </button>
               )}
             </div>

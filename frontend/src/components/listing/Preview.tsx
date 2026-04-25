@@ -22,8 +22,8 @@ const SectionLabel = ({
 );
 
 const Preview = () => {
-  const { getValues } = useFormContext<CreateBookInput>();
-  const data = getValues();
+  const { watch } = useFormContext<CreateBookInput>();
+  const data = watch();
 
   const imageUrls = data.images.map((file) => URL.createObjectURL(file));
 

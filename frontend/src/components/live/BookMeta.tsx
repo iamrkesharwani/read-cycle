@@ -1,15 +1,23 @@
 import type { BookCondition } from '../../../../shared/types/book';
+import type { ReactNode } from 'react';
 
 interface Props {
   title: string;
   author: string;
   condition?: BookCondition;
   description: string;
+  actionsSlot?: ReactNode;
 }
 
 const ALL_CONDITIONS: BookCondition[] = ['New', 'Like New', 'Used', 'Worn'];
 
-const BookMeta = ({ title, author, condition, description }: Props) => (
+const BookMeta = ({
+  title,
+  author,
+  condition,
+  description,
+  actionsSlot,
+}: Props) => (
   <div className="flex flex-col gap-4">
     <div className="space-y-1">
       <h1 className="text-3xl font-bold text-slate-900 leading-tight tracking-tight">
@@ -40,6 +48,13 @@ const BookMeta = ({ title, author, condition, description }: Props) => (
         ))}
       </div>
     </div>
+
+    {actionsSlot && (
+      <>
+        <div className="border-t border-slate-100" />
+        <div className="md:hidden">{actionsSlot}</div>
+      </>
+    )}
 
     <div className="border-t border-slate-100" />
 
