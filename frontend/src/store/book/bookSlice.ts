@@ -4,6 +4,7 @@ import {
   deleteBookListing,
   fetchBookById,
   fetchUserBooks,
+  updateListingStatus,
 } from './bookThunk';
 import type { BookState } from '../../../../shared/types/book';
 
@@ -20,6 +21,7 @@ const bookThunks = [
   fetchUserBooks,
   fetchBookById,
   deleteBookListing,
+  updateListingStatus,
 ] as const;
 
 const bookSlice = createSlice({
@@ -53,6 +55,13 @@ const bookSlice = createSlice({
         state.isLoading = false;
         state.books = state.books.filter((b) => b._id !== action.payload);
         state.success = true;
+      })
+      .addCase(updateListingStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const book = state.books.find((b) => b._id === action.payload.id);
+        if (book) {
+          book.status = action.payload.status; // Update the status locally
+        }
       })
       .addMatcher(isPending(...bookThunks), (state) => {
         state.isLoading = true;

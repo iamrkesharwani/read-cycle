@@ -3,7 +3,10 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
 import { useNavigate } from 'react-router-dom';
 import { cls } from '../../../style/profile/ActiveListings';
 import { Link } from 'react-router-dom';
-import { fetchUserBooks } from '../../../store/book/bookThunk';
+import {
+  fetchUserBooks,
+  updateListingStatus,
+} from '../../../store/book/bookThunk';
 import {
   BookMarked,
   ChevronDown,
@@ -51,7 +54,7 @@ const ActionsDropdown = ({
     <button
       className={`${cls.dropdownItem} text-gray-700 hover:bg-slate-50`}
       onClick={() => {
-        console.log('mark as inactive');
+        onInactive();
         onClose();
       }}
     >
@@ -69,6 +72,8 @@ const ActiveListings = () => {
   useEffect(() => {
     dispatch(fetchUserBooks());
   }, [dispatch]);
+
+  const activeBooks = books.filter((b) => b.status === 'published');
 
   if (isLoading && books.length === 0) {
     return (
@@ -104,7 +109,8 @@ const ActiveListings = () => {
         <div>
           <h3 className={cls.sectionTitle}>Active Listings</h3>
           <p className={cls.sectionCount}>
-            {books.length} book{books.length !== 1 ? 's' : ''} currently listed
+            {activeBooks.length} book{activeBooks.length !== 1 ? 's' : ''}{' '}
+            currently listed
           </p>
         </div>
         <button
@@ -116,7 +122,7 @@ const ActiveListings = () => {
       </div>
 
       <div className="space-y-2.5">
-        {books.map((book) => {
+        {activeBooks.map((book) => {
           const id = book._id ?? '';
           return (
             <div key={id} className={cls.card}>
@@ -167,7 +173,10 @@ const ActiveListings = () => {
                   <ActionsDropdown
                     onClose={() => setOpenMenu(null)}
                     onSwap={() => {}}
-                    onInactive={() => {}}
+                    onInactive={() => {
+                      dispatch(updateListingStatus({ id, status: 'inactive' }));
+                      setOpenMenu(null);
+                    }}
                   />
                 )}
               </div>

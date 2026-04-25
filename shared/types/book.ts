@@ -16,7 +16,7 @@ export const CONDITIONS = ['New', 'Like New', 'Used', 'Worn'] as const;
 
 export type BookGenre = (typeof GENRES)[number];
 export type BookCondition = (typeof CONDITIONS)[number];
-export type BookStatus = 'draft' | 'published';
+export type BookStatus = 'draft' | 'published' | 'inactive';
 
 export interface Book {
   _id?: string;

@@ -60,3 +60,18 @@ export const deleteBookListing = createAsyncThunk(
     }
   }
 );
+
+export const updateListingStatus = createAsyncThunk(
+  'book/updateListingStatus',
+  async (
+    { id, status }: { id: string; status: 'published' | 'inactive' },
+    thunkAPI
+  ) => {
+    try {
+      await api.patch(`/books/${id}/status`, { status });
+      return { id, status };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(getErrorMessage(error, 'Update failed'));
+    }
+  }
+);
