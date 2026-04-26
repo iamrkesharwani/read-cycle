@@ -78,15 +78,10 @@ const EditListing = () => {
   useEffect(() => {
     if (!currentBook) return;
 
-    const normalizedImages = currentBook.images.map((p: string) =>
-      p.startsWith('/') ? p : `/${p}`
-    );
-
-    const serverImages = normalizedImages.map(
+    const serverImages = currentBook.images.map(
       (path: string) => `${BASE_URL}${path}`
     );
-
-    setExistingImages(normalizedImages);
+    setExistingImages(currentBook.images);
     methods.reset({
       images: serverImages as unknown as File[],
       title: currentBook.title,
