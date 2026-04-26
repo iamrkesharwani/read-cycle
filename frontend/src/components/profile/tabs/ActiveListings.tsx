@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
   fetchUserBooks,
+  swapBookListing,
   updateListingStatus,
 } from '../../../store/book/bookThunk';
 import {
@@ -16,6 +17,7 @@ import {
   Repeat,
   EyeOff,
 } from 'lucide-react';
+import SwapConfirmModal from './SwapConfirmModal';
 
 export const cls = {
   card: 'flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-slate-200 transition-all',
@@ -70,7 +72,6 @@ const ActionsDropdown = ({
     <button
       className={`${cls.dropdownItem} text-teal-600 hover:bg-teal-50`}
       onClick={() => {
-        console.log('mark as swapped');
         onSwap();
         onClose();
       }}
@@ -104,12 +105,23 @@ const ActiveListings = () => {
   const navigate = useNavigate();
   const { books, isLoading } = useAppSelector((state) => state.book);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [bookToSwap, setBookToSwap] = useState<string | null>(null);
+  const [isSwapping, setIsSwapping] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUserBooks());
   }, [dispatch]);
 
   const activeBooks = books.filter((b) => b.status === 'published');
+  const selectedBook = books.find((b) => b._id === bookToSwap);
+
+  const handleConfirmSwap = async () => {
+    if (!bookToSwap) return;
+    setIsSwapping(true);
+    await dispatch(swapBookListing(bookToSwap));
+    setIsSwapping(false);
+    setBookToSwap(null);
+  };
 
   if (isLoading && books.length === 0) {
     return (
@@ -120,7 +132,7 @@ const ActiveListings = () => {
     );
   }
 
-  if (books.length === 0) {
+  if (!isLoading && activeBooks.length === 0) {
     return (
       <div className={cls.emptyWrapper}>
         <div className={cls.emptyIconBox}>
@@ -209,7 +221,7 @@ const ActiveListings = () => {
                   <ActionsDropdown
                     bookId={id}
                     onClose={() => setOpenMenu(null)}
-                    onSwap={() => {}}
+                    onSwap={() => setBookToSwap(id)}
                     onEdit={(bookId) => navigate(`/edit/${bookId}`)}
                     onInactive={() => {
                       dispatch(updateListingStatus({ id, status: 'inactive' }));
@@ -222,6 +234,14 @@ const ActiveListings = () => {
           );
         })}
       </div>
+
+      <SwapConfirmModal
+        isOpen={!!bookToSwap}
+        title={selectedBook?.title ?? 'This Listing'}
+        isSwapping={isSwapping}
+        onClose={() => setBookToSwap(null)}
+        onConfirm={handleConfirmSwap}
+      />
 
       {openMenu !== null && (
         <div className="fixed inset-0 z-10" onClick={() => setOpenMenu(null)} />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   History,
   BookMarked,
@@ -7,6 +7,12 @@ import {
   ChevronDown,
   Trash2,
 } from 'lucide-react';
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
+import {
+  deleteBookListing,
+  fetchUserBooks,
+} from '../../../store/book/bookThunk';
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 export const cls = {
   card: 'flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-slate-200 transition-all',
@@ -36,42 +42,19 @@ export const cls = {
   infoBlock: 'flex-1 min-w-0 space-y-1.5',
 };
 
-const mockSwaps = [
-  {
-    id: 1,
-    gave: 'The Alchemist',
-    gaveAuthor: 'Paulo Coelho',
-    received: 'Sapiens',
-    receivedAuthor: 'Yuval Noah Harari',
-    with: 'arjun_reads',
-    date: 'Mar 2025',
-  },
-  {
-    id: 2,
-    gave: 'Atomic Habits',
-    gaveAuthor: 'James Clear',
-    received: '1984',
-    receivedAuthor: 'George Orwell',
-    with: 'bookworm_priya',
-    date: 'Jan 2025',
-  },
-  {
-    id: 3,
-    gave: 'Dune',
-    gaveAuthor: 'Frank Herbert',
-    received: 'Foundation',
-    receivedAuthor: 'Isaac Asimov',
-    with: 'sci_fi_sid',
-    date: 'Nov 2024',
-  },
-];
+const BASE_URL = import.meta.env.VITE_BASE_URL ?? 'http://127.0.0.1:5000';
 
-const ActionsDropdown = ({ onClose }: { onClose: () => void }) => (
+interface ActionsDropdownProps {
+  onClose: () => void;
+  onDelete: () => void;
+}
+
+const ActionsDropdown = ({ onClose, onDelete }: ActionsDropdownProps) => (
   <div className={cls.dropdown}>
     <button
       className={`${cls.dropdownItem} bg-red-50 text-red-600 font-bold hover:bg-red-100`}
       onClick={() => {
-        console.log('delete swap record');
+        onDelete();
         onClose();
       }}
     >
@@ -81,9 +64,28 @@ const ActionsDropdown = ({ onClose }: { onClose: () => void }) => (
 );
 
 const SwappedListings = () => {
-  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const dispatch = useAppDispatch();
+  const { books } = useAppSelector((state) => state.book);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [bookToDelete, setBookToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  if (mockSwaps.length === 0) {
+  useEffect(() => {
+    dispatch(fetchUserBooks());
+  }, [dispatch]);
+
+  const swappedBooks = books.filter((b) => b.isSwapped);
+  const selectedBook = books.find((b) => b._id === bookToDelete);
+
+  const handleConfirmDelete = async () => {
+    if (!bookToDelete) return;
+    setIsDeleting(true);
+    await dispatch(deleteBookListing(bookToDelete));
+    setIsDeleting(false);
+    setBookToDelete(null);
+  };
+
+  if (swappedBooks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-400 py-20">
         <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center">
@@ -104,71 +106,95 @@ const SwappedListings = () => {
       <div>
         <h3 className="text-base font-bold text-gray-900">Swapped Listings</h3>
         <p className="text-xs text-slate-400 mt-0.5">
-          {mockSwaps.length} completed exchanges
+          {swappedBooks.length} completed exchange
+          {swappedBooks.length !== 1 ? 's' : ''}
         </p>
       </div>
 
       <div className="space-y-2.5">
-        {mockSwaps.map((swap) => (
-          <div key={swap.id} className={cls.card}>
-            {/* Covers + titles below on mobile */}
-            <div className="shrink-0">
-              <div className={cls.coversRow}>
-                <div className={cls.coverGave}>
-                  <BookMarked size={16} className="text-teal-500" />
+        {swappedBooks.map((book) => {
+          const id = book._id ?? '';
+          return (
+            <div key={id} className={cls.card}>
+              <div className="shrink-0">
+                <div className={cls.coversRow}>
+                  <div className={cls.coverGave}>
+                    {book.images?.[0] ? (
+                      <img
+                        src={`${BASE_URL}${book.images[0]}`}
+                        alt={book.title}
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    ) : (
+                      <BookMarked size={16} className="text-teal-500" />
+                    )}
+                  </div>
+
+                  <ArrowLeftRight
+                    size={12}
+                    className="text-slate-300 shrink-0"
+                  />
+
+                  <div className={cls.coverReceived}>
+                    <BookMarked size={16} className="text-slate-400" />
+                  </div>
                 </div>
-                <ArrowLeftRight size={12} className="text-slate-300 shrink-0" />
-                <div className={cls.coverReceived}>
-                  <BookMarked size={16} className="text-slate-400" />
+
+                <div className={cls.mobileTitlesRow}>
+                  <p className={cls.mobileTitleText}>{book.title}</p>
+                  <span className={cls.mobileTitleSpacer} />
+                  <p className={cls.mobileTitleText}>—</p>
                 </div>
               </div>
 
-              <div className={cls.mobileTitlesRow}>
-                <p className={cls.mobileTitleText}>{swap.gave}</p>
-                <span className={cls.mobileTitleSpacer} />
-                <p className={cls.mobileTitleText}>{swap.received}</p>
+              {/* Info */}
+              <div className={cls.infoBlock}>
+                <div className={cls.desktopTitleRow}>
+                  <p className={cls.title}>{book.title}</p>
+                </div>
+                <p className={cls.author}>by {book.author}</p>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className={cls.badge}>{book.genre}</span>
+                  <span className={cls.badgeDate}>
+                    {new Date(book.updatedAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Info */}
-            <div className={cls.infoBlock}>
-              <div className={cls.desktopTitleRow}>
-                <p className={cls.title}>{swap.gave}</p>
-                <span className={cls.desktopTitleArrow}>→</span>
-                <p className={cls.title}>{swap.received}</p>
-              </div>
-              <p className={cls.author}>
-                with{' '}
-                <span className="font-semibold text-teal-600">
-                  @{swap.with}
-                </span>
-              </p>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className={cls.badgeDate}>{swap.date}</span>
+              {/* Actions */}
+              <div className="relative shrink-0">
+                <button
+                  className={cls.menuBtn}
+                  onClick={() => setOpenMenu(openMenu === id ? null : id)}
+                >
+                  <MoreVertical size={14} />
+                  <span className="hidden sm:inline text-xs font-semibold">
+                    Actions
+                  </span>
+                  <ChevronDown size={12} className="hidden sm:inline" />
+                </button>
+                {openMenu === id && (
+                  <ActionsDropdown
+                    onClose={() => setOpenMenu(null)}
+                    onDelete={() => setBookToDelete(id)}
+                  />
+                )}
               </div>
             </div>
-
-            {/* Actions */}
-            <div className="relative shrink-0">
-              <button
-                className={cls.menuBtn}
-                onClick={() =>
-                  setOpenMenu(openMenu === swap.id ? null : swap.id)
-                }
-              >
-                <MoreVertical size={14} />
-                <span className="hidden sm:inline text-xs font-semibold">
-                  Actions
-                </span>
-                <ChevronDown size={12} className="hidden sm:inline" />
-              </button>
-              {openMenu === swap.id && (
-                <ActionsDropdown onClose={() => setOpenMenu(null)} />
-              )}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
+      <DeleteConfirmModal
+        isOpen={!!bookToDelete}
+        title={selectedBook?.title ?? 'This Listing'}
+        isDeleting={isDeleting}
+        onClose={() => setBookToDelete(null)}
+        onConfirm={handleConfirmDelete}
+      />
 
       {openMenu !== null && (
         <div className="fixed inset-0 z-10" onClick={() => setOpenMenu(null)} />

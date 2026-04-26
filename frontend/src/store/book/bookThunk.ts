@@ -33,6 +33,20 @@ export const updateBookListing = createAsyncThunk(
   }
 );
 
+export const swapBookListing = createAsyncThunk(
+  'book/swapBookListing',
+  async (id: string, thunkAPI) => {
+    try {
+      await api.patch(`/books/${id}/swap`);
+      return id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        getErrorMessage(error, 'Failed to mark listing as swapped')
+      );
+    }
+  }
+);
+
 export const fetchUserBooks = createAsyncThunk(
   'book/fetchUserBooks',
   async (_, thunkAPI) => {

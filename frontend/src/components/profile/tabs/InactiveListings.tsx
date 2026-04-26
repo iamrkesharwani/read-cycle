@@ -75,19 +75,23 @@ const InactiveListings = () => {
   const { books, isLoading } = useAppSelector((state) => state.book);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [bookToDelete, setBookToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUserBooks());
   }, [dispatch]);
 
-  const inactiveBooks = books.filter((b) => b.status === 'inactive');
+  const inactiveBooks = books.filter(
+    (b) => b.status === 'inactive' && !b.isSwapped
+  );
   const seletedBook = books.find((b) => b._id === bookToDelete);
 
   const handleConfirmDelete = async () => {
-    if (bookToDelete) {
-      await dispatch(deleteBookListing(bookToDelete));
-      setBookToDelete(null);
-    }
+    if (!bookToDelete) return;
+    setIsDeleting(true);
+    await dispatch(deleteBookListing(bookToDelete));
+    setIsDeleting(false);
+    setBookToDelete(null);
   };
 
   if (isLoading && books.length === 0) {
@@ -190,6 +194,7 @@ const InactiveListings = () => {
       <DeleteConfirmModal
         isOpen={!!bookToDelete}
         title={seletedBook?.title ?? 'This Listing'}
+        isDeleting={isDeleting}
         onClose={() => setBookToDelete(null)}
         onConfirm={handleConfirmDelete}
       />

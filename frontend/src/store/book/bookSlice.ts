@@ -4,6 +4,7 @@ import {
   deleteBookListing,
   fetchBookById,
   fetchUserBooks,
+  swapBookListing,
   updateBookListing,
   updateListingStatus,
 } from './bookThunk';
@@ -23,6 +24,7 @@ const bookThunks = [
   fetchUserBooks,
   fetchBookById,
   deleteBookListing,
+  swapBookListing,
   updateListingStatus,
 ] as const;
 
@@ -63,11 +65,19 @@ const bookSlice = createSlice({
         state.books = state.books.filter((b) => b._id !== action.payload);
         state.success = true;
       })
+      .addCase(swapBookListing.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const book = state.books.find((b) => b._id === action.payload);
+        if (book) {
+          book.isSwapped = true;
+          book.status = 'inactive';
+        }
+      })
       .addCase(updateListingStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         const book = state.books.find((b) => b._id === action.payload.id);
         if (book) {
-          book.status = action.payload.status; // Update the status locally
+          book.status = action.payload.status;
         }
       })
       .addMatcher(isPending(...bookThunks), (state) => {
