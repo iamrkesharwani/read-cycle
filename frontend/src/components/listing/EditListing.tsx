@@ -1,13 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks.js';
-import { createBookListing } from '../../store/book/bookThunk.js';
 import { resetBookStatus } from '../../store/book/bookSlice.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
-  fullFormSchema,
-  type CreateBookInput,
+  fetchBookById,
+  updateBookListing,
+} from '../../store/book/bookThunk.js';
+import {
+  editFormSchema,
+  type EditBookInput,
 } from '../../../../shared/schemas/book/create.schema.js';
 import {
   ChevronLeft,
@@ -18,6 +21,7 @@ import {
   Tag,
   AlignLeft,
   Eye,
+  Loader2,
 } from 'lucide-react';
 
 import Image from './Image';
@@ -29,7 +33,7 @@ import ConfirmModal from './ConfirmModal';
 
 type StepConfig = {
   component: React.ReactNode;
-  fields?: (keyof CreateBookInput)[];
+  fields?: (keyof EditBookInput)[];
   label: string;
   subtitle: string;
 };
@@ -42,16 +46,20 @@ const STEPS_META = [
   { label: 'Preview', subtitle: 'Review & publish', icon: Eye },
 ];
 
-const Listing = () => {
+const BASE_URL = import.meta.env.VITE_BASE_URL ?? 'http://127.0.0.1:5000';
+
+const EditListing = () => {
+  const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isLoading } = useAppSelector((state) => state.book);
+  const { currentBook, isLoading } = useAppSelector((state) => state.book);
 
   const [step, setStep] = useState(0);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
 
-  const methods = useForm<CreateBookInput>({
-    resolver: zodResolver(fullFormSchema),
+  const methods = useForm<EditBookInput>({
+    resolver: zodResolver(editFormSchema),
     defaultValues: {
       images: [],
       title: '',
@@ -63,12 +71,47 @@ const Listing = () => {
     mode: 'onChange',
   });
 
+  useEffect(() => {
+    if (id) dispatch(fetchBookById(id));
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (!currentBook) return;
+
+    const normalizedImages = currentBook.images.map((p: string) =>
+      p.startsWith('/') ? p : `/${p}`
+    );
+
+    const serverImages = normalizedImages.map(
+      (path: string) => `${BASE_URL}${path}`
+    );
+
+    setExistingImages(normalizedImages);
+    methods.reset({
+      images: serverImages as unknown as File[],
+      title: currentBook.title,
+      author: currentBook.author,
+      genre: currentBook.genre,
+      condition: currentBook.condition,
+      description: currentBook.description,
+    });
+  }, [currentBook, methods]);
+
   const { isSubmitting } = methods.formState;
   const isPublishing = isSubmitting || isLoading;
 
   const steps: StepConfig[] = useMemo(
     () => [
-      { component: <Image />, fields: ['images'], ...STEPS_META[0] },
+      {
+        component: (
+          <Image
+            existingImages={existingImages}
+            onExistingImagesChange={setExistingImages}
+          />
+        ),
+        fields: ['images'],
+        ...STEPS_META[0],
+      },
       {
         component: <TitleAuthor />,
         fields: ['title', 'author'],
@@ -82,7 +125,7 @@ const Listing = () => {
       { component: <Description />, fields: ['description'], ...STEPS_META[3] },
       { component: <Preview />, ...STEPS_META[4] },
     ],
-    []
+    [existingImages]
   );
 
   const totalSteps = steps.length;
@@ -101,30 +144,46 @@ const Listing = () => {
   };
 
   const handleConfirm = async () => {
+    if (!id) return;
+
     const data = formValues;
     const formData = new FormData();
+
     formData.append('title', data.title);
     formData.append('author', data.author);
-    formData.append('genre', data.genre);
     formData.append('condition', data.condition);
+    formData.append('genre', data.genre);
     formData.append('description', data.description);
-    data.images.forEach((file) => formData.append('images', file));
+    formData.append('existingImages', JSON.stringify(existingImages));
+    data.images.forEach((file) => {
+      if (file instanceof File) formData.append('images', file);
+    });
 
-    const resultAction = await dispatch(createBookListing(formData));
-    if (createBookListing.fulfilled.match(resultAction)) {
-      const newBookId = resultAction.payload.book?._id;
-      if (newBookId) {
-        dispatch(resetBookStatus());
-        navigate(`/listing/${newBookId}`);
-      }
+    const resultAction = await dispatch(
+      updateBookListing({ id, data: formData })
+    );
+
+    if (updateBookListing.fulfilled.match(resultAction)) {
+      dispatch(resetBookStatus());
+      navigate(`/listing/${id}`);
     }
   };
+
+  if (isLoading && !currentBook) {
+    return (
+      <div className="h-[calc(100vh-4rem)] flex items-center justify-center text-slate-400">
+        <Loader2 size={20} className="animate-spin mr-2" />
+        <span className="text-sm">Loading listing...</span>
+      </div>
+    );
+  }
 
   return (
     <FormProvider {...methods}>
       <ConfirmModal
         isOpen={confirmOpen}
         isPublishing={isPublishing}
+        mode="edit"
         title={formValues.title}
         author={formValues.author}
         condition={formValues.condition}
@@ -138,10 +197,10 @@ const Listing = () => {
         <aside className="hidden lg:flex flex-col w-64 xl:w-72 bg-white border-r border-slate-100 shrink-0 px-6 py-8">
           <div className="mb-10">
             <h1 className="text-[15px] font-bold text-gray-900 tracking-tight">
-              Create Listing
+              Edit Listing
             </h1>
             <p className="text-xs text-gray-400 mt-0.5">
-              List your book for exchange
+              Update your book details
             </p>
           </div>
 
@@ -281,37 +340,25 @@ const Listing = () => {
               <span className="hidden sm:inline">Previous</span>
             </button>
 
-            <div className="flex items-center gap-2">
-              {isLastStep && (
-                <button
-                  type="button"
-                  onClick={() => console.log('Save as draft')}
-                  className="px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-500 border border-gray-200 hover:bg-gray-50 transition-all whitespace-nowrap"
-                >
-                  Save Draft
-                </button>
-              )}
-
-              {!isLastStep ? (
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
-                >
-                  Continue
-                  <ChevronRight size={15} />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setConfirmOpen(true)}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
-                >
-                  Publish Listing
-                  <ChevronRight size={15} />
-                </button>
-              )}
-            </div>
+            {!isLastStep ? (
+              <button
+                type="button"
+                onClick={handleNext}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
+              >
+                Continue
+                <ChevronRight size={15} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmOpen(true)}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
+              >
+                Save Changes
+                <ChevronRight size={15} />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -319,4 +366,4 @@ const Listing = () => {
   );
 };
 
-export default Listing;
+export default EditListing;

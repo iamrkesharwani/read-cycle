@@ -19,6 +19,20 @@ export const createBookListing = createAsyncThunk(
   }
 );
 
+export const updateBookListing = createAsyncThunk(
+  'book/updateBookListing',
+  async ({ id, data }: { id: string; data: FormData }, thunkAPI) => {
+    try {
+      await api.patch(`/books/${id}/edit`, data);
+      return id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        getErrorMessage(error, 'Failed to update listing')
+      );
+    }
+  }
+);
+
 export const fetchUserBooks = createAsyncThunk(
   'book/fetchUserBooks',
   async (_, thunkAPI) => {

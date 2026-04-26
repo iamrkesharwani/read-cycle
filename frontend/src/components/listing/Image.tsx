@@ -6,7 +6,14 @@ import { createPortal } from 'react-dom';
 
 const SLOTS = [0, 1, 2, 3] as const;
 
-const Image = () => {
+interface ImageProps {
+  existingImages?: string[];
+  onExistingImagesChange?: (paths: string[]) => void;
+}
+
+const BASE_URL = import.meta.env.VITE_BASE_URL ?? 'http://127.0.0.1:5000';
+
+const Image = ({ existingImages, onExistingImagesChange }: ImageProps) => {
   const [preview, setPreview] = useState<string | null>(null);
 
   const {
@@ -15,30 +22,37 @@ const Image = () => {
     formState: { errors },
   } = useFormContext<CreateBookInput>();
 
-  const images: File[] = useWatch({ control, name: 'images' }) || [];
+  const images: (string | File)[] = useWatch({ control, name: 'images' }) || [];
   const urlCacheRef = useRef<Map<File, string>>(new Map());
 
-  const objectUrls = useMemo(() => {
+  const resolvedUrls = useMemo(() => {
     const cache = urlCacheRef.current;
-    images.forEach((file) => {
-      if (!cache.has(file)) cache.set(file, URL.createObjectURL(file));
+
+    images.forEach((entry) => {
+      if (entry instanceof File && !cache.has(entry)) {
+        cache.set(entry, URL.createObjectURL(entry));
+      }
     });
+
     cache.forEach((url, file) => {
       if (!images.includes(file)) {
         URL.revokeObjectURL(url);
         cache.delete(file);
       }
     });
-    return images.map((file) => cache.get(file)!);
+
+    return images.map((entry) =>
+      entry instanceof File ? cache.get(entry)! : entry
+    );
   }, [images]);
 
   useEffect(() => {
     const cache = urlCacheRef.current;
     return () => {
-      objectUrls.forEach((url) => URL.revokeObjectURL(url));
+      cache.forEach((url) => URL.revokeObjectURL(url));
       cache.clear();
     };
-  }, [objectUrls]);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -48,9 +62,9 @@ const Image = () => {
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, slot: number) => {
     if (!e.target.files?.[0]) return;
-    const updated = [...images];
+    const updated = [...images] as (string | File)[];
     updated[slot] = e.target.files[0];
-    setValue('images', updated.filter(Boolean), {
+    setValue('images', updated.filter(Boolean) as File[], {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -60,9 +74,24 @@ const Image = () => {
   const removeImage = (e: React.MouseEvent, slot: number) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const removed = images[slot];
+
+    if (
+      typeof removed === 'string' &&
+      existingImages &&
+      onExistingImagesChange
+    ) {
+      const rawPath = removed.startsWith(BASE_URL)
+        ? removed.slice(BASE_URL.length)
+        : removed;
+
+      onExistingImagesChange(existingImages.filter((p) => p !== rawPath));
+    }
+
     const updated = [...images];
     updated.splice(slot, 1);
-    setValue('images', updated.filter(Boolean), {
+    setValue('images', updated.filter(Boolean) as File[], {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -100,13 +129,13 @@ const Image = () => {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {SLOTS.map((slot) => {
-          const file = images[slot];
-          const url = objectUrls[slot];
+          const entry = images[slot];
+          const url = resolvedUrls[slot];
           const isCover = slot === 0;
 
           return (
             <div key={slot} className="relative group aspect-square">
-              {!file && (
+              {!entry && (
                 <input
                   id={`image-slot-${slot}`}
                   type="file"
@@ -116,7 +145,7 @@ const Image = () => {
                 />
               )}
 
-              {!file ? (
+              {!entry ? (
                 <label
                   htmlFor={`image-slot-${slot}`}
                   className="block w-full h-full cursor-pointer"
@@ -189,7 +218,7 @@ const Image = () => {
                 </button>
               )}
 
-              {file && (
+              {entry && (
                 <button
                   type="button"
                   onClick={(e) => removeImage(e, slot)}

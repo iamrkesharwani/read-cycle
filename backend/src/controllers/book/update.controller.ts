@@ -52,7 +52,7 @@ export const updateListing = async (req: Request, res: Response) => {
       (img) => !existingImages.includes(img)
     );
 
-    const newImagePaths = (newFiles ?? []).map((f) => `uploads/${f.filename}`);
+    const newImagePaths = (newFiles ?? []).map((f) => `/uploads/${f.filename}`);
     const finalImages = [...existingImages, ...newImagePaths];
 
     if (finalImages.length < 2) {

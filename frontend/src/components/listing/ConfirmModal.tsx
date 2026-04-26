@@ -1,9 +1,10 @@
-import { BookMarked, X, Loader2 } from 'lucide-react';
+import { BookMarked, X, Loader2, Pencil } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
 interface Props {
   isOpen: boolean;
   isPublishing: boolean;
+  mode?: 'create' | 'edit';
   title: string;
   author: string;
   condition: string;
@@ -15,6 +16,7 @@ interface Props {
 const ConfirmModal = ({
   isOpen,
   isPublishing,
+  mode = 'create',
   title,
   author,
   condition,
@@ -23,6 +25,7 @@ const ConfirmModal = ({
   onConfirm,
 }: Props) => {
   if (!isOpen) return null;
+  const isEdit = mode === 'edit';
 
   return createPortal(
     <div
@@ -35,7 +38,11 @@ const ConfirmModal = ({
       >
         <div className="flex items-start justify-between">
           <div className="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center">
-            <BookMarked size={20} className="text-teal-600" />
+            {isEdit ? (
+              <Pencil size={18} className="text-teal-600" />
+            ) : (
+              <BookMarked size={20} className="text-teal-600" />
+            )}
           </div>
           <button
             type="button"
@@ -48,10 +55,12 @@ const ConfirmModal = ({
 
         <div>
           <h3 className="text-base font-bold text-gray-900">
-            Ready to list this book?
+            {isEdit ? 'Save your changes?' : 'Ready to list this book?'}
           </h3>
           <p className="text-sm text-slate-500 mt-1">
-            Your listing will go live and others can request a swap.
+            {isEdit
+              ? 'Your listing will be updated with the new details.'
+              : 'Your listing will go live and others can request a swap.'}
           </p>
         </div>
 
@@ -88,8 +97,10 @@ const ConfirmModal = ({
             {isPublishing ? (
               <>
                 <Loader2 size={14} className="animate-spin" />
-                Publishing...
+                {isEdit ? 'Saving...' : 'Publishing...'}
               </>
+            ) : isEdit ? (
+              'Update it!'
             ) : (
               'List it!'
             )}

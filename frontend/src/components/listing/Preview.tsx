@@ -1,4 +1,5 @@
 import { useFormContext } from 'react-hook-form';
+import type { CreateBookInput } from '../../../../shared/schemas/book/create.schema.js';
 import {
   FileText,
   Image as ImageIcon,
@@ -6,7 +7,6 @@ import {
   Tag,
   Activity,
 } from 'lucide-react';
-import type { CreateBookInput } from '../../../../shared/schemas/book/create.schema.js';
 
 const SectionLabel = ({
   icon: Icon,
@@ -21,16 +21,20 @@ const SectionLabel = ({
   </p>
 );
 
+const resolveUrl = (entry: string | File): string =>
+  entry instanceof File ? URL.createObjectURL(entry) : entry;
+
 const Preview = () => {
   const { watch } = useFormContext<CreateBookInput>();
   const data = watch();
 
-  const imageUrls = data.images.map((file) => URL.createObjectURL(file));
+  const images = data.images as unknown as (string | File)[];
+  const imageUrls = images.map(resolveUrl);
 
   return (
     <div className="space-y-5">
       <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
-        {imageUrls.length > 0 && (
+        {imageUrls.length > 0 ? (
           <div className="flex gap-2 p-3 bg-slate-50 border-b border-slate-100 overflow-x-auto">
             {imageUrls.map((url, i) => (
               <img
@@ -42,12 +46,11 @@ const Preview = () => {
                 }`}
               />
             ))}
-            {imageUrls.length === 0 && (
-              <div className="flex items-center gap-2 text-slate-400 py-4">
-                <ImageIcon size={16} />
-                <span className="text-xs">No images uploaded</span>
-              </div>
-            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-slate-400 p-5 border-b border-slate-100">
+            <ImageIcon size={16} />
+            <span className="text-xs">No images uploaded</span>
           </div>
         )}
 

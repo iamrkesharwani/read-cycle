@@ -50,23 +50,28 @@ export const cls = {
 };
 
 interface ActionsDropdownProps {
+  bookId: string;
   onClose: () => void;
   onSwap: () => void;
   onInactive: () => void;
+  onEdit: (id: string) => void;
 }
 
 const BASE_URL = import.meta.env.VITE_BASE_URL ?? 'http://127.0.0.1:5000';
 
 const ActionsDropdown = ({
+  bookId,
   onClose,
   onSwap,
   onInactive,
+  onEdit,
 }: ActionsDropdownProps) => (
   <div className={cls.dropdown}>
     <button
       className={`${cls.dropdownItem} text-teal-600 hover:bg-teal-50`}
       onClick={() => {
         console.log('mark as swapped');
+        onSwap();
         onClose();
       }}
     >
@@ -75,7 +80,7 @@ const ActionsDropdown = ({
     <button
       className={`${cls.dropdownItem} text-gray-700 hover:bg-slate-50`}
       onClick={() => {
-        console.log('edit listing');
+        onEdit(bookId);
         onClose();
       }}
     >
@@ -202,8 +207,10 @@ const ActiveListings = () => {
                 </button>
                 {openMenu === id && (
                   <ActionsDropdown
+                    bookId={id}
                     onClose={() => setOpenMenu(null)}
                     onSwap={() => {}}
+                    onEdit={(bookId) => navigate(`/edit/${bookId}`)}
                     onInactive={() => {
                       dispatch(updateListingStatus({ id, status: 'inactive' }));
                       setOpenMenu(null);

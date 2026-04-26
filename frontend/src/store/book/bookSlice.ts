@@ -4,6 +4,7 @@ import {
   deleteBookListing,
   fetchBookById,
   fetchUserBooks,
+  updateBookListing,
   updateListingStatus,
 } from './bookThunk';
 import type { BookState } from '../../../../shared/types/book';
@@ -18,6 +19,7 @@ const initialState: BookState = {
 
 const bookThunks = [
   createBookListing,
+  updateBookListing,
   fetchUserBooks,
   fetchBookById,
   deleteBookListing,
@@ -37,6 +39,11 @@ const bookSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createBookListing.fulfilled, (state) => {
+        state.isLoading = false;
+        state.success = true;
+        state.error = null;
+      })
+      .addCase(updateBookListing.fulfilled, (state) => {
         state.isLoading = false;
         state.success = true;
         state.error = null;
