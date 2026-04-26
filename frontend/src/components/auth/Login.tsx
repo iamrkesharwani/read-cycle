@@ -139,7 +139,7 @@ const Login = () => {
                   size={16}
                 />
                 <input
-                  type={show ? 'password' : 'text'}
+                  type={show ? 'text' : 'password'}
                   placeholder="••••••••"
                   {...register('password')}
                   className={`w-full pl-10 pr-10 py-2.5 bg-white border-[1.5px] rounded-xl text-sm text-slate-900 transition-all outline-none ${
