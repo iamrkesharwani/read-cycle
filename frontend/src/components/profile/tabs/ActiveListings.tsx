@@ -17,7 +17,7 @@ import {
   Repeat,
   EyeOff,
 } from 'lucide-react';
-import SwapConfirmModal from './SwapConfirmModal';
+import SwapConfirmModal from '../modals/SwapConfirmModal';
 
 export const cls = {
   card: 'flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-slate-200 transition-all',

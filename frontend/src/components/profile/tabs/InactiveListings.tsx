@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
-import DeleteListingModal from './DeleteListingModal';
+import DeleteListingModal from '../modals/DeleteListingModal';
 import {
   deleteBookListing,
   fetchUserBooks,

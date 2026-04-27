@@ -12,7 +12,7 @@ import {
   deleteBookListing,
   fetchUserBooks,
 } from '../../../store/book/bookThunk';
-import DeleteListingModal from './DeleteListingModal';
+import DeleteListingModal from '../modals/DeleteListingModal';
 
 export const cls = {
   card: 'flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-slate-200 transition-all',
