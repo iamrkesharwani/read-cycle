@@ -5,6 +5,7 @@ import { getUsersCollection } from '../../utils/collections.js';
 import type { Request, Response } from 'express';
 import type { UserDocument } from '../../../../shared/types/user.js';
 import { registerSchema } from '../../../../shared/schemas/auth/register.schema.js';
+import { generateUsername } from '../../utils/username.js';
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -28,12 +29,16 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
+    const username = await generateUsername(name, (candidate) =>
+      usersCollection.findOne({ username: candidate }).then(Boolean)
+    );
 
     const newUser: UserDocument = {
       name,
       email,
       passwordHash,
       city,
+      username,
       createdAt: new Date(),
     };
 
@@ -53,6 +58,7 @@ export const registerUser = async (req: Request, res: Response) => {
         name: newUser.name,
         email: newUser.email,
         city: newUser.city,
+        username: newUser.username,
       },
     });
   } catch (error) {

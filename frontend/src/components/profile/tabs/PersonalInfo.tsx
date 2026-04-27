@@ -1,4 +1,4 @@
-import { User, Mail, Phone, MapPin, CalendarDays } from 'lucide-react';
+import { User, Mail, Phone, MapPin, CalendarDays, AtSign } from 'lucide-react';
 
 export const cls = {
   field:
@@ -46,6 +46,7 @@ const PersonalInfo = ({ name, email }: { name?: string; email?: string }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Field label="Full Name" value={name || '—'} icon={User} />
+        <Field label="Username" value={name || '—'} icon={AtSign} />
         <Field label="Email Address" value={email || '—'} icon={Mail} />
         <Field label="Phone" value="Not added" icon={Phone} />
         <Field label="Location" value="Siliguri, India" icon={MapPin} />

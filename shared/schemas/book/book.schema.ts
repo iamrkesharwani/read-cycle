@@ -34,9 +34,9 @@ export const conditionSchema = z.enum(CONDITIONS, {
 
 export const descriptionSchema = z
   .string()
+  .trim()
   .min(10, 'Description should be at least 10 characters')
-  .max(1000, 'Description is too long')
-  .trim();
+  .max(1000, 'Description is too long');
 
 const imageFileSchema = z
   .instanceof(File)

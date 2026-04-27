@@ -4,6 +4,7 @@ export interface UserDocument {
   _id?: ObjectId;
   name: string;
   email: string;
+  username?: string;
   passwordHash: string;
   city: string;
   createdAt: Date;
