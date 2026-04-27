@@ -5,8 +5,10 @@ export interface UserDocument {
   name: string;
   email: string;
   username?: string;
+  usernameUpdatedAt?: Date;
   passwordHash: string;
   city: string;
+  phone?: string;
   createdAt: Date;
   rating?: number;
   bio?: string;
@@ -16,8 +18,12 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  username?: string;
+  usernameUpdatedAt?: Date;
   city: string;
+  phone?: string;
   bio?: string;
+  createdAt: Date;
 }
 
 export interface AuthResponse {

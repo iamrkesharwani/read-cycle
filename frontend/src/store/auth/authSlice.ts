@@ -1,6 +1,16 @@
 import { createSlice, isRejected, isAnyOf, isPending } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { getMe, loginUser, registerUser } from './authThunk';
+import {
+  getMe,
+  loginUser,
+  registerUser,
+  updateName,
+  updateEmail,
+  updateUsername,
+  updatePhone,
+  updateCity,
+  updateBio,
+} from './authThunk';
 import type {
   AuthState,
   User,
@@ -31,6 +41,50 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload;
       })
+      .addCase(
+        updateName.fulfilled,
+        (state, action: PayloadAction<{ name: string }>) => {
+          if (state.user) state.user.name = action.payload.name;
+        }
+      )
+      .addCase(
+        updateEmail.fulfilled,
+        (state, action: PayloadAction<{ email: string }>) => {
+          if (state.user) state.user.email = action.payload.email;
+        }
+      )
+      .addCase(
+        updateUsername.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ username: string; usernameUpdatedAt: string }>
+        ) => {
+          if (state.user) {
+            state.user.username = action.payload.username;
+            state.user.usernameUpdatedAt = new Date(
+              action.payload.usernameUpdatedAt
+            );
+          }
+        }
+      )
+      .addCase(
+        updatePhone.fulfilled,
+        (state, action: PayloadAction<{ phone: string }>) => {
+          if (state.user) state.user.phone = action.payload.phone;
+        }
+      )
+      .addCase(
+        updateCity.fulfilled,
+        (state, action: PayloadAction<{ city: string }>) => {
+          if (state.user) state.user.city = action.payload.city;
+        }
+      )
+      .addCase(
+        updateBio.fulfilled,
+        (state, action: PayloadAction<{ bio: string }>) => {
+          if (state.user) state.user.bio = action.payload.bio;
+        }
+      )
       .addMatcher(
         isAnyOf(loginUser.fulfilled, registerUser.fulfilled),
         (state, action: PayloadAction<AuthResponse>) => {

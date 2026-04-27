@@ -25,8 +25,9 @@ const ProfileLayout = () => {
       <aside className="hidden md:flex flex-col w-72 xl:w-80 bg-white border-r border-slate-100 shrink-0 overflow-hidden">
         <ProfileHeader
           name={user?.name || 'Reader'}
-          email={user?.email || ''}
           bio={user?.bio}
+          username={user?.username}
+          city={user?.city}
         />
         <ProfileStats />
         <ProfileNav

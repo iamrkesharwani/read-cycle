@@ -8,6 +8,9 @@ const Profile = () => {
   const { user } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
+  console.log('user:', user);
+  console.log('username:', user?.username);
+
   const match = useMatch('/profile/:tab');
   const activeTab = (match?.params.tab as TabId) || 'overview';
 
@@ -18,8 +21,9 @@ const Profile = () => {
       <aside className="hidden md:flex flex-col w-72 xl:w-80 bg-white border-r border-slate-100 shrink-0 overflow-hidden">
         <ProfileHeader
           name={user?.name || 'Reader'}
-          email={user?.email || ''}
           bio={user?.bio}
+          username={user?.username || 'user'}
+          city={user?.city || 'Kolkata'}
         />
         <ProfileStats />
         <ProfileNav activeTab={activeTab} onTabChange={handleTabChange} />

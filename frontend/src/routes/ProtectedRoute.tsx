@@ -3,6 +3,6 @@ import { useAppSelector } from '../hooks/reduxHooks';
 
 export const ProtectedRoute = () => {
   const { token, isLoading } = useAppSelector((state) => state.auth);
-  if (isLoading) return null;
+  if (isLoading && !token) return null;
   return token ? <Outlet /> : <Navigate to="/login" replace />;
 };

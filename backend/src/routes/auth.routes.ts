@@ -3,6 +3,11 @@ import { registerUser } from '../controllers/auth/register.controller.js';
 import { loginUser } from '../controllers/auth/login.controller.js';
 import { authGuard } from '../middleware/auth.middleware.js';
 import { getMe } from '../controllers/auth/me.controller.js';
+import { updateName } from '../controllers/auth/name.controller.js';
+import { updateEmail } from '../controllers/auth/email.controller.js';
+import { updatePhone } from '../controllers/auth/phone.controller.js';
+import { updateCity } from '../controllers/auth/city.controller.js';
+import { updateBio } from '../controllers/auth/bio.controller.js';
 import {
   checkUsername,
   updateUsername,
@@ -14,6 +19,11 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.get('/me', authGuard, getMe);
 router.get('/username/check', checkUsername);
-router.patch('/username', updateUsername);
+router.patch('/name', authGuard, updateName);
+router.patch('/email', authGuard, updateEmail);
+router.patch('/username', authGuard, updateUsername);
+router.patch('/phone', authGuard, updatePhone);
+router.patch('/city', authGuard, updateCity);
+router.patch('/bio', authGuard, updateBio);
 
 export default router;

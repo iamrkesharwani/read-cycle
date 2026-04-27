@@ -1,38 +1,61 @@
-import { User, Mail, Phone, MapPin, CalendarDays, AtSign } from 'lucide-react';
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  CalendarDays,
+  AtSign,
+  FileText,
+} from 'lucide-react';
+import Field from '../fields/Field';
+import EditableField from '../fields/EditableField';
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
+import type { RootState } from '../../../store/store';
+import {
+  citySchema,
+  emailSchema,
+  nameSchema,
+  usernameSchema,
+  phoneSchema,
+} from '../../../../../shared/schemas/auth/update.schema';
+import {
+  updateName,
+  updateEmail,
+  updateUsername,
+  updatePhone,
+  updateCity,
+  updateBio,
+} from '../../../store/auth/authThunk';
 
-export const cls = {
-  field:
-    'flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100',
-  iconWrap:
-    'w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0',
-  fieldLabel:
-    'text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5',
-  fieldValue: 'text-sm font-semibold text-gray-800 truncate',
-  textarea:
-    'w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-gray-700 placeholder:text-slate-400 outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 focus:bg-white transition-all resize-none',
+const USERNAME_COOLDOWN_DAYS = 30;
+
+const formatPhone = (phone: string): string => {
+  const format = phone.slice(2, 12);
+  return `+91-${format}`;
 };
 
-const Field = ({
-  label,
-  value,
-  icon: Icon,
-}: {
-  label: string;
-  value: string;
-  icon: React.ElementType;
-}) => (
-  <div className={cls.field}>
-    <div className={cls.iconWrap}>
-      <Icon size={14} className="text-slate-400" />
-    </div>
-    <div className="min-w-0">
-      <p className={cls.fieldLabel}>{label}</p>
-      <p className={cls.fieldValue}>{value || '—'}</p>
-    </div>
-  </div>
-);
+const PersonalInfo = () => {
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state: RootState) => state.auth);
 
-const PersonalInfo = ({ name, email }: { name?: string; email?: string }) => {
+  if (!user) return null;
+
+  const memberSince = new Date(user.createdAt).toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
+  });
+
+  const usernameLockedUntil = user.usernameUpdatedAt
+    ? new Date(
+        new Date(user.usernameUpdatedAt).getTime() +
+          USERNAME_COOLDOWN_DAYS * 24 * 60 * 60 * 1000
+      )
+    : undefined;
+
+  // value = raw 10-digit for the input, displayValue = formatted for read view
+  const rawPhone = user.phone?.replace(/^91/, '') ?? '';
+  const displayPhone = user.phone ? formatPhone(user.phone) : '';
+
   return (
     <div className="space-y-6">
       <div>
@@ -45,30 +68,65 @@ const PersonalInfo = ({ name, email }: { name?: string; email?: string }) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Field label="Full Name" value={name || '—'} icon={User} />
-        <Field label="Username" value={name || '—'} icon={AtSign} />
-        <Field label="Email Address" value={email || '—'} icon={Mail} />
-        <Field label="Phone" value="Not added" icon={Phone} />
-        <Field label="Location" value="Siliguri, India" icon={MapPin} />
-        <Field label="Member Since" value="April 2023" icon={CalendarDays} />
-      </div>
-
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-bold text-gray-800">Bio</p>
-          <button className="text-xs font-semibold text-teal-600 hover:text-teal-700 transition-colors">
-            Edit
-          </button>
-        </div>
-        <textarea
-          rows={3}
-          placeholder="Tell the community what you're currently reading..."
-          className={cls.textarea}
+        <EditableField
+          label="Full Name"
+          value={user.name ?? ''}
+          icon={User}
+          placeholder="Your full name"
+          schema={nameSchema}
+          onSave={(val) => dispatch(updateName(val)).unwrap()}
         />
-        <div className="mt-2 flex justify-end">
-          <button className="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 text-white hover:bg-teal-700 transition-all">
-            Save Changes
-          </button>
+
+        <EditableField
+          label="Username"
+          value={user.username ?? ''}
+          icon={AtSign}
+          prefix="@"
+          placeholder="your-username"
+          schema={usernameSchema}
+          lockedUntil={usernameLockedUntil}
+          onSave={(val) => dispatch(updateUsername(val)).unwrap()}
+        />
+
+        <EditableField
+          label="Email Address"
+          value={user.email ?? ''}
+          icon={Mail}
+          placeholder="you@example.com"
+          schema={emailSchema}
+          onSave={(val) => dispatch(updateEmail(val)).unwrap()}
+        />
+
+        <EditableField
+          label="Phone"
+          value={rawPhone}
+          displayValue={displayPhone}
+          icon={Phone}
+          placeholder="9876543210"
+          schema={phoneSchema}
+          onSave={(val) => dispatch(updatePhone(val)).unwrap()}
+        />
+
+        <EditableField
+          label="Location"
+          value={user.city ?? ''}
+          icon={MapPin}
+          placeholder="Your city"
+          schema={citySchema}
+          onSave={(val) => dispatch(updateCity(val)).unwrap()}
+        />
+
+        <Field label="Member Since" value={memberSince} icon={CalendarDays} />
+
+        <div className="sm:col-span-2">
+          <EditableField
+            label="Bio"
+            value={user.bio ?? ''}
+            icon={FileText}
+            placeholder="Tell the community what you're currently reading..."
+            multiline
+            onSave={(val) => dispatch(updateBio(val)).unwrap()}
+          />
         </div>
       </div>
     </div>

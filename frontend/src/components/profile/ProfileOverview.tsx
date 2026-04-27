@@ -28,8 +28,9 @@ const ProfileOverview = () => {
       <div className="md:hidden bg-white rounded-2xl border border-slate-100 overflow-hidden">
         <ProfileHeader
           name={user?.name || 'Reader'}
-          email={user?.email || ''}
           bio={user?.bio}
+          username={user?.username}
+          city={user?.city}
         />
         <ProfileStats />
       </div>

@@ -42,6 +42,11 @@ export const loginUser = async (req: Request, res: Response) => {
         id: user._id?.toString(),
         name: user.name,
         email: user.email,
+        username: user.username,
+        city: user.city,
+        phone: user.phone,
+        bio: user.bio,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {
