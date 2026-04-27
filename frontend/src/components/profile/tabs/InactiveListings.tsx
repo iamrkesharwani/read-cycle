@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
-import DeleteConfirmModal from './DeleteConfirmModal';
+import DeleteListingModal from './DeleteListingModal';
 import {
   deleteBookListing,
   fetchUserBooks,
@@ -191,7 +191,7 @@ const InactiveListings = () => {
         })}
       </div>
 
-      <DeleteConfirmModal
+      <DeleteListingModal
         isOpen={!!bookToDelete}
         title={seletedBook?.title ?? 'This Listing'}
         isDeleting={isDeleting}

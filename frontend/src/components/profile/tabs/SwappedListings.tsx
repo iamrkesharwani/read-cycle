@@ -12,7 +12,7 @@ import {
   deleteBookListing,
   fetchUserBooks,
 } from '../../../store/book/bookThunk';
-import DeleteConfirmModal from './DeleteConfirmModal';
+import DeleteListingModal from './DeleteListingModal';
 
 export const cls = {
   card: 'flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-slate-200 transition-all',
@@ -188,7 +188,7 @@ const SwappedListings = () => {
         })}
       </div>
 
-      <DeleteConfirmModal
+      <DeleteListingModal
         isOpen={!!bookToDelete}
         title={selectedBook?.title ?? 'This Listing'}
         isDeleting={isDeleting}

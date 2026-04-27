@@ -118,3 +118,16 @@ export const updateBio = createAsyncThunk(
     }
   }
 );
+
+export const deleteAccount = createAsyncThunk(
+  'auth/deleteAccount',
+  async (_, thunkAPI) => {
+    try {
+      return await authService.deleteAccount();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        getErrorMessage(error, 'Failed to delete account')
+      );
+    }
+  }
+);

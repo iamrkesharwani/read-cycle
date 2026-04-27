@@ -51,6 +51,11 @@ const authService = {
     const { data } = await api.patch('/auth/bio', { bio });
     return data;
   },
+
+  deleteAccount: async (): Promise<{ message: string }> => {
+    const { data } = await api.delete('/auth/account');
+    return data;
+  },
 };
 
 export default authService;

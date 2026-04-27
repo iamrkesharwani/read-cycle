@@ -1,7 +1,7 @@
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
-interface DeleteConfirmModalProps {
+interface DeletListingModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -9,13 +9,13 @@ interface DeleteConfirmModalProps {
   isDeleting?: boolean;
 }
 
-const DeleteConfirmModal = ({
+const DeleteListingModal = ({
   isOpen,
   onClose,
   onConfirm,
   title,
   isDeleting,
-}: DeleteConfirmModalProps) => {
+}: DeletListingModalProps) => {
   if (!isOpen) return null;
 
   return createPortal(
@@ -67,4 +67,4 @@ const DeleteConfirmModal = ({
   );
 };
 
-export default DeleteConfirmModal;
+export default DeleteListingModal;

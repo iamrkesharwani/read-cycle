@@ -8,6 +8,7 @@ import { updateEmail } from '../controllers/auth/email.controller.js';
 import { updatePhone } from '../controllers/auth/phone.controller.js';
 import { updateCity } from '../controllers/auth/city.controller.js';
 import { updateBio } from '../controllers/auth/bio.controller.js';
+import { deleteAccount } from '../controllers/auth/delete.controller.js';
 import {
   checkUsername,
   updateUsername,
@@ -25,5 +26,6 @@ router.patch('/username', authGuard, updateUsername);
 router.patch('/phone', authGuard, updatePhone);
 router.patch('/city', authGuard, updateCity);
 router.patch('/bio', authGuard, updateBio);
+router.delete('/account', authGuard, deleteAccount);
 
 export default router;
