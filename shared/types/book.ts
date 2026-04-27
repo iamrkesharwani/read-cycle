@@ -21,6 +21,7 @@ export type BookStatus = 'draft' | 'published' | 'inactive';
 export interface Book {
   _id?: string;
   ownerId: string;
+  owner?: { name: string; username?: string };
   title: string;
   author: string;
   genre?: BookGenre;
@@ -36,7 +37,7 @@ export interface Book {
 export interface BookState {
   books: Book[];
   isLoading: boolean;
-  currentBook: null | Book
+  currentBook: null | Book;
   error: string | null | undefined;
   success: boolean;
 }

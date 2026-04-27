@@ -69,7 +69,7 @@ const MainListing = () => {
           />
 
           <ListingMeta
-            ownerId={book.ownerId}
+            owner={book.owner}
             createdAt={book.createdAt}
             genre={book.genre}
           />

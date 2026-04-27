@@ -1,6 +1,9 @@
 import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
-import { getBooksCollection } from '../../utils/collections.js';
+import {
+  getBooksCollection,
+  getUsersCollection,
+} from '../../utils/collections.js';
 import type { BookDoc } from '../../types/book.doc.js';
 
 export const getListingById = async (req: Request, res: Response) => {
@@ -17,9 +20,25 @@ export const getListingById = async (req: Request, res: Response) => {
 
     const booksCollection = await getBooksCollection<BookDoc>();
 
-    const book = await booksCollection.findOne({
-      _id: new ObjectId(id),
-    });
+    const [book] = await booksCollection
+      .aggregate([
+        { $match: { _id: new ObjectId(id) } },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'ownerId',
+            foreignField: '_id',
+            as: 'owner',
+            pipeline: [{ $project: { _id: 0, name: 1, username: 1 } }],
+          },
+        },
+        {
+          $addFields: {
+            owner: { $arrayElemAt: ['$owner', 0] },
+          },
+        },
+      ])
+      .toArray();
 
     if (!book) {
       return res.status(404).json({ message: 'Listing not found' });

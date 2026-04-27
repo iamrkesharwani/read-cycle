@@ -2,18 +2,24 @@ import { CalendarDays, BookOpen } from 'lucide-react';
 import type { BookGenre } from '../../../../shared/types/book';
 
 interface Props {
-  ownerId: string;
+  owner?: { name: string; username?: string };
   createdAt: string | Date;
   genre?: BookGenre;
 }
 
-const ListingMeta = ({ ownerId, createdAt, genre }: Props) => {
+const ListingMeta = ({ owner, createdAt, genre }: Props) => {
   const formattedDate = new Date(createdAt).toLocaleDateString('en-IN', {
     month: 'short',
     year: 'numeric',
   });
 
-  const initials = ownerId.slice(0, 2).toUpperCase();
+  const displayName = owner?.name ?? 'Unknown';
+  const initials = displayName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <div className="flex flex-col gap-4">
@@ -35,10 +41,12 @@ const ListingMeta = ({ ownerId, createdAt, genre }: Props) => {
           <span className="text-sm font-bold text-teal-700">{initials}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 truncate font-mono">
-            {ownerId}
+          <p className="text-sm font-semibold text-slate-800 truncate">
+            {displayName}
           </p>
-          <p className="text-xs text-slate-400 mt-0.5">Listed this book</p>
+          {owner?.username && (
+            <p className="text-xs text-slate-400 mt-0.5">@{owner.username}</p>
+          )}
         </div>
         <button className="flex-shrink-0 px-3.5 py-1.5 text-xs font-semibold text-slate-700 border border-slate-200 rounded-lg hover:border-teal-400 hover:text-teal-700 transition-colors whitespace-nowrap">
           View profile →
