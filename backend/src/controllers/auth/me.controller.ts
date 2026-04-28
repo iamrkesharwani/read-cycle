@@ -20,6 +20,7 @@ export const getMe = async (req: Request, res: Response) => {
       email: user.email,
       city: user.city,
       username: user.username,
+      usernameUpdatedAt: user.usernameUpdatedAt,
       phone: user.phone,
       bio: user.bio,
       createdAt: user.createdAt,
