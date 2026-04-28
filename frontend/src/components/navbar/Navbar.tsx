@@ -3,10 +3,13 @@ import { NavLink, Link } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { BookOpen, PlusCircle, ArrowRight, Menu } from 'lucide-react';
 import MobileMenu from './MobileMenu';
+import MobileSearch from './MobileSearch';
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const firstName = user?.name?.split(' ')[0] || '';
   const formattedName =
@@ -17,15 +20,23 @@ const Navbar = () => {
       <nav className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <Link to="/" className="flex items-center gap-2 shrink-0">
+            {/* Logo — hidden on mobile/tablet when search is open */}
+            <Link
+              to="/"
+              className={`flex items-center gap-2 shrink-0 transition-all duration-200 ${
+                mobileSearchOpen
+                  ? 'opacity-0 pointer-events-none w-0 overflow-hidden'
+                  : 'opacity-100'
+              }`}
+            >
               <BookOpen size={22} strokeWidth={2.4} className="text-teal-600" />
               <span className="text-[17px] font-extrabold tracking-tight">
                 Read <span className="text-teal-600">Cycle</span>
               </span>
             </Link>
 
-            {/* Desktop nav */}
-            <div className="hidden sm:flex items-center gap-6">
+            {/* Desktop nav — only on lg+ */}
+            <div className="hidden lg:flex items-center gap-6">
               <NavLink
                 to="/"
                 className={({ isActive }) =>
@@ -38,6 +49,8 @@ const Navbar = () => {
               >
                 Explore
               </NavLink>
+
+              <SearchBar />
 
               {user ? (
                 <>
@@ -75,36 +88,51 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile right side */}
-            <div className="flex sm:hidden items-center gap-3">
-              {user ? (
-                <>
+            {/* Mobile + Tablet right side — visible below lg */}
+            <div className="flex lg:hidden items-center gap-2">
+              <MobileSearch
+                isOpen={mobileSearchOpen}
+                onOpen={() => setMobileSearchOpen(true)}
+                onClose={() => setMobileSearchOpen(false)}
+              />
+
+              {/* Greeting + hamburger — hidden when search is open */}
+              <div
+                className={`flex items-center gap-3 transition-all duration-200 ${
+                  mobileSearchOpen
+                    ? 'opacity-0 pointer-events-none w-0 overflow-hidden'
+                    : 'opacity-100'
+                }`}
+              >
+                {user ? (
+                  <>
+                    <Link
+                      to="/profile"
+                      className="text-sm font-medium text-slate-600 hover:text-gray-900 transition-colors"
+                    >
+                      Hi, {formattedName}
+                    </Link>
+                    <button
+                      onClick={() => setMenuOpen(true)}
+                      className="p-1 text-gray-700 hover:text-teal-600 transition-colors"
+                      aria-label="Open menu"
+                    >
+                      <Menu size={20} />
+                    </button>
+                  </>
+                ) : (
                   <Link
-                    to="/profile"
-                    className="text-sm font-medium text-slate-600 hover:text-gray-900 transition-colors"
+                    to="/register"
+                    className="group flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-teal-600 transition-colors"
                   >
-                    Hi, {formattedName}
+                    Get Started
+                    <ArrowRight
+                      size={14}
+                      className="transition-transform duration-200 group-hover:translate-x-0.5"
+                    />
                   </Link>
-                  <button
-                    onClick={() => setMenuOpen(true)}
-                    className="p-1 text-gray-700 hover:text-teal-600 transition-colors"
-                    aria-label="Open menu"
-                  >
-                    <Menu size={20} />
-                  </button>
-                </>
-              ) : (
-                <Link
-                  to="/register"
-                  className="group flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-teal-600 transition-colors"
-                >
-                  Get Started
-                  <ArrowRight
-                    size={14}
-                    className="transition-transform duration-200 group-hover:translate-x-0.5"
-                  />
-                </Link>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
