@@ -19,7 +19,6 @@ const Pagination = ({
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
         className="p-2 rounded-xl border border-slate-200 text-slate-400 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-        aria-label="Previous page"
       >
         <ChevronLeft size={18} />
       </button>
@@ -28,7 +27,6 @@ const Pagination = ({
         {[...Array(totalPages)].map((_, i) => {
           const pageNum = i + 1;
           const isActive = currentPage === pageNum;
-
           return (
             <button
               key={pageNum}
@@ -49,7 +47,6 @@ const Pagination = ({
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
         className="p-2 rounded-xl border border-slate-200 text-slate-400 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-        aria-label="Next page"
       >
         <ChevronRight size={18} />
       </button>

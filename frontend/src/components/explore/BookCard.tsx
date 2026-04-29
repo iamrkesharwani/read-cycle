@@ -19,6 +19,9 @@ const BookCard = ({ book }: BookCardProps) => {
           src={`${BASE_URL}${book.images[0]}`}
           alt={book.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/placeholder-book.jpg';
+          }}
         />
         <div className="absolute top-2 right-2 px-2 py-1 bg-white/90 backdrop-blur-sm rounded-lg border border-slate-100 shadow-sm">
           <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider">

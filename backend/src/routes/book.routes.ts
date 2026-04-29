@@ -16,11 +16,11 @@ const router = Router();
 
 router.post('/create', authGuard, uploadImages, createListing);
 router.get('/me', authGuard, getUserListings);
+router.get('/search', searchBooks);
 router.get('/:id', getListingById);
 router.patch('/:id/edit', authGuard, uploadImages, updateListing);
 router.delete('/:id', authGuard, deleteListing);
 router.patch('/:id/status', authGuard, updateBookStatus);
 router.patch('/:id/swap', authGuard, swapListing);
-router.get('/search', searchBooks);
 
 export default router;
