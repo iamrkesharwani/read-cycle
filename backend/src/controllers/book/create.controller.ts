@@ -26,10 +26,7 @@ export const createListing = async (req: Request, res: Response) => {
     const validation = schema.safeParse(req.body);
 
     if (!validation.success) {
-      if (!isDraft) {
-        files.forEach((f) => fs.unlinkSync(f.path));
-      }
-
+      files.forEach((f) => fs.unlinkSync(f.path));
       return res.status(400).json({
         message: 'Validation failed',
         errors: z.treeifyError(validation.error),

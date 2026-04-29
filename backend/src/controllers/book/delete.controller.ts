@@ -35,6 +35,7 @@ export const deleteListing = async (req: Request, res: Response) => {
     await booksCollection.deleteOne({ _id: new ObjectId(id) });
     res.status(200).json({ message: 'Listing and images deleted' });
   } catch (error) {
+    console.error('Delete listing error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

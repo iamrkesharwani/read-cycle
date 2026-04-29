@@ -19,12 +19,13 @@ export type BookCondition = (typeof CONDITIONS)[number];
 export type BookStatus = 'draft' | 'published' | 'inactive';
 
 export interface Book {
-  _id?: string;
+  _id: string;
   ownerId: string;
   owner?: { name: string; username?: string };
   title: string;
   author: string;
   genre?: BookGenre;
+  city?: string;
   condition?: BookCondition;
   description: string;
   images: string[];
@@ -40,7 +41,7 @@ export interface BookState {
     total: number;
     page: number;
     totalPages: number;
-  } | null;
+  };
   isLoading: boolean;
   currentBook: null | Book;
   error: string | null | undefined;

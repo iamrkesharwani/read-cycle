@@ -7,11 +7,12 @@ const escapeRegex = (text: string) =>
 
 export const searchBooks = async (req: Request, res: Response) => {
   try {
-    const { q, page = '1', limit = '10' } = req.query;
+    const { q, page = '1', limit = '12' } = req.query;
 
     const pageNumber = Math.max(parseInt(page as string, 10) || 1, 1);
+    const parsedLimit = parseInt(limit as string, 10);
     const limitNumber = Math.min(
-      Math.max(parseInt(limit as string, 10) || 10, 1),
+      Math.max(isNaN(parsedLimit) ? 12 : parsedLimit, 1),
       50
     );
     const skip = (pageNumber - 1) * limitNumber;

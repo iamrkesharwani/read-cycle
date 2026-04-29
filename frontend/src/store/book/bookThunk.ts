@@ -49,7 +49,7 @@ export const swapBookListing = createAsyncThunk(
 
 export const fetchUserBooks = createAsyncThunk(
   'book/fetchUserBooks',
-  async (_, thunkAPI) => {
+  async (_: void, thunkAPI) => {
     try {
       const response = await api.get('/books/me');
       return response.data;
@@ -111,11 +111,16 @@ export const searchBookListings = createAsyncThunk(
     thunkAPI
   ) => {
     try {
-      const { q, page = 1, limit = 10 } = params;
-      let url = `/books/search?page=${page}&limit=${limit}`;
-      if (q) url += `&q=${encodeURIComponent(q)}`;
+      const { q, page = 1, limit = 12 } = params;
+      const searchParams = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      });
+      if (q) searchParams.set('q', q);
 
-      const response = await api.get(url);
+      const response = await api.get(
+        `/books/search?${searchParams.toString()}`
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
