@@ -2,29 +2,58 @@ import type { Request, Response } from 'express';
 import { getBooksCollection } from '../../utils/collections.js';
 import type { BookDoc } from '../../types/book.doc.js';
 
+const escapeRegex = (text: string) =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 export const searchBooks = async (req: Request, res: Response) => {
   try {
-    const { q } = req.query;
-    if (!q || typeof q !== 'string') {
-      return res.status(400).json({ message: 'Search query is required' });
+    const { q, page = '1', limit = '10' } = req.query;
+
+    const pageNumber = Math.max(parseInt(page as string, 10) || 1, 1);
+    const limitNumber = Math.min(
+      Math.max(parseInt(limit as string, 10) || 10, 1),
+      50
+    );
+    const skip = (pageNumber - 1) * limitNumber;
+    const booksCollection = await getBooksCollection<BookDoc>();
+
+    const query: any = {
+      status: 'published',
+      isSwapped: false,
+    };
+
+    if (q && typeof q === 'string' && q.trim() !== '') {
+      const safequery = escapeRegex(q.trim());
+      const searchRegex = new RegExp(safequery, 'i');
+
+      query.$or = [
+        { title: searchRegex },
+        { author: searchRegex },
+        { genre: searchRegex },
+        { description: searchRegex },
+      ];
     }
 
-    const booksCollection = await getBooksCollection<BookDoc>();
-    const searchRegex = new RegExp(q, 'i');
-    const results = await booksCollection
-      .find({
-        status: 'published',
-        $or: [
-          { title: searchRegex },
-          { author: searchRegex },
-          { genre: searchRegex },
-          { description: searchRegex },
-        ],
-      })
-      .sort({ createdAt: -1 })
-      .toArray();
+    const [results, total] = await Promise.all([
+      booksCollection
+        .find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNumber)
+        .toArray(),
 
-    res.status(200).json(results);
+      booksCollection.countDocuments(query),
+    ]);
+
+    res.status(200).json({
+      data: results,
+      pagination: {
+        total,
+        page: pageNumber,
+        limit: limitNumber,
+        totalPages: Math.ceil(total / limitNumber),
+      },
+    });
   } catch (error) {
     console.error('Search error:', error);
     res.status(500).json({ message: 'Internal server error' });
