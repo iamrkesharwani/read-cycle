@@ -20,7 +20,7 @@ const Navbar = () => {
       <nav className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            {/* Logo — hidden on mobile/tablet when search is open */}
+            {/* Logo */}
             <Link
               to="/"
               className={`flex items-center gap-2 shrink-0 transition-all duration-200 ${
@@ -35,7 +35,7 @@ const Navbar = () => {
               </span>
             </Link>
 
-            {/* Desktop nav — only on lg+ */}
+            {/* Desktop nav */}
             <div className="hidden lg:flex items-center gap-6">
               <NavLink
                 to="/"
@@ -88,7 +88,7 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile + Tablet right side — visible below lg */}
+            {/* Mobile + Tablet */}
             <div className="flex lg:hidden items-center gap-2">
               <MobileSearch
                 isOpen={mobileSearchOpen}
@@ -96,7 +96,7 @@ const Navbar = () => {
                 onClose={() => setMobileSearchOpen(false)}
               />
 
-              {/* Greeting + hamburger — hidden when search is open */}
+              {/* Greeting + hamburger */}
               <div
                 className={`flex items-center gap-3 transition-all duration-200 ${
                   mobileSearchOpen
