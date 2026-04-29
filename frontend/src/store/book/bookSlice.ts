@@ -4,6 +4,7 @@ import {
   deleteBookListing,
   fetchBookById,
   fetchUserBooks,
+  searchBookListings,
   swapBookListing,
   updateBookListing,
   updateListingStatus,
@@ -12,6 +13,11 @@ import type { BookState } from '../../../../shared/types/book';
 
 const initialState: BookState = {
   books: [],
+  pagination: {
+    page: 1,
+    total: 0,
+    totalPages: 1,
+  },
   isLoading: false,
   currentBook: null,
   error: null,
@@ -26,6 +32,7 @@ const bookThunks = [
   deleteBookListing,
   swapBookListing,
   updateListingStatus,
+  searchBookListings,
 ] as const;
 
 const bookSlice = createSlice({
@@ -79,6 +86,12 @@ const bookSlice = createSlice({
         if (book) {
           book.status = action.payload.status;
         }
+      })
+      .addCase(searchBookListings.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.books = action.payload.data;
+        state.pagination = action.payload.pagination;
+        state.error = null;
       })
       .addMatcher(isPending(...bookThunks), (state) => {
         state.isLoading = true;

@@ -106,12 +106,21 @@ export const updateListingStatus = createAsyncThunk(
 
 export const searchBookListings = createAsyncThunk(
   'book/searchBookListings',
-  async (query: string, thunkAPI) => {
+  async (
+    params: { q?: string | null; page?: number; limit?: number },
+    thunkAPI
+  ) => {
     try {
-      const response = await api.get(`/books/search?q=${query}`);
+      const { q, page = 1, limit = 10 } = params;
+      let url = `/books/search?page=${page}&limit=${limit}`;
+      if (q) url += `&q=${encodeURIComponent(q)}`;
+
+      const response = await api.get(url);
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(getErrorMessage(error, 'Search failed'));
+      return thunkAPI.rejectWithValue(
+        getErrorMessage(error, 'Failed to load books')
+      );
     }
   }
 );

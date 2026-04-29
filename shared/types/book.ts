@@ -36,6 +36,11 @@ export interface Book {
 
 export interface BookState {
   books: Book[];
+  pagination: {
+    total: number;
+    page: number;
+    totalPages: number;
+  } | null;
   isLoading: boolean;
   currentBook: null | Book;
   error: string | null | undefined;
