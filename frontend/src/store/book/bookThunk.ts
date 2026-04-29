@@ -103,3 +103,15 @@ export const updateListingStatus = createAsyncThunk(
     }
   }
 );
+
+export const searchBookListings = createAsyncThunk(
+  'book/searchBookListings',
+  async (query: string, thunkAPI) => {
+    try {
+      const response = await api.get(`/books/search?q=${query}`);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(getErrorMessage(error, 'Search failed'));
+    }
+  }
+);

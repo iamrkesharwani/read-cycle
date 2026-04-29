@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Search } from 'lucide-react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const open = () => {
     setIsOpen(true);
@@ -26,7 +26,7 @@ const SearchBar = () => {
     if (e.key === 'Escape') {
       close();
     } else if (e.key === 'Enter' && query.trim()) {
-      // Will write search query later
+      navigate(`/?q=${encodeURIComponent(query.trim())}`);
       close();
     }
   };

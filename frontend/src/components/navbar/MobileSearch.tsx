@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   isOpen: boolean;
@@ -11,7 +11,7 @@ type Props = {
 const MobileSearch = ({ isOpen, onOpen, onClose }: Props) => {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleOpen = () => {
     onOpen();
@@ -27,7 +27,7 @@ const MobileSearch = ({ isOpen, onOpen, onClose }: Props) => {
     if (e.key === 'Escape') {
       handleClose();
     } else if (e.key === 'Enter' && query.trim()) {
-      // Will write search query later
+      navigate(`/?q=${encodeURIComponent(query.trim())}`);
       handleClose();
     }
   };
