@@ -37,19 +37,6 @@ const Navbar = () => {
 
             {/* Desktop nav */}
             <div className="hidden lg:flex items-center gap-6">
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `text-sm transition-colors ${
-                    isActive
-                      ? 'text-teal-600 font-bold'
-                      : 'text-slate-500 hover:text-gray-800 font-medium'
-                  }`
-                }
-              >
-                Explore
-              </NavLink>
-
               <SearchBar />
 
               {user ? (
@@ -60,7 +47,7 @@ const Navbar = () => {
                       `text-sm transition-colors ${
                         isActive
                           ? 'text-teal-600 font-bold'
-                          : 'text-slate-500 hover:text-gray-800 font-medium'
+                          : 'text-teal-600 hover:text-teal-700 font-medium'
                       }`
                     }
                   >

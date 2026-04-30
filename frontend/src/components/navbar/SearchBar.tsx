@@ -31,6 +31,15 @@ const SearchBar = () => {
     }
   };
 
+  const handleClick = () => {
+    if (isOpen) {
+      navigate(`/?q=${encodeURIComponent(query.trim())}`);
+      close();
+    } else {
+      open();
+    }
+  };
+
   return (
     <div className="flex items-center gap-2">
       <div
@@ -51,15 +60,15 @@ const SearchBar = () => {
       </div>
 
       <button
-        onClick={isOpen ? close : open}
+        onClick={handleClick}
         aria-label="Search"
         className={`w-9 h-9 flex items-center justify-center rounded-xl shrink-0 transition-colors ${
           isOpen
             ? 'text-teal-600 bg-teal-50'
-            : 'text-slate-400 hover:text-gray-700 hover:bg-slate-100'
+            : 'text-teal-600 font-bold hover:text-teal-700 hover:bg-slate-100'
         }`}
       >
-        <Search size={16} />
+        <Search size={17} />
       </button>
     </div>
   );
