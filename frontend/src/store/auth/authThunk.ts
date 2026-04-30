@@ -1,133 +1,144 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import authService from '../../services/authService';
-import { getErrorMessage } from '../../errors/axiosError';
-import type { LoginInput, RegisterInput } from '../../../../shared/types/user';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import authService from "../../services/authService";
+import { getErrorMessage } from "../../errors/axiosError";
+import type { LoginInput, RegisterInput } from "../../../../shared/types/user";
 
 export const loginUser = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (credentials: LoginInput, thunkAPI) => {
     try {
       const data = await authService.login(credentials);
-      localStorage.setItem('token', data.token);
+      localStorage.setItem("token", data.token);
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(getErrorMessage(error, 'Login Failed'));
+      return thunkAPI.rejectWithValue(getErrorMessage(error, "Login Failed"));
     }
-  }
+  },
 );
 
 export const registerUser = createAsyncThunk(
-  'auth/register',
+  "auth/register",
   async (userData: RegisterInput, thunkAPI) => {
     try {
       const data = await authService.register(userData);
       if (data.token) {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
       }
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        getErrorMessage(error, 'Registration Failed')
+        getErrorMessage(error, "Registration Failed"),
       );
     }
-  }
+  },
 );
 
-export const getMe = createAsyncThunk('auth/getMe', async (_, thunkAPI) => {
+export const getMe = createAsyncThunk("auth/getMe", async (_, thunkAPI) => {
   try {
     return await authService.getMe();
   } catch (error) {
-    return thunkAPI.rejectWithValue(getErrorMessage(error, 'Session Expired'));
+    return thunkAPI.rejectWithValue(getErrorMessage(error, "Session Expired"));
   }
 });
 
 export const updateName = createAsyncThunk(
-  'auth/updateName',
+  "auth/updateName",
   async (name: string, thunkAPI) => {
     try {
       return await authService.updateName(name);
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        getErrorMessage(error, 'Failed to update name')
+        getErrorMessage(error, "Failed to update name"),
       );
     }
-  }
+  },
 );
 
 export const updateEmail = createAsyncThunk(
-  'auth/updateEmail',
+  "auth/updateEmail",
   async (email: string, thunkAPI) => {
     try {
       return await authService.updateEmail(email);
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        getErrorMessage(error, 'Failed to update email')
+        getErrorMessage(error, "Failed to update email"),
       );
     }
-  }
+  },
 );
 
 export const updateUsername = createAsyncThunk(
-  'auth/updateUsername',
+  "auth/updateUsername",
   async (username: string, thunkAPI) => {
     try {
       return await authService.updateUsername(username);
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        getErrorMessage(error, 'Failed to update username')
+        getErrorMessage(error, "Failed to update username"),
       );
     }
-  }
+  },
 );
 
 export const updatePhone = createAsyncThunk(
-  'auth/updatePhone',
+  "auth/updatePhone",
   async (phone: string, thunkAPI) => {
     try {
       return await authService.updatePhone(phone);
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        getErrorMessage(error, 'Failed to update phone')
+        getErrorMessage(error, "Failed to update phone"),
       );
     }
-  }
+  },
 );
 
 export const updateCity = createAsyncThunk(
-  'auth/updateCity',
+  "auth/updateCity",
   async (city: string, thunkAPI) => {
     try {
       return await authService.updateCity(city);
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        getErrorMessage(error, 'Failed to update city')
+        getErrorMessage(error, "Failed to update city"),
       );
     }
-  }
+  },
 );
 
 export const updateBio = createAsyncThunk(
-  'auth/updateBio',
+  "auth/updateBio",
   async (bio: string, thunkAPI) => {
     try {
       return await authService.updateBio(bio);
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        getErrorMessage(error, 'Failed to update bio')
+        getErrorMessage(error, "Failed to update bio"),
       );
     }
-  }
+  },
 );
 
 export const deleteAccount = createAsyncThunk(
-  'auth/deleteAccount',
+  "auth/deleteAccount",
   async (_, thunkAPI) => {
     try {
       return await authService.deleteAccount();
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        getErrorMessage(error, 'Failed to delete account')
+        getErrorMessage(error, "Failed to delete account"),
       );
     }
-  }
+  },
+);
+
+export const fetchPublicProfile = createAsyncThunk(
+  "auth/fetchPublicProfile",
+  async (username: string, thunkAPI) => {
+    try {
+      return await authService.getPublicProfile(username);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(getErrorMessage(error, "User not found"));
+    }
+  },
 );

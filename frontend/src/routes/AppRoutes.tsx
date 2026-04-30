@@ -1,19 +1,20 @@
-import { Routes, Route } from 'react-router-dom';
-import MainLayout from '../layouts/MainLayout';
-import { ProtectedRoute } from './ProtectedRoute';
-import Explore from '../components/explore/Explore';
-import Login from '../components/auth/Login';
-import Register from '../components/auth/Register';
-import Listing from '../components/listing/Listing';
-import ProfileLayout from '../components/profile/ProfileLayout';
-import ProfileOverview from '../components/profile/ProfileOverview';
-import PersonalInfo from '../components/profile/tabs/PersonalInfo';
-import ActiveListings from '../components/profile/tabs/ActiveListings';
-import SwappedListings from '../components/profile/tabs/SwappedListings';
-import InactiveListings from '../components/profile/tabs/InactiveListings';
-import AccountSettings from '../components/profile/tabs/AccountSettings';
-import MainListing from '../components/live/MainListing';
-import EditListing from '../components/listing/EditListing';
+import { Routes, Route } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
+import { ProtectedRoute } from "./ProtectedRoute";
+import Explore from "../components/explore/Explore";
+import Login from "../components/auth/Login";
+import Register from "../components/auth/Register";
+import Listing from "../components/listing/Listing";
+import ProfileLayout from "../components/profile/ProfileLayout";
+import ProfileOverview from "../components/profile/ProfileOverview";
+import PersonalInfo from "../components/profile/tabs/PersonalInfo";
+import ActiveListings from "../components/profile/tabs/ActiveListings";
+import SwappedListings from "../components/profile/tabs/SwappedListings";
+import InactiveListings from "../components/profile/tabs/InactiveListings";
+import AccountSettings from "../components/profile/tabs/AccountSettings";
+import MainListing from "../components/live/MainListing";
+import EditListing from "../components/listing/EditListing";
+import PublicProfile from "../components/public/PublicProfile";
 
 const AppRoutes = () => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Explore />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/user/:username" element={<PublicProfile />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<ProfileLayout />}>

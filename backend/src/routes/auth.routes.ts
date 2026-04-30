@@ -9,6 +9,7 @@ import { updatePhone } from '../controllers/auth/phone.controller.js';
 import { updateCity } from '../controllers/auth/city.controller.js';
 import { updateBio } from '../controllers/auth/bio.controller.js';
 import { deleteAccount } from '../controllers/auth/delete.controller.js';
+import { getPublicProfile } from '../controllers/public/profile.controller.js';
 import {
   checkUsername,
   updateUsername,
@@ -18,6 +19,7 @@ const router = Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.get('/profile/:username', getPublicProfile);
 router.get('/me', authGuard, getMe);
 router.get('/username/check', checkUsername);
 router.patch('/name', authGuard, updateName);

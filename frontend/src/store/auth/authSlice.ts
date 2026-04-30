@@ -1,5 +1,5 @@
-import { createSlice, isRejected, isAnyOf, isPending } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, isRejected, isAnyOf, isPending } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import {
   getMe,
   loginUser,
@@ -10,26 +10,35 @@ import {
   updatePhone,
   updateCity,
   updateBio,
-} from './authThunk';
+  fetchPublicProfile,
+} from "./authThunk";
 import type {
   AuthState,
   User,
   AuthResponse,
-} from '../../../../shared/types/user';
+} from "../../../../shared/types/user";
 
 const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem('token'),
+  publicProfile: null,
+  token: localStorage.getItem("token"),
   isLoading: false,
   error: null,
 };
 
+const authThunks = [
+  loginUser,
+  registerUser,
+  getMe,
+  fetchPublicProfile,
+] as const;
+
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logout: (state) => {
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       state.user = null;
       state.token = null;
       state.error = null;
@@ -45,70 +54,74 @@ const authSlice = createSlice({
         updateName.fulfilled,
         (state, action: PayloadAction<{ name: string }>) => {
           if (state.user) state.user.name = action.payload.name;
-        }
+        },
       )
       .addCase(
         updateEmail.fulfilled,
         (state, action: PayloadAction<{ email: string }>) => {
           if (state.user) state.user.email = action.payload.email;
-        }
+        },
       )
       .addCase(
         updateUsername.fulfilled,
         (
           state,
-          action: PayloadAction<{ username: string; usernameUpdatedAt: string }>
+          action: PayloadAction<{
+            username: string;
+            usernameUpdatedAt: string;
+          }>,
         ) => {
           if (state.user) {
             state.user.username = action.payload.username;
             state.user.usernameUpdatedAt = new Date(
-              action.payload.usernameUpdatedAt
+              action.payload.usernameUpdatedAt,
             );
           }
-        }
+        },
       )
       .addCase(
         updatePhone.fulfilled,
         (state, action: PayloadAction<{ phone: string }>) => {
           if (state.user) state.user.phone = action.payload.phone;
-        }
+        },
       )
       .addCase(
         updateCity.fulfilled,
         (state, action: PayloadAction<{ city: string }>) => {
           if (state.user) state.user.city = action.payload.city;
-        }
+        },
       )
       .addCase(
         updateBio.fulfilled,
         (state, action: PayloadAction<{ bio: string }>) => {
           if (state.user) state.user.bio = action.payload.bio;
-        }
+        },
       )
+      .addCase(fetchPublicProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.publicProfile = action.payload;
+      })
       .addMatcher(
         isAnyOf(loginUser.fulfilled, registerUser.fulfilled),
         (state, action: PayloadAction<AuthResponse>) => {
           state.isLoading = false;
           state.user = action.payload.user;
           state.token = action.payload.token;
-        }
+        },
       )
-      .addMatcher(isPending(loginUser, registerUser, getMe), (state) => {
+      .addMatcher(isPending(...authThunks), (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addMatcher(
-        isRejected(loginUser, registerUser, getMe),
-        (state, action) => {
-          state.isLoading = false;
-          state.error = action.payload as string;
-          if (action.type.includes('getMe')) {
-            state.user = null;
-            state.token = null;
-            localStorage.removeItem('token');
-          }
+      .addMatcher(isRejected(...authThunks), (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        if (action.type.includes("getMe")) {
+          state.user = null;
+          state.token = null;
+          localStorage.removeItem("token");
         }
-      );
+      });
   },
 });
 

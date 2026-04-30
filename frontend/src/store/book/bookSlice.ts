@@ -1,15 +1,16 @@
-import { createSlice, isRejected, isPending } from '@reduxjs/toolkit';
+import { createSlice, isRejected, isPending } from "@reduxjs/toolkit";
 import {
   createBookListing,
   deleteBookListing,
   fetchBookById,
+  fetchPublicUserListings,
   fetchUserBooks,
   searchBookListings,
   swapBookListing,
   updateBookListing,
   updateListingStatus,
-} from './bookThunk';
-import type { BookState } from '../../../../shared/types/book';
+} from "./bookThunk";
+import type { BookState } from "../../../../shared/types/book";
 
 const initialState: BookState = {
   books: [],
@@ -33,10 +34,11 @@ const bookThunks = [
   swapBookListing,
   updateListingStatus,
   searchBookListings,
+  fetchPublicUserListings,
 ] as const;
 
 const bookSlice = createSlice({
-  name: 'books',
+  name: "books",
   initialState,
   reducers: {
     resetBookStatus: (state) => {
@@ -79,7 +81,7 @@ const bookSlice = createSlice({
         const book = state.books.find((b) => b._id === action.payload);
         if (book) {
           book.isSwapped = true;
-          book.status = 'inactive';
+          book.status = "inactive";
         }
       })
       .addCase(updateListingStatus.fulfilled, (state, action) => {
@@ -94,6 +96,11 @@ const bookSlice = createSlice({
         state.isLoading = false;
         state.books = action.payload.data;
         state.pagination = action.payload.pagination;
+        state.error = null;
+      })
+      .addCase(fetchPublicUserListings.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.books = action.payload;
         state.error = null;
       })
       .addMatcher(isPending(...bookThunks), (state) => {

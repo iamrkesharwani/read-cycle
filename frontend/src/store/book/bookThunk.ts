@@ -141,3 +141,17 @@ export const searchBookListings = createAsyncThunk(
     }
   },
 );
+
+export const fetchPublicUserListings = createAsyncThunk(
+  "books/fetchPublicUserListings",
+  async (userId: string, thunkAPI) => {
+    try {
+      const response = await api.get(`/books/user/${userId}`);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        getErrorMessage(error, "Failed to load user books"),
+      );
+    }
+  },
+);

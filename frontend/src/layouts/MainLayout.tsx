@@ -26,7 +26,7 @@ const MainLayout = () => {
       ? pathname === '/'
         ? 'flex-1 flex flex-col overflow-hidden px-4 sm:px-6 lg:px-8 py-5'
         : 'flex-1 flex flex-col overflow-hidden'
-      : 'flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8';
+      : 'flex-1';
 
   return (
     <div

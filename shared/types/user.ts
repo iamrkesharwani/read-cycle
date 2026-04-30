@@ -15,7 +15,7 @@ export interface UserDocument {
 }
 
 export interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   username?: string;
@@ -44,6 +44,7 @@ export interface RegisterInput extends LoginInput {
 
 export interface AuthState {
   user: User | null;
+  publicProfile: User | null;
   token: string | null;
   isLoading: boolean;
   error: string | null | undefined;
