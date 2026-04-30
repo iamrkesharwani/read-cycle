@@ -7,7 +7,7 @@ const escapeRegex = (text: string) =>
 
 export const searchBooks = async (req: Request, res: Response) => {
   try {
-    const { q, page = '1', limit = '12' } = req.query;
+    const { q, genre, condition, city, page = '1', limit = '12' } = req.query;
 
     const pageNumber = Math.max(parseInt(page as string, 10) || 1, 1);
     const parsedLimit = parseInt(limit as string, 10);
@@ -16,9 +16,10 @@ export const searchBooks = async (req: Request, res: Response) => {
       50
     );
     const skip = (pageNumber - 1) * limitNumber;
+
     const booksCollection = await getBooksCollection<BookDoc>();
 
-    const query: any = {
+    const query: Record<string, unknown> = {
       status: 'published',
       isSwapped: false,
     };
@@ -33,6 +34,18 @@ export const searchBooks = async (req: Request, res: Response) => {
         { genre: searchRegex },
         { description: searchRegex },
       ];
+    }
+
+    if (genre && typeof genre === 'string' && genre.trim() !== '') {
+      query.genre = genre.trim();
+    }
+
+    if (condition && typeof condition === 'string' && condition.trim() !== '') {
+      query.condition = condition.trim();
+    }
+
+    if (city && typeof city === 'string' && city.trim() !== '') {
+      query.city = city.trim();
     }
 
     const [results, total] = await Promise.all([
