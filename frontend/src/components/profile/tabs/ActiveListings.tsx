@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import SwapConfirmModal from "../modals/SwapConfirmModal";
 import InterestedUsersModal from "../modals/InterestedUsersModal";
+import ConfirmModal from "../modals/ConfirmModal";
 
 export const cls = {
   card: "flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-slate-200 transition-all",
@@ -121,6 +122,8 @@ const ActiveListings = () => {
   const [bookToSwap, setBookToSwap] = useState<string | null>(null);
   const [isSwapping, setIsSwapping] = useState(false);
   const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
+  const [bookToInactive, setBookToInactive] = useState<string | null>(null);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [selectedBookForInterest, setSelectedBookForInterest] = useState<{
     id: string;
     title: string;
@@ -145,6 +148,18 @@ const ActiveListings = () => {
     setSelectedBookForInterest({ id, title });
     setIsInterestModalOpen(true);
   };
+
+  const handleConfirmInactive = async () => {
+    if (!bookToInactive) return;
+    setIsUpdatingStatus(true);
+    await dispatch(
+      updateListingStatus({ id: bookToInactive, status: "inactive" }),
+    );
+    setIsUpdatingStatus(false);
+    setBookToInactive(null);
+  };
+
+  const currentInactiveBook = books.find((b) => b._id === bookToInactive);
 
   if (isLoading && books.length === 0) {
     return (
@@ -248,7 +263,7 @@ const ActiveListings = () => {
                     onEdit={(bookId) => navigate(`/edit/${bookId}`)}
                     onViewInterest={() => handleOpenInterest(id, book.title)}
                     onInactive={() => {
-                      dispatch(updateListingStatus({ id, status: "inactive" }));
+                      setBookToInactive(id);
                       setOpenMenu(null);
                     }}
                   />
@@ -272,6 +287,17 @@ const ActiveListings = () => {
         onClose={() => setIsInterestModalOpen(false)}
         bookId={selectedBookForInterest?.id || ""}
         bookTitle={selectedBookForInterest?.title || ""}
+      />
+
+      <ConfirmModal
+        isOpen={!!bookToInactive}
+        onClose={() => setBookToInactive(null)}
+        onConfirm={handleConfirmInactive}
+        title="Mark Inactive?"
+        message={`Are you sure you want to hide "${currentInactiveBook?.title}"? You can re-activate it later from your profile.`}
+        confirmText="Hide Listing"
+        variant="warning"
+        isLoading={isUpdatingStatus}
       />
 
       {openMenu !== null && (
