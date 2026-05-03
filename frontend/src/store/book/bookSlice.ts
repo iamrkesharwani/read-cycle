@@ -71,6 +71,7 @@ const bookSlice = createSlice({
       .addCase(fetchBookById.fulfilled, (state, action) => {
         state.isLoading = false;
         state.currentBook = action.payload;
+        state.isInterested = action.payload.isInterested ?? false;
         state.error = null;
       })
       .addCase(deleteBookListing.fulfilled, (state, action) => {

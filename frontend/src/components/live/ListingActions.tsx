@@ -2,7 +2,7 @@ import { ArrowUpDown, Heart, Share2 } from "lucide-react";
 import InterestButton from "./InterestButton";
 
 interface ListingActionsProps {
-  bookId: string;
+  bookId: string | undefined;
   onSwapRequest: () => void;
   onShare: () => void;
 }
@@ -14,7 +14,7 @@ const ListingActions = ({
 }: ListingActionsProps) => (
   <div className="flex w-full flex-col gap-2">
     <div className="flex items-center gap-2">
-      <InterestButton bookId={bookId} />
+      <InterestButton bookId={bookId || ""} />
 
       <button className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 transition-colors hover:border-teal-400 hover:text-teal-600">
         <Heart size={16} />

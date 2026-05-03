@@ -43,3 +43,32 @@ export const authGuard = (req: Request, res: Response, next: NextFunction) => {
     res.status(401).json({ message: 'Token is not valid' });
   }
 };
+
+export const optionalAuth = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return next();
+  }
+
+  const token = authHeader.split(' ')[1];
+  if (!token) return next();
+
+  try {
+    const decoded = jwt.verify(token, envToken);
+    if (
+      typeof decoded === 'object' &&
+      decoded !== null &&
+      'userId' in decoded
+    ) {
+      req.userId = (decoded as JwtPayload).userId;
+    }
+    next();
+  } catch (error) {
+    next();
+  }
+};

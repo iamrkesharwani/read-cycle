@@ -31,7 +31,11 @@ const MainListing = () => {
   };
 
   const actions = (
-    <ListingActions onSwapRequest={handleSwapRequest} onShare={handleShare} />
+    <ListingActions
+      bookId={book?._id}
+      onSwapRequest={handleSwapRequest}
+      onShare={handleShare}
+    />
   );
 
   if (isLoading) return <LoadingState />;

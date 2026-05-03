@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import {
   getBooksCollection,
+  getInterestsCollection,
   getUsersCollection,
 } from '../../utils/collections.js';
 import type { BookDoc } from '../../types/book.doc.js';
@@ -9,6 +10,7 @@ import type { BookDoc } from '../../types/book.doc.js';
 export const getListingById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const userId = req.userId;
 
     if (!id || typeof id !== 'string') {
       return res.status(400).json({ message: 'Valid listing ID is required' });
@@ -42,6 +44,17 @@ export const getListingById = async (req: Request, res: Response) => {
 
     if (!book) {
       return res.status(404).json({ message: 'Listing not found' });
+    }
+
+    if (userId) {
+      const interestsCollection = await getInterestsCollection();
+      const interest = await interestsCollection.findOne({
+        bookId: new ObjectId(id),
+        userId: new ObjectId(userId),
+      });
+      book.isInterested = !!interest;
+    } else {
+      book.isInterested = false;
     }
 
     res.status(200).json(book);

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { createListing } from '../controllers/book/create.controller.js';
-import { authGuard } from '../middleware/auth.middleware.js';
+import { authGuard, optionalAuth } from '../middleware/auth.middleware.js';
 import { uploadImages } from '../middleware/upload.middleware.js';
 import {
   getListingById,
@@ -19,7 +19,7 @@ router.post('/create', authGuard, uploadImages, createListing);
 router.get('/me', authGuard, getUserListings);
 router.get('/search', searchBooks);
 router.get('/user/:userId', getPublicUserListings);
-router.get('/:id', getListingById);
+router.get('/:id', optionalAuth, getListingById);
 router.patch('/:id/edit', authGuard, uploadImages, updateListing);
 router.delete('/:id', authGuard, deleteListing);
 router.patch('/:id/status', authGuard, updateBookStatus);

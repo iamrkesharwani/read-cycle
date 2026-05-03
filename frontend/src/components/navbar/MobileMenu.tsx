@@ -12,7 +12,7 @@ import {
   PlusCircle,
   LogOut,
 } from "lucide-react";
-import type { TabId } from "../profile/ProfileNav";
+import type { TabId } from "../profile/profile/ProfileNav";
 
 const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
   { id: "personal", label: "Personal Information", icon: User },

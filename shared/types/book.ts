@@ -35,6 +35,13 @@ export interface Book {
   updatedAt: string | Date;
 }
 
+export interface InterestedUser {
+  _id: string;
+  name: string;
+  username: string;
+  city: string;
+}
+
 export interface BookState {
   books: Book[];
   pagination: {
@@ -46,6 +53,6 @@ export interface BookState {
   currentBook: null | Book;
   error: string | null | undefined;
   success: boolean;
-  interestedUsers: any[];
+  interestedUsers: InterestedUser[];
   isInterested: boolean;
 }
