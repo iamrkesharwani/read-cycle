@@ -4,6 +4,7 @@ import 'dotenv/config';
 import { connectDb } from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
 import bookRoutes from './routes/book.routes.js';
+import interestRoutes from './routes/interest.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import path from 'node:path';
 
@@ -20,6 +21,8 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/api/interests', interestRoutes);
+
 app.use(
   '/uploads',
   express.static(path.join(process.cwd(), 'uploads', 'books'))

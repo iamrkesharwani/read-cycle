@@ -13,3 +13,10 @@ export const getBooksCollection = async <T extends Document = any>(): Promise<
   const db = await connectDb();
   return db.collection<T>('books');
 };
+
+export const getInterestsCollection = async <
+  T extends Document = any,
+>(): Promise<Collection<T>> => {
+  const db = await connectDb();
+  return db.collection<T>('interests');
+};
