@@ -1,27 +1,39 @@
-import { ArrowUpDown, Heart, Share2 } from 'lucide-react';
+import { ArrowUpDown, Heart, Share2 } from "lucide-react";
+import InterestButton from "./InterestButton";
 
-interface Props {
+interface ListingActionsProps {
+  bookId: string;
   onSwapRequest: () => void;
   onShare: () => void;
 }
 
-const ListingActions = ({ onSwapRequest, onShare }: Props) => (
-  <div className="flex items-center gap-2">
+const ListingActions = ({
+  bookId,
+  onSwapRequest,
+  onShare,
+}: ListingActionsProps) => (
+  <div className="flex w-full flex-col gap-2">
+    <div className="flex items-center gap-2">
+      <InterestButton bookId={bookId} />
+
+      <button className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 transition-colors hover:border-teal-400 hover:text-teal-600">
+        <Heart size={16} />
+      </button>
+
+      <button
+        onClick={onShare}
+        className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 transition-colors hover:border-teal-400 hover:text-teal-600"
+      >
+        <Share2 size={16} />
+      </button>
+    </div>
+
     <button
       onClick={onSwapRequest}
-      className="flex-1 flex items-center justify-center gap-2 py-3 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white text-sm font-semibold rounded-xl transition-colors"
+      className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-700 active:bg-teal-800"
     >
       <ArrowUpDown size={15} />
       Request swap
-    </button>
-    <button className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-xl border border-slate-200 hover:border-teal-400 hover:text-teal-600 text-slate-400 bg-white transition-colors">
-      <Heart size={16} />
-    </button>
-    <button
-      onClick={onShare}
-      className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-xl border border-slate-200 hover:border-teal-400 hover:text-teal-600 text-slate-400 bg-white transition-colors"
-    >
-      <Share2 size={16} />
     </button>
   </div>
 );

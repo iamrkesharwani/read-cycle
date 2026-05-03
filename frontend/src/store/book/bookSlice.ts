@@ -3,10 +3,12 @@ import {
   createBookListing,
   deleteBookListing,
   fetchBookById,
+  fetchInterestedUsers,
   fetchPublicUserListings,
   fetchUserBooks,
   searchBookListings,
   swapBookListing,
+  toggleBookInterest,
   updateBookListing,
   updateListingStatus,
 } from "./bookThunk";
@@ -23,6 +25,8 @@ const initialState: BookState = {
   currentBook: null,
   error: null,
   success: false,
+  interestedUsers: [],
+  isInterested: false,
 };
 
 const bookThunks = [
@@ -101,6 +105,16 @@ const bookSlice = createSlice({
       .addCase(fetchPublicUserListings.fulfilled, (state, action) => {
         state.isLoading = false;
         state.books = action.payload;
+        state.error = null;
+      })
+      .addCase(toggleBookInterest.fulfilled, (state, action) => {
+        state.isInterested = action.payload.interested;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(fetchInterestedUsers.fulfilled, (state, action) => {
+        state.interestedUsers = action.payload;
+        state.isLoading = false;
         state.error = null;
       })
       .addMatcher(isPending(...bookThunks), (state) => {

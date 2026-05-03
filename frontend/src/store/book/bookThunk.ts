@@ -143,7 +143,7 @@ export const searchBookListings = createAsyncThunk(
 );
 
 export const fetchPublicUserListings = createAsyncThunk(
-  "books/fetchPublicUserListings",
+  "book/fetchPublicUserListings",
   async (userId: string, thunkAPI) => {
     try {
       const response = await api.get(`/books/user/${userId}`);
@@ -151,6 +151,34 @@ export const fetchPublicUserListings = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(
         getErrorMessage(error, "Failed to load user books"),
+      );
+    }
+  },
+);
+
+export const toggleBookInterest = createAsyncThunk(
+  "book/toggleBookInterest",
+  async (bookId: string, thunkAPI) => {
+    try {
+      const response = await api.post(`/interests/${bookId}/toggle`);
+      return { bookId, interested: response.data.interested };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        getErrorMessage(error, "Could not update interest"),
+      );
+    }
+  },
+);
+
+export const fetchInterestedUsers = createAsyncThunk(
+  "book/fetchInterestedUsers",
+  async (bookId: string, thunkAPI) => {
+    try {
+      const response = await api.get(`/interests/${bookId}/users`);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        getErrorMessage(error, "Failed to load interested users"),
       );
     }
   },

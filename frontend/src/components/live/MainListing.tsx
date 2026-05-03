@@ -1,15 +1,15 @@
-import { useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { useEffect } from 'react';
-import { fetchBookById } from '../../store/book/bookThunk';
-import { resetBookStatus } from '../../store/book/bookSlice';
-import LoadingState from './misc/LoadingState';
-import NotFoundState from './misc/NotFoundState';
-import ErrorState from './misc/ErrorState';
-import BookImageGallery from './BookImageGallery';
-import BookMeta from './BookMeta';
-import ListingMeta from './ListingMeta';
-import ListingActions from './ListingActions';
+import { useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { useEffect } from "react";
+import { fetchBookById } from "../../store/book/bookThunk";
+import { resetBookStatus } from "../../store/book/bookSlice";
+import LoadingState from "./state/LoadingState";
+import NotFoundState from "./state/NotFoundState";
+import ErrorState from "./state/ErrorState";
+import BookImageGallery from "./BookImageGallery";
+import BookMeta from "./BookMeta";
+import ListingMeta from "./ListingMeta";
+import ListingActions from "./ListingActions";
 
 const MainListing = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,24 +39,24 @@ const MainListing = () => {
   if (!book) return <NotFoundState />;
 
   return (
-    <div className="h-full flex flex-col bg-white overflow-hidden">
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-[44%_56%] min-h-0 overflow-hidden">
-        <div className="hidden md:flex border-r border-slate-100 p-6 min-h-0 overflow-hidden">
+    <div className="flex h-full flex-col overflow-hidden bg-white">
+      <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden md:grid-cols-[44%_56%]">
+        <div className="hidden min-h-0 overflow-hidden border-r border-slate-100 p-6 md:flex">
           <BookImageGallery images={book.images ?? []} title={book.title} />
         </div>
 
         <div
-          className="flex flex-col min-h-0 overflow-y-auto px-6 lg:px-10 py-5 gap-6"
+          className="flex min-h-0 flex-col gap-6 overflow-y-auto px-6 py-5 lg:px-10"
           style={
             {
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
             } as React.CSSProperties
           }
         >
           <style>{`div::-webkit-scrollbar { display: none; }`}</style>
 
-          <div className="md:hidden h-56 flex-shrink-0">
+          <div className="h-56 flex-shrink-0 md:hidden">
             <BookImageGallery images={book.images ?? []} title={book.title} />
           </div>
 

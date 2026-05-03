@@ -46,4 +46,6 @@ export interface BookState {
   currentBook: null | Book;
   error: string | null | undefined;
   success: boolean;
+  interestedUsers: any[];
+  isInterested: boolean;
 }
