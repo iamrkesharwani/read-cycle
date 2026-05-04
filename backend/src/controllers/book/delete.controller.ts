@@ -26,7 +26,12 @@ export const deleteListing = async (req: Request, res: Response) => {
     }
 
     book.images.forEach((imagePath) => {
-      const fullPath = path.join(process.cwd(), 'public', imagePath);
+      const fullPath = path.join(
+        process.cwd(),
+        'uploads',
+        'books',
+        path.basename(imagePath)
+      );
       if (fs.existsSync(fullPath)) {
         fs.unlinkSync(fullPath);
       }

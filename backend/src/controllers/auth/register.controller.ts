@@ -7,6 +7,13 @@ import type { UserDocument } from '../../../../shared/types/user.js';
 import { registerSchema } from '../../../../shared/schemas/auth/register.schema.js';
 import { generateUsername } from '../../utils/username.js';
 
+const getJwtSecret = (): string => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret)
+    throw new Error('JWT_SECRET is not defined in environment variables');
+  return secret;
+};
+
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const result = registerSchema.safeParse(req.body);
@@ -46,7 +53,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { userId: inserted.insertedId.toString() },
-      process.env.JWT_SECRET!,
+      getJwtSecret(),
       { expiresIn: '7d' }
     );
 

@@ -24,6 +24,7 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/user/:username" element={<PublicProfile />} />
+        <Route path="/listing/:id" element={<MainListing />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<ProfileLayout />}>
@@ -37,7 +38,6 @@ const AppRoutes = () => {
 
           <Route path="/create" element={<Listing />} />
           <Route path="/edit/:id" element={<EditListing />} />
-          <Route path="/listing/:id" element={<MainListing />} />
         </Route>
 
         <Route

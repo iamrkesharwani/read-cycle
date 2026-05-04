@@ -12,7 +12,7 @@ export const toggleInterest = async (req: Request, res: Response) => {
     const userId = req.userId;
 
     if (typeof bookId !== 'string') {
-      return res.json(400).json({ message: 'Not a valid book id' });
+      return res.status(400).json({ message: 'Not a valid book id' });
     }
 
     if (!userId) return res.status(401).json({ message: 'Unauthorized' });

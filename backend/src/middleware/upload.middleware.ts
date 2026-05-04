@@ -1,5 +1,6 @@
 import multer from 'multer';
 import fs from 'node:fs';
+import path from 'node:path';
 
 const uploadDir = 'uploads/books';
 if (!fs.existsSync(uploadDir)) {
@@ -12,7 +13,8 @@ const storage = multer.diskStorage({
   },
   filename: (_req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, `${uniqueSuffix}.jpg`);
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `${uniqueSuffix}${ext}`);
   },
 });
 

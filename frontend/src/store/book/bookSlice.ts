@@ -39,6 +39,8 @@ const bookThunks = [
   updateListingStatus,
   searchBookListings,
   fetchPublicUserListings,
+  toggleBookInterest,
+  fetchInterestedUsers,
 ] as const;
 
 const bookSlice = createSlice({

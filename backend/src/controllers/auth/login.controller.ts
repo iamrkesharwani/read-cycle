@@ -6,6 +6,13 @@ import { loginSchema } from '../../../../shared/schemas/auth/login.schema.js';
 import { getUsersCollection } from '../../utils/collections.js';
 import type { Request, Response } from 'express';
 
+const getJwtSecret = (): string => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret)
+    throw new Error('JWT_SECRET is not defined in environment variables');
+  return secret;
+};
+
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const result = loginSchema.safeParse(req.body);
@@ -29,11 +36,9 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const token = jwt.sign(
-      { userId: user._id?.toString() },
-      process.env.JWT_SECRET as string,
-      { expiresIn: '7d' }
-    );
+    const token = jwt.sign({ userId: user._id?.toString() }, getJwtSecret(), {
+      expiresIn: '7d',
+    });
 
     res.status(200).json({
       message: 'Login successful',
