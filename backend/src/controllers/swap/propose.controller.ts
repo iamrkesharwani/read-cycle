@@ -35,9 +35,7 @@ export const proposeSwap = async (req: Request, res: Response) => {
     }
 
     if (bookA.status !== 'published' || bookB.status !== 'published') {
-      return res
-        .status(400)
-        .json({ message: 'Both books must be active for swapping' });
+      return res.status(400).json({ message: 'Both books must be active' });
     }
 
     const existingRequest = await swapsCollection.findOne({
@@ -47,14 +45,12 @@ export const proposeSwap = async (req: Request, res: Response) => {
     });
 
     if (existingRequest) {
-      return res
-        .status(400)
-        .json({ message: 'A request is already pending for this book' });
+      return res.status(400).json({ message: 'A request is already pending' });
     }
 
     const newSwap: Omit<SwapDoc, '_id'> = {
       proposerId: new ObjectId(proposerId),
-      receiverId: bookA.ownerId,
+      receiverId: bookB.ownerId,
       offeredBookId: new ObjectId(offeredBookId),
       requestedBookId: new ObjectId(requestedBookId),
       status: 'pending',

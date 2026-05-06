@@ -1,13 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ObjectId } from 'mongodb';
-import { getBooksCollection } from '../../utils/collections.js';
+import {
+  getBooksCollection,
+  getSwapsCollection,
+} from '../../utils/collections.js';
 import type { BookDoc } from '../../types/book.doc.js';
 import type { Request, Response } from 'express';
 
 export const deleteListing = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const userId = req.userId;
 
     if (!id || typeof id !== 'string') {
       return res.status(400).json({ message: 'Valid listing ID is required' });
@@ -18,12 +22,29 @@ export const deleteListing = async (req: Request, res: Response) => {
     }
 
     const booksCollection = await getBooksCollection<BookDoc>();
-    const book = await booksCollection.findOne({ _id: new ObjectId(id) });
+    const swapsCollection = await getSwapsCollection();
+
+    const bookId = new ObjectId(id);
+
+    const book = await booksCollection.findOne({ _id: bookId });
     if (!book) return res.status(404).json({ message: 'Listing not found' });
 
     if (book.ownerId.toString() !== req.userId) {
       return res.status(403).json({ message: 'Unauthorized' });
     }
+
+    await swapsCollection.updateMany(
+      {
+        $or: [{ offeredBookId: bookId }, { requestedBookId: bookId }],
+        status: 'pending',
+      },
+      {
+        $set: {
+          status: 'canceled',
+          updatedAt: new Date().toISOString(),
+        },
+      }
+    );
 
     book.images.forEach((imagePath) => {
       const fullPath = path.join(

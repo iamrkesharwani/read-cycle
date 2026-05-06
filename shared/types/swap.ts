@@ -22,3 +22,9 @@ export interface PopulatedSwapRequest extends Omit<
   offeredBook: { _id: string; title: string; images: string[] };
   requestedBook: { _id: string; title: string; images: string[] };
 }
+
+export interface SwapState {
+  isLoading: boolean;
+  error: string | null;
+  success: boolean;
+}

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchBookById } from "../../store/book/bookThunk";
 import { resetBookStatus } from "../../store/book/bookSlice";
 import LoadingState from "./state/LoadingState";
@@ -10,11 +10,24 @@ import BookImageGallery from "./BookImageGallery";
 import BookMeta from "./BookMeta";
 import ListingMeta from "./ListingMeta";
 import ListingActions from "./ListingActions";
+import { resetSwapStatus } from "../../store/swap/swapSlice";
+import { proposeSwap } from "../../store/swap/swapThunk";
+import ProposeSwapModal from "../swap/ProposeSwapModal";
 
 const MainListing = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  const { currentBook: book, isLoading, error } = useAppSelector((s) => s.book);
+  const {
+    currentBook: book,
+    isLoading: isBookLoading,
+    error,
+  } = useAppSelector((s) => s.book);
+  const {
+    isLoading: isSwapping,
+    success,
+    error: swapError,
+  } = useAppSelector((s) => s.swap);
+  const [isModalOpen, setisModalOpen] = useState(false);
 
   useEffect(() => {
     if (id) dispatch(fetchBookById(id));
@@ -23,11 +36,48 @@ const MainListing = () => {
     };
   }, [id, dispatch]);
 
+  useEffect(() => {
+    if (success) {
+      setisModalOpen(false);
+      dispatch(resetSwapStatus());
+    }
+  }, [dispatch, success]);
+
+  useEffect(() => {
+    if (swapError) {
+      console.error("Swap Error:", swapError);
+      <ErrorState message={swapError} />;
+      dispatch(resetSwapStatus());
+    }
+  }, [swapError, dispatch]);
+
   const handleShare = () =>
     navigator.clipboard?.writeText(window.location.href);
 
   const handleSwapRequest = () => {
-    /* wire to swap flow */
+    setisModalOpen(true);
+  };
+
+  const handleSwapSelection = (offeredBookId: string) => {
+    if (book?._id) {
+      dispatch(
+        proposeSwap({
+          offeredBookId,
+          requestedBookId: book._id,
+        }),
+      );
+    }
+
+    console.log("PROPOSING SWAP:", {
+      offered: offeredBookId,
+      requested: book?._id,
+    });
+
+    if (book?._id && offeredBookId) {
+      dispatch(proposeSwap({ offeredBookId, requestedBookId: book._id }));
+    } else {
+      console.error("Missing IDs for swap!");
+    }
   };
 
   const actions = (
@@ -38,7 +88,7 @@ const MainListing = () => {
     />
   );
 
-  if (isLoading) return <LoadingState />;
+  if (isBookLoading && !book) return <LoadingState />;
   if (error) return <ErrorState message={error} />;
   if (!book) return <NotFoundState />;
 
@@ -81,6 +131,13 @@ const MainListing = () => {
           <div className="hidden md:block">{actions}</div>
         </div>
       </div>
+
+      <ProposeSwapModal
+        isOpen={isModalOpen}
+        onClose={() => setisModalOpen(false)}
+        onSelect={handleSwapSelection}
+        isSubmitting={isSwapping}
+      />
     </div>
   );
 };

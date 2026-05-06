@@ -1,5 +1,8 @@
 import type { Request, Response } from 'express';
-import { getBooksCollection } from '../../utils/collections.js';
+import {
+  getBooksCollection,
+  getSwapsCollection,
+} from '../../utils/collections.js';
 import type { BookDoc } from '../../types/book.doc.js';
 import { ObjectId } from 'mongodb';
 
@@ -17,9 +20,12 @@ export const updateBookStatus = async (req: Request, res: Response) => {
     }
 
     const booksCollection = await getBooksCollection<BookDoc>();
+    const swapsCollection = await getSwapsCollection();
+    const bookId = new ObjectId(id);
+    const userId = new ObjectId(req.userId);
 
     const result = await booksCollection.updateOne(
-      { _id: new ObjectId(id), ownerId: new ObjectId(req.userId) },
+      { _id: bookId, ownerId: userId },
       { $set: { status, updatedAt: new Date() } }
     );
 
@@ -27,6 +33,21 @@ export const updateBookStatus = async (req: Request, res: Response) => {
       return res
         .status(404)
         .json({ message: 'Listing not found or unauthorized' });
+    }
+
+    if (status !== 'published') {
+      await swapsCollection.updateMany(
+        {
+          $or: [{ offeredBookId: bookId }, { requestedBookId: bookId }],
+          status: 'pending',
+        },
+        {
+          $set: {
+            status: 'canceled',
+            updatedAt: new Date().toISOString(),
+          },
+        }
+      );
     }
 
     res.status(200).json({ message: `Listing marked as ${status}` });
