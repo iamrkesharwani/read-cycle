@@ -29,7 +29,7 @@ export const deleteListing = async (req: Request, res: Response) => {
     const book = await booksCollection.findOne({ _id: bookId });
     if (!book) return res.status(404).json({ message: 'Listing not found' });
 
-    if (book.ownerId.toString() !== req.userId) {
+    if (book.ownerId.toString() !== userId) {
       return res.status(403).json({ message: 'Unauthorized' });
     }
 
