@@ -2,7 +2,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/reduxHooks";
 import ProfileHeader from "./ProfileHeader";
 import ProfileStats from "./ProfileStats";
-import ProfileNav, { type TabId } from "./ProfileNav";
+import ProfileNav, { type TabId } from "../../navbar/ProfileNav";
 
 const pathToTab: Record<string, TabId> = {
   "/personal": "personal",

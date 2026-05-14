@@ -1,26 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
 import { logoutUser } from "../../store/auth/authThunk";
-import {
-  X,
-  User,
-  BookMarked,
-  History,
-  EyeOff,
-  Settings,
-  Compass,
-  PlusCircle,
-  LogOut,
-} from "lucide-react";
-import type { TabId } from "../profile/profile/ProfileNav";
-
-const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
-  { id: "personal", label: "Personal Information", icon: User },
-  { id: "active", label: "Active Listings", icon: BookMarked },
-  { id: "swapped", label: "Swapped", icon: History },
-  { id: "inactive", label: "Inactive Listings", icon: EyeOff },
-  { id: "settings", label: "Account Settings", icon: Settings },
-];
+import { X, Compass, PlusCircle, LogOut } from "lucide-react";
+import type { TabId } from "./ProfileNav";
+import { navItems } from "./navItem";
 
 type Props = {
   isOpen: boolean;
@@ -91,7 +74,7 @@ const MobileMenu = ({ isOpen, onClose }: Props) => {
                   Profile
                 </p>
               </div>
-              {tabs.map((tab) => (
+              {navItems.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => goToTab(tab.id)}

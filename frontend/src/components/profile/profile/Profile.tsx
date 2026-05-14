@@ -2,7 +2,7 @@ import { Outlet, useMatch, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/reduxHooks";
 import ProfileHeader from "./ProfileHeader";
 import ProfileStats from "./ProfileStats";
-import ProfileNav, { type TabId } from "./ProfileNav";
+import ProfileNav, { type TabId } from "../../navbar/ProfileNav";
 
 const Profile = () => {
   const { user } = useAppSelector((state) => state.auth);

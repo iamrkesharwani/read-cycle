@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
   fetchUserBooks,
-  swapBookListing,
   updateListingStatus,
 } from "../../../store/book/bookThunk";
 import {
@@ -14,11 +13,9 @@ import {
   MoreVertical,
   Pencil,
   Plus,
-  Repeat,
   EyeOff,
   Star,
 } from "lucide-react";
-import SwapConfirmModal from "../modals/SwapConfirmModal";
 import InterestedUsersModal from "../modals/InterestedUsersModal";
 import ConfirmModal from "../modals/ConfirmModal";
 
@@ -57,7 +54,6 @@ export const cls = {
 interface ActionsDropdownProps {
   bookId: string;
   onClose: () => void;
-  onSwap: () => void;
   onInactive: () => void;
   onEdit: (id: string) => void;
   onViewInterest: () => void;
@@ -68,7 +64,6 @@ const BASE_URL = import.meta.env.VITE_BASE_URL ?? "http://127.0.0.1:5000";
 const ActionsDropdown = ({
   bookId,
   onClose,
-  onSwap,
   onInactive,
   onEdit,
   onViewInterest,
@@ -82,15 +77,6 @@ const ActionsDropdown = ({
       }}
     >
       <Star size={13} /> Interested Users
-    </button>
-    <button
-      className={`${cls.dropdownItem} text-teal-600 hover:bg-teal-50`}
-      onClick={() => {
-        onSwap();
-        onClose();
-      }}
-    >
-      <Repeat size={13} /> Mark as Swapped
     </button>
     <button
       className={`${cls.dropdownItem} text-gray-700 hover:bg-slate-50`}
@@ -119,8 +105,6 @@ const ActiveListings = () => {
   const navigate = useNavigate();
   const { books, isLoading } = useAppSelector((state) => state.book);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const [bookToSwap, setBookToSwap] = useState<string | null>(null);
-  const [isSwapping, setIsSwapping] = useState(false);
   const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
   const [bookToInactive, setBookToInactive] = useState<string | null>(null);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
@@ -134,15 +118,6 @@ const ActiveListings = () => {
   }, [dispatch]);
 
   const activeBooks = books.filter((b) => b.status === "published");
-  const selectedBook = books.find((b) => b._id === bookToSwap);
-
-  const handleConfirmSwap = async () => {
-    if (!bookToSwap) return;
-    setIsSwapping(true);
-    await dispatch(swapBookListing(bookToSwap));
-    setIsSwapping(false);
-    setBookToSwap(null);
-  };
 
   const handleOpenInterest = (id: string, title: string) => {
     setSelectedBookForInterest({ id, title });
@@ -259,7 +234,6 @@ const ActiveListings = () => {
                   <ActionsDropdown
                     bookId={id}
                     onClose={() => setOpenMenu(null)}
-                    onSwap={() => setBookToSwap(id)}
                     onEdit={(bookId) => navigate(`/edit/${bookId}`)}
                     onViewInterest={() => handleOpenInterest(id, book.title)}
                     onInactive={() => {
@@ -273,14 +247,6 @@ const ActiveListings = () => {
           );
         })}
       </div>
-
-      <SwapConfirmModal
-        isOpen={!!bookToSwap}
-        title={selectedBook?.title ?? "This Listing"}
-        isSwapping={isSwapping}
-        onClose={() => setBookToSwap(null)}
-        onConfirm={handleConfirmSwap}
-      />
 
       <InterestedUsersModal
         isOpen={isInterestModalOpen}

@@ -7,7 +7,6 @@ import {
   fetchPublicUserListings,
   fetchUserBooks,
   searchBookListings,
-  swapBookListing,
   toggleBookInterest,
   updateBookListing,
   updateListingStatus,
@@ -35,7 +34,6 @@ const bookThunks = [
   fetchUserBooks,
   fetchBookById,
   deleteBookListing,
-  swapBookListing,
   updateListingStatus,
   searchBookListings,
   fetchPublicUserListings,
@@ -81,15 +79,6 @@ const bookSlice = createSlice({
         state.books = state.books.filter((b) => b._id !== action.payload);
         state.success = true;
         state.error = null;
-      })
-      .addCase(swapBookListing.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        const book = state.books.find((b) => b._id === action.payload);
-        if (book) {
-          book.isSwapped = true;
-          book.status = "inactive";
-        }
       })
       .addCase(updateListingStatus.fulfilled, (state, action) => {
         state.isLoading = false;

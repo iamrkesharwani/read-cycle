@@ -1,5 +1,4 @@
-import { User, BookMarked, History, EyeOff, Settings } from "lucide-react";
-import { useAppSelector } from "../../../hooks/reduxHooks";
+import { navItems } from "./navItem";
 
 export const cls = {
   navBtn:
@@ -21,38 +20,6 @@ type Props = {
 };
 
 const ProfileNav = ({ activeTab, onTabChange }: Props) => {
-  const { books } = useAppSelector((state) => state.book);
-
-  const counts = {
-    active: books.filter((b) => b.status === "published").length,
-    swapped: books.filter((b) => b.isSwapped).length,
-    inactive: books.filter((b) => b.status === "inactive" && !b.isSwapped)
-      .length,
-  };
-
-  const navItems: {
-    id: TabId;
-    label: string;
-    icon: React.ElementType;
-    count?: number;
-  }[] = [
-    { id: "personal", label: "Personal Information", icon: User },
-    {
-      id: "active",
-      label: "Active Listings",
-      icon: BookMarked,
-      count: counts.active,
-    },
-    { id: "swapped", label: "Swapped", icon: History, count: counts.swapped },
-    {
-      id: "inactive",
-      label: "Inactive Listings",
-      icon: EyeOff,
-      count: counts.inactive,
-    },
-    { id: "settings", label: "Account Settings", icon: Settings },
-  ];
-
   return (
     <nav className="flex flex-1 flex-col overflow-y-auto px-4 py-4 [&::-webkit-scrollbar]:w-0">
       <div className="flex-1 space-y-1">
@@ -66,13 +33,6 @@ const ProfileNav = ({ activeTab, onTabChange }: Props) => {
             >
               <item.icon size={15} className="shrink-0" />
               <span className="flex-1 text-left">{item.label}</span>
-              {item.count !== undefined && (
-                <span
-                  className={`${cls.count} ${isActive ? cls.countActive : cls.countInactive}`}
-                >
-                  {item.count}
-                </span>
-              )}
             </button>
           );
         })}
