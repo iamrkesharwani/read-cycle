@@ -9,12 +9,12 @@ import ProfileLayout from "../components/profile/profile/ProfileLayout";
 import ProfileOverview from "../components/profile/profile/ProfileOverview";
 import PersonalInfo from "../components/profile/tabs/PersonalInfo";
 import ActiveListings from "../components/profile/tabs/ActiveListings";
-import SwappedListings from "../components/profile/tabs/SwappedListings";
 import InactiveListings from "../components/profile/tabs/InactiveListings";
 import AccountSettings from "../components/profile/tabs/AccountSettings";
 import MainListing from "../components/live/MainListing";
 import EditListing from "../components/listing/EditListing";
 import PublicProfile from "../components/public/PublicProfile";
+import MySwaps from "../components/profile/swap/MySwaps";
 
 const AppRoutes = () => {
   return (
@@ -31,7 +31,7 @@ const AppRoutes = () => {
             <Route path="/profile" element={<ProfileOverview />} />
             <Route path="/personal" element={<PersonalInfo />} />
             <Route path="/active" element={<ActiveListings />} />
-            <Route path="/swapped" element={<SwappedListings />} />
+            <Route path="/swapped" element={<MySwaps />} />
             <Route path="/inactive" element={<InactiveListings />} />
             <Route path="/settings" element={<AccountSettings />} />
           </Route>

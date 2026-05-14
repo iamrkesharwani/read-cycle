@@ -1,14 +1,28 @@
 import { createSlice, isPending, isRejected } from "@reduxjs/toolkit";
-import type { SwapState } from "../../../../shared/types/swap";
-import { proposeSwap } from "./swapThunk";
+import type {
+  PopulatedSwapRequest,
+  SwapState,
+} from "../../../../shared/types/swap";
+import { fetchMySwaps, proposeSwap, respondToSwap } from "./swapThunk";
 
-const initialState: SwapState = {
+interface FullSwapState extends SwapState {
+  received: PopulatedSwapRequest[];
+  sent: PopulatedSwapRequest[];
+  listLoading: boolean;
+  listError: string | null;
+}
+
+const initialState: FullSwapState = {
   isLoading: false,
   error: null,
   success: false,
+  received: [],
+  sent: [],
+  listLoading: false,
+  listError: null,
 };
 
-const swapThunks = [proposeSwap] as const;
+const swapThunks = [proposeSwap, respondToSwap] as const;
 
 const swapSlice = createSlice({
   name: "swap",
@@ -26,6 +40,19 @@ const swapSlice = createSlice({
         state.isLoading = false;
         state.error = null;
         state.success = true;
+      })
+      .addCase(fetchMySwaps.pending, (state) => {
+        state.listLoading = true;
+        state.listError = null;
+      })
+      .addCase(fetchMySwaps.fulfilled, (state, action) => {
+        state.listLoading = false;
+        state.received = action.payload.received;
+        state.sent = action.payload.sent;
+      })
+      .addCase(fetchMySwaps.rejected, (state, action) => {
+        state.listLoading = false;
+        state.listError = action.payload as string;
       })
       .addMatcher(isPending(...swapThunks), (state) => {
         state.isLoading = true;

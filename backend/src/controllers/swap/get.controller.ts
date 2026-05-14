@@ -30,8 +30,34 @@ export const getMySwaps = async (req: Request, res: Response) => {
             as: 'requestedBook',
           },
         },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'proposerId',
+            foreignField: '_id',
+            as: 'proposer',
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'receiverId',
+            foreignField: '_id',
+            as: 'receiver',
+          },
+        },
         { $unwind: '$offeredBook' },
         { $unwind: '$requestedBook' },
+        { $unwind: '$proposer' },
+        { $unwind: '$receiver' },
+        {
+          $project: {
+            'proposer.password': 0,
+            'proposer.email': 0,
+            'receiver.password': 0,
+            'receiver.email': 0,
+          },
+        },
         { $sort: { updatedAt: -1 } },
       ])
       .toArray();
@@ -39,7 +65,7 @@ export const getMySwaps = async (req: Request, res: Response) => {
     const received = swaps.filter(
       (s) => s.receiverId.toString() === userId.toString()
     );
-    
+
     const sent = swaps.filter(
       (s) => s.proposerId.toString() === userId.toString()
     );

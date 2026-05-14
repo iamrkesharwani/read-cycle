@@ -59,24 +59,8 @@ const MainListing = () => {
   };
 
   const handleSwapSelection = (offeredBookId: string) => {
-    if (book?._id) {
-      dispatch(
-        proposeSwap({
-          offeredBookId,
-          requestedBookId: book._id,
-        }),
-      );
-    }
-
-    console.log("PROPOSING SWAP:", {
-      offered: offeredBookId,
-      requested: book?._id,
-    });
-
     if (book?._id && offeredBookId) {
       dispatch(proposeSwap({ offeredBookId, requestedBookId: book._id }));
-    } else {
-      console.error("Missing IDs for swap!");
     }
   };
 

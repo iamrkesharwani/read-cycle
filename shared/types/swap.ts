@@ -15,12 +15,17 @@ export interface SwapRequest {
 
 export interface PopulatedSwapRequest extends Omit<
   SwapRequest,
-  'proposerId' | 'receiverId' | 'offeredBookId' | 'requestedBookId'
+  'offeredBookId' | 'requestedBookId'
 > {
+  offeredBook: { _id: string; title: string; author: string; images: string[] };
+  requestedBook: {
+    _id: string;
+    title: string;
+    author: string;
+    images: string[];
+  };
   proposer: { _id: string; username: string; name: string };
   receiver: { _id: string; username: string; name: string };
-  offeredBook: { _id: string; title: string; images: string[] };
-  requestedBook: { _id: string; title: string; images: string[] };
 }
 
 export interface SwapState {
