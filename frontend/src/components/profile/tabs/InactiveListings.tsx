@@ -118,24 +118,6 @@ const InactiveListings = () => {
     );
   }
 
-  if (inactiveBooks.length === 0) {
-    return (
-      <div className="flex h-full flex-col items-center justify-center gap-3 py-20 text-slate-400">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
-          <EyeOff size={28} strokeWidth={1.5} />
-        </div>
-        <div className="text-center">
-          <p className="text-sm font-semibold text-slate-500">
-            No inactive listings
-          </p>
-          <p className="mt-1 text-xs text-slate-400">
-            Deactivated listings will appear here.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-5">
       <div>
@@ -145,64 +127,80 @@ const InactiveListings = () => {
         </p>
       </div>
 
-      <div className="space-y-2.5">
-        {inactiveBooks.map((book) => {
-          const id = book._id ?? "";
-          return (
-            <div key={id} className={cls.card}>
-              <div className={cls.inner}>
-                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-200">
-                  {book.images?.[0] ? (
-                    <img
-                      src={`${BASE_URL}${book.images[0]}`}
-                      alt={book.title}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <BookMarked size={20} className="text-slate-400" />
+      {inactiveBooks.length === 0 ? (
+        <div className="flex h-full flex-col items-center justify-center gap-3 py-20 text-slate-400">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
+            <EyeOff size={28} strokeWidth={1.5} />
+          </div>
+          <div className="text-center">
+            <p className="text-sm font-semibold text-slate-500">
+              No inactive listings
+            </p>
+            <p className="mt-1 text-xs text-slate-400">
+              Deactivated listings will appear here.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          {inactiveBooks.map((book) => {
+            const id = book._id ?? "";
+            return (
+              <div key={id} className={cls.card}>
+                <div className={cls.inner}>
+                  <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-200">
+                    {book.images?.[0] ? (
+                      <img
+                        src={`${BASE_URL}${book.images[0]}`}
+                        alt={book.title}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <BookMarked size={20} className="text-slate-400" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-1.5">
+                    <p className={cls.title}>{book.title}</p>
+                    <p className={cls.author}>by {book.author}</p>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className={cls.badge}>{book.genre}</span>
+                      <span className={cls.badgeDate}>
+                        Updated{" "}
+                        {new Date(book.updatedAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
                     </div>
-                  )}
-                </div>
-                <div className="min-w-0 flex-1 space-y-1.5">
-                  <p className={cls.title}>{book.title}</p>
-                  <p className={cls.author}>by {book.author}</p>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className={cls.badge}>{book.genre}</span>
-                    <span className={cls.badgeDate}>
-                      Updated{" "}
-                      {new Date(book.updatedAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
                   </div>
                 </div>
-              </div>
 
-              <div className="relative shrink-0">
-                <button
-                  className={cls.menuBtn}
-                  onClick={() => setOpenMenu(openMenu === id ? null : id)}
-                >
-                  <MoreVertical size={14} />
-                  <span className="hidden text-xs font-semibold sm:inline">
-                    Actions
-                  </span>
-                  <ChevronDown size={12} className="hidden sm:inline" />
-                </button>
-                {openMenu === id && (
-                  <ActionsDropdown
-                    onClose={() => setOpenMenu(null)}
-                    onReactivate={() => setBookToActivate(id)}
-                    onDelete={() => setBookToDelete(id)}
-                  />
-                )}
+                <div className="relative shrink-0">
+                  <button
+                    className={cls.menuBtn}
+                    onClick={() => setOpenMenu(openMenu === id ? null : id)}
+                  >
+                    <MoreVertical size={14} />
+                    <span className="hidden text-xs font-semibold sm:inline">
+                      Actions
+                    </span>
+                    <ChevronDown size={12} className="hidden sm:inline" />
+                  </button>
+                  {openMenu === id && (
+                    <ActionsDropdown
+                      onClose={() => setOpenMenu(null)}
+                      onReactivate={() => setBookToActivate(id)}
+                      onDelete={() => setBookToDelete(id)}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       <ConfirmModal
         isOpen={!!bookToActivate}

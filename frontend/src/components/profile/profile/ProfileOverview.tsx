@@ -2,29 +2,14 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/reduxHooks";
 import ProfileHeader from "./ProfileHeader";
 import ProfileStats from "./ProfileStats";
-import {
-  User,
-  BookMarked,
-  History,
-  EyeOff,
-  Settings,
-  ChevronRight,
-} from "lucide-react";
-
-const sections = [
-  { label: "Personal Information", path: "/personal", icon: User },
-  { label: "Active Listings", path: "/active", icon: BookMarked },
-  { label: "Swapped", path: "/swapped", icon: History },
-  { label: "Inactive Listings", path: "/inactive", icon: EyeOff },
-  { label: "Account Settings", path: "/settings", icon: Settings },
-];
+import { PROFILE_NAV_ITEMS } from "../../../constants/navItem";
+import { ChevronRight } from "lucide-react";
 
 const ProfileOverview = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   return (
     <div className="space-y-5">
-      {/* Mobile-only profile card */}
       <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white md:hidden">
         <ProfileHeader
           name={user?.name || "Reader"}
@@ -35,9 +20,8 @@ const ProfileOverview = () => {
         <ProfileStats />
       </div>
 
-      {/* Section tiles */}
       <div className="flex flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-100 bg-white md:gap-3 md:divide-y-0 md:overflow-visible md:rounded-none md:border-0 md:bg-transparent">
-        {sections.map((section) => (
+        {PROFILE_NAV_ITEMS.map((section) => (
           <Link
             key={section.path}
             to={section.path}

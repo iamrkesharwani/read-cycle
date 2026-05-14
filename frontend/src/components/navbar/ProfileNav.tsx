@@ -1,4 +1,4 @@
-import { navItems } from "./navItem";
+import { PROFILE_NAV_ITEMS } from "../../constants/navItem";
 
 export const cls = {
   navBtn:
@@ -23,7 +23,7 @@ const ProfileNav = ({ activeTab, onTabChange }: Props) => {
   return (
     <nav className="flex flex-1 flex-col overflow-y-auto px-4 py-4 [&::-webkit-scrollbar]:w-0">
       <div className="flex-1 space-y-1">
-        {navItems.map((item) => {
+        {PROFILE_NAV_ITEMS.map((item) => {
           const isActive = activeTab === item.id;
           return (
             <button

@@ -145,25 +145,6 @@ const ActiveListings = () => {
     );
   }
 
-  if (!isLoading && activeBooks.length === 0) {
-    return (
-      <div className={cls.emptyWrapper}>
-        <div className={cls.emptyIconBox}>
-          <BookMarked size={28} strokeWidth={1.5} />
-        </div>
-        <div className="text-center">
-          <p className={cls.emptyTitle}>No active listings</p>
-          <p className={cls.emptySubtitle}>
-            Books you list for exchange will appear here.
-          </p>
-        </div>
-        <button onClick={() => navigate("/create")} className={cls.btnPrimary}>
-          <Plus size={15} /> List a Book
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
@@ -174,79 +155,101 @@ const ActiveListings = () => {
             currently listed
           </p>
         </div>
-        <button
-          onClick={() => navigate("/create")}
-          className={cls.btnPrimarySmall}
-        >
-          <Plus size={13} /> Add New
-        </button>
+        {activeBooks.length > 0 && (
+          <button
+            onClick={() => navigate("/create")}
+            className={cls.btnPrimarySmall}
+          >
+            <Plus size={13} /> Add New
+          </button>
+        )}
       </div>
 
-      <div className="space-y-2.5">
-        {activeBooks.map((book) => {
-          const id = book._id ?? "";
-          return (
-            <div key={id} className={cls.card}>
-              <Link
-                to={`/listing/${id}`}
-                className="block h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-teal-50"
-              >
-                {book.images?.[0] ? (
-                  <img
-                    src={`${BASE_URL}${book.images[0]}`}
-                    alt={book.title}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center">
-                    <BookMarked size={20} className="text-teal-400" />
-                  </div>
-                )}
-              </Link>
-
-              <div className="min-w-0 flex-1 space-y-1.5">
-                <Link to={`/listing/${id}`}>
-                  <p
-                    className={`${cls.title} transition-colors hover:text-teal-600`}
-                  >
-                    {book.title}
-                  </p>
+      {activeBooks.length === 0 ? (
+        <div className={cls.emptyWrapper}>
+          <div className={cls.emptyIconBox}>
+            <BookMarked size={28} strokeWidth={1.5} />
+          </div>
+          <div className="text-center">
+            <p className={cls.emptyTitle}>No active listings</p>
+            <p className={cls.emptySubtitle}>
+              Books you list for exchange will appear here.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate("/create")}
+            className={cls.btnPrimary}
+          >
+            <Plus size={15} /> List a Book
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          {activeBooks.map((book) => {
+            const id = book._id ?? "";
+            return (
+              <div key={id} className={cls.card}>
+                <Link
+                  to={`/listing/${id}`}
+                  className="block h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-teal-50"
+                >
+                  {book.images?.[0] ? (
+                    <img
+                      src={`${BASE_URL}${book.images[0]}`}
+                      alt={book.title}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <BookMarked size={20} className="text-teal-400" />
+                    </div>
+                  )}
                 </Link>
-                <p className={cls.author}>by {book.author}</p>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className={cls.badge}>{book.genre}</span>
-                  <span className={cls.badgeTeal}>{book.condition}</span>
+
+                <div className="min-w-0 flex-1 space-y-1.5">
+                  <Link to={`/listing/${id}`}>
+                    <p
+                      className={`${cls.title} transition-colors hover:text-teal-600`}
+                    >
+                      {book.title}
+                    </p>
+                  </Link>
+                  <p className={cls.author}>by {book.author}</p>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className={cls.badge}>{book.genre}</span>
+                    <span className={cls.badgeTeal}>{book.condition}</span>
+                  </div>
+                </div>
+
+                <div className="relative shrink-0">
+                  <button
+                    className={cls.menuBtn}
+                    onClick={() => setOpenMenu(openMenu === id ? null : id)}
+                  >
+                    <MoreVertical size={14} />
+                    <span className="hidden text-xs font-semibold sm:inline">
+                      Actions
+                    </span>
+                    <ChevronDown size={12} className="hidden sm:inline" />
+                  </button>
+                  {openMenu === id && (
+                    <ActionsDropdown
+                      bookId={id}
+                      onClose={() => setOpenMenu(null)}
+                      onEdit={(bookId) => navigate(`/edit/${bookId}`)}
+                      onViewInterest={() => handleOpenInterest(id, book.title)}
+                      onInactive={() => {
+                        setBookToInactive(id);
+                        setOpenMenu(null);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
-
-              <div className="relative shrink-0">
-                <button
-                  className={cls.menuBtn}
-                  onClick={() => setOpenMenu(openMenu === id ? null : id)}
-                >
-                  <MoreVertical size={14} />
-                  <span className="hidden text-xs font-semibold sm:inline">
-                    Actions
-                  </span>
-                  <ChevronDown size={12} className="hidden sm:inline" />
-                </button>
-                {openMenu === id && (
-                  <ActionsDropdown
-                    bookId={id}
-                    onClose={() => setOpenMenu(null)}
-                    onEdit={(bookId) => navigate(`/edit/${bookId}`)}
-                    onViewInterest={() => handleOpenInterest(id, book.title)}
-                    onInactive={() => {
-                      setBookToInactive(id);
-                      setOpenMenu(null);
-                    }}
-                  />
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       <InterestedUsersModal
         isOpen={isInterestModalOpen}

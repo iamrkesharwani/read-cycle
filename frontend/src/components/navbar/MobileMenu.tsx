@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
 import { logoutUser } from "../../store/auth/authThunk";
 import { X, Compass, PlusCircle, LogOut } from "lucide-react";
 import type { TabId } from "./ProfileNav";
-import { navItems } from "./navItem";
+import { PROFILE_NAV_ITEMS } from "../../constants/navItem";
 
 type Props = {
   isOpen: boolean;
@@ -74,7 +74,7 @@ const MobileMenu = ({ isOpen, onClose }: Props) => {
                   Profile
                 </p>
               </div>
-              {navItems.map((tab) => (
+              {PROFILE_NAV_ITEMS.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => goToTab(tab.id)}

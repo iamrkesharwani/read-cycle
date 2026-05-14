@@ -34,7 +34,7 @@ const ProfileLayout = () => {
           onTabChange={(tab) => navigate(`/${tab}`)}
         />
       </aside>
-      
+
       <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-0">
         <div className="mx-auto max-w-3xl px-4 py-7">
           <Outlet />
