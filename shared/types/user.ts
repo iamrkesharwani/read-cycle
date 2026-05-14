@@ -45,7 +45,6 @@ export interface RegisterInput extends LoginInput {
 export interface AuthState {
   user: User | null;
   publicProfile: User | null;
-  token: string | null;
   isLoading: boolean;
   error: string | null | undefined;
 }

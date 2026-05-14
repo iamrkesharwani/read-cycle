@@ -11,6 +11,7 @@ import {
   updateCity,
   updateBio,
   fetchPublicProfile,
+  logoutUser,
 } from "./authThunk";
 import type {
   AuthState,
@@ -21,8 +22,7 @@ import type {
 const initialState: AuthState = {
   user: null,
   publicProfile: null,
-  token: localStorage.getItem("token"),
-  isLoading: false,
+  isLoading: true,
   error: null,
 };
 
@@ -31,21 +31,19 @@ const authThunks = [
   registerUser,
   getMe,
   fetchPublicProfile,
+  logoutUser,
 ] as const;
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    logout: (state) => {
-      localStorage.removeItem("token");
-      state.user = null;
-      state.token = null;
-      state.error = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.isLoading = false;
+      })
       .addCase(getMe.fulfilled, (state, action: PayloadAction<User>) => {
         state.isLoading = false;
         state.user = action.payload;
@@ -106,7 +104,6 @@ const authSlice = createSlice({
         (state, action: PayloadAction<AuthResponse>) => {
           state.isLoading = false;
           state.user = action.payload.user;
-          state.token = action.payload.token;
         },
       )
       .addMatcher(isPending(...authThunks), (state) => {
@@ -118,12 +115,9 @@ const authSlice = createSlice({
         state.error = action.payload as string;
         if (action.type.includes("getMe")) {
           state.user = null;
-          state.token = null;
-          localStorage.removeItem("token");
         }
       });
   },
 });
 
-export const { logout } = authSlice.actions;
 export default authSlice.reducer;

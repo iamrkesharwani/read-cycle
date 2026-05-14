@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authLimiter } from '../middleware/rateLimit.middleware.js';
 import { registerUser } from '../controllers/auth/register.controller.js';
 import { loginUser } from '../controllers/auth/login.controller.js';
 import { authGuard } from '../middleware/auth.middleware.js';
@@ -14,11 +15,13 @@ import {
   checkUsername,
   updateUsername,
 } from '../controllers/auth/username.controller.js';
+import { logoutUser } from '../controllers/auth/logout.controller.js';
 
 const router = Router();
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
+router.post('/register', authLimiter, registerUser);
+router.post('/login', authLimiter, loginUser);
+router.post('/logout', logoutUser);
 router.get('/profile/:username', getPublicProfile);
 router.get('/me', authGuard, getMe);
 router.get('/username/check', checkUsername);

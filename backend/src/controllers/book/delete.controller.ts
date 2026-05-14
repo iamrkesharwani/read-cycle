@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 import {
   getBooksCollection,
   getSwapsCollection,
+  getInterestsCollection,
 } from '../../utils/collections.js';
 import type { BookDoc } from '../../types/book.doc.js';
 import type { Request, Response } from 'express';
@@ -23,6 +24,7 @@ export const deleteListing = async (req: Request, res: Response) => {
 
     const booksCollection = await getBooksCollection<BookDoc>();
     const swapsCollection = await getSwapsCollection();
+    const interestsCollection = await getInterestsCollection();
 
     const bookId = new ObjectId(id);
 
@@ -46,6 +48,8 @@ export const deleteListing = async (req: Request, res: Response) => {
       }
     );
 
+    await interestsCollection.deleteMany({ bookId: bookId });
+
     book.images.forEach((imagePath) => {
       const fullPath = path.join(
         process.cwd(),
@@ -59,6 +63,7 @@ export const deleteListing = async (req: Request, res: Response) => {
     });
 
     await booksCollection.deleteOne({ _id: new ObjectId(id) });
+    
     res.status(200).json({ message: 'Listing and images deleted' });
   } catch (error) {
     console.error('Delete listing error:', error);

@@ -8,7 +8,6 @@ export const loginUser = createAsyncThunk(
   async (credentials: LoginInput, thunkAPI) => {
     try {
       const data = await authService.login(credentials);
-      localStorage.setItem("token", data.token);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(getErrorMessage(error, "Login Failed"));
@@ -21,9 +20,6 @@ export const registerUser = createAsyncThunk(
   async (userData: RegisterInput, thunkAPI) => {
     try {
       const data = await authService.register(userData);
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -40,6 +36,17 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, thunkAPI) => {
     return thunkAPI.rejectWithValue(getErrorMessage(error, "Session Expired"));
   }
 });
+
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, thunkAPI) => {
+    try {
+      return await authService.logout();
+    } catch (error) {
+      return thunkAPI.rejectWithValue("Logout failed");
+    }
+  },
+);
 
 export const updateName = createAsyncThunk(
   "auth/updateName",
