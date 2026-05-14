@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 import authService from "../../services/authService";
 import { getErrorMessage } from "../../errors/axiosError";
 import type { LoginInput, RegisterInput } from "../../../../shared/types/user";
@@ -33,6 +34,9 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, thunkAPI) => {
   try {
     return await authService.getMe();
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return thunkAPI.rejectWithValue(null);
+    }
     return thunkAPI.rejectWithValue(getErrorMessage(error, "Session Expired"));
   }
 });

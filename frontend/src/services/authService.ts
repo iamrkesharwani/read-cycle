@@ -6,19 +6,24 @@ import type {
   User,
 } from "../../../shared/types/user";
 
+const SESSION_KEY = "rc_session";
+
 const authService = {
   register: async (userData: RegisterInput): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>("/auth/register", userData);
+    localStorage.setItem(SESSION_KEY, "1");
     return response.data;
   },
 
   login: async (credentials: LoginInput): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>("/auth/login", credentials);
+    localStorage.setItem(SESSION_KEY, "1");
     return response.data;
   },
 
   logout: async () => {
     await api.post("/auth/logout");
+    localStorage.removeItem(SESSION_KEY);
     return null;
   },
 
@@ -68,4 +73,5 @@ const authService = {
   },
 };
 
+export { SESSION_KEY };
 export default authService;

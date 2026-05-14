@@ -1,23 +1,21 @@
-import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, Loader2, ArrowRight, EyeOff, Eye } from 'lucide-react';
-import { loginUser } from '../../store/auth/authThunk';
-import DecorativeRegisterLogin from '../misc/DecorativeRegisterLogin';
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { useNavigate, Link } from "react-router-dom";
+import { Mail, Lock, Loader2, ArrowRight, EyeOff, Eye } from "lucide-react";
+import { loginUser } from "../../store/auth/authThunk";
+import DecorativeRegisterLogin from "../misc/DecorativeRegisterLogin";
 import {
   loginSchema,
   type LoginInput,
-} from '../../../../shared/schemas/auth/login.schema';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import loginImg from '../../assets/login.jpg';
+} from "../../../../shared/schemas/auth/login.schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import loginImg from "../../assets/login.jpg";
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user, token, isLoading, error } = useAppSelector(
-    (state) => state.auth
-  );
+  const { user, isLoading, error } = useAppSelector((state) => state.auth);
 
   const [show, setShow] = useState(false);
 
@@ -30,8 +28,8 @@ const Login = () => {
   });
 
   useEffect(() => {
-    if (user && token) navigate('/');
-  }, [user, token, navigate]);
+    if (user) navigate("/");
+  }, [user, navigate]);
 
   const onSubmit = (data: LoginInput) => {
     dispatch(loginUser(data));
@@ -40,40 +38,40 @@ const Login = () => {
   return (
     <div className="flex flex-1">
       {/* Image panel */}
-      <div className="hidden lg:flex flex-col flex-[0_0_50%] relative overflow-hidden">
+      <div className="relative hidden flex-[0_0_50%] flex-col overflow-hidden lg:flex">
         <img
           src={loginImg}
           alt="Library"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(160deg, rgba(13,148,136,0.72) 0%, rgba(6,78,59,0.88) 100%)',
+              "linear-gradient(160deg, rgba(13,148,136,0.72) 0%, rgba(6,78,59,0.88) 100%)",
           }}
         />
 
         <div className="relative z-10 p-8">
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white/90">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400" />
             Login To Restart Swaps
           </div>
         </div>
 
-        <div className="relative z-10 flex-1 flex items-center justify-center px-10">
-          <h1 className="text-4xl font-extrabold text-white leading-tight tracking-tight text-center">
-            Every book deserves <span className="text-amber-300">another</span>{' '}
+        <div className="relative z-10 flex flex-1 items-center justify-center px-10">
+          <h1 className="text-center text-4xl font-extrabold leading-tight tracking-tight text-white">
+            Every book deserves <span className="text-amber-300">another</span>{" "}
             reader.
           </h1>
         </div>
 
         <div className="relative z-10 p-8">
           <div className="border-l-2 border-amber-400 pl-4">
-            <p className="text-white/90 text-sm font-semibold italic leading-relaxed">
+            <p className="text-sm font-semibold italic leading-relaxed text-white/90">
               "Until I feared I would lose it, I never loved to read."
             </p>
-            <p className="text-white/50 text-sm mt-1 font-semibold">
+            <p className="mt-1 text-sm font-semibold text-white/50">
               — Harper Lee
             </p>
           </div>
@@ -82,28 +80,28 @@ const Login = () => {
 
       {/* Form panel */}
       <div
-        className="flex-1 flex items-center justify-center px-8 py-10 relative overflow-hidden"
-        style={{ background: '#fafaf8' }}
+        className="relative flex flex-1 items-center justify-center overflow-hidden px-8 py-10"
+        style={{ background: "#fafaf8" }}
       >
         <DecorativeRegisterLogin />
 
         <div className="relative z-10 w-full max-w-sm">
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-1">
+          <h2 className="mb-1 text-3xl font-extrabold tracking-tight text-slate-900">
             Welcome back
           </h2>
-          <p className="text-sm text-slate-400 mb-8">
+          <p className="mb-8 text-sm text-slate-400">
             Good to see you again. Let's find your next read.
           </p>
 
           {error && (
-            <div className="mb-5 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r-lg">
+            <div className="mb-5 rounded-r-lg border-l-4 border-red-500 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">
                 Email
               </label>
               <div className="relative">
@@ -114,23 +112,23 @@ const Login = () => {
                 <input
                   type="text"
                   placeholder="you@example.com"
-                  {...register('email')}
-                  className={`w-full pl-10 pr-4 py-2.5 bg-white border-[1.5px] rounded-xl text-sm text-slate-900 transition-all outline-none ${
+                  {...register("email")}
+                  className={`w-full rounded-xl border-[1.5px] bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 outline-none transition-all ${
                     errors.email
-                      ? 'border-red-500 focus:ring-red-100'
-                      : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
+                      ? "border-red-500 focus:ring-red-100"
+                      : "border-slate-200 focus:border-teal-500 focus:ring-teal-500/10"
                   }`}
                 />
               </div>
               {errors.email && (
-                <p className="text-red-500 text-[10px] mt-1 font-bold uppercase">
+                <p className="mt-1 text-[10px] font-bold uppercase text-red-500">
                   {errors.email.message}
                 </p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">
                 Password
               </label>
               <div className="relative">
@@ -139,13 +137,13 @@ const Login = () => {
                   size={16}
                 />
                 <input
-                  type={show ? 'text' : 'password'}
+                  type={show ? "text" : "password"}
                   placeholder="••••••••"
-                  {...register('password')}
-                  className={`w-full pl-10 pr-10 py-2.5 bg-white border-[1.5px] rounded-xl text-sm text-slate-900 transition-all outline-none ${
+                  {...register("password")}
+                  className={`w-full rounded-xl border-[1.5px] bg-white py-2.5 pl-10 pr-10 text-sm text-slate-900 outline-none transition-all ${
                     errors.password
-                      ? 'border-red-500 focus:ring-red-100'
-                      : 'border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'
+                      ? "border-red-500 focus:ring-red-100"
+                      : "border-slate-200 focus:border-teal-500 focus:ring-teal-500/10"
                   }`}
                 />
                 <button
@@ -157,7 +155,7 @@ const Login = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-[10px] mt-1 font-bold uppercase">
+                <p className="mt-1 text-[10px] font-bold uppercase text-red-500">
                   {errors.password.message}
                 </p>
               )}
@@ -166,9 +164,9 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 disabled:opacity-60 transition-all mt-2"
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white transition-all disabled:opacity-60"
               style={{
-                background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
+                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
               }}
             >
               {isLoading ? (
@@ -181,17 +179,17 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="flex items-center gap-3 my-5">
+          <div className="my-5 flex items-center gap-3">
             <div className="flex-1 border-t border-slate-200" />
-            <span className="text-xs text-slate-300 font-medium">OR</span>
+            <span className="text-xs font-medium text-slate-300">OR</span>
             <div className="flex-1 border-t border-slate-200" />
           </div>
 
           <p className="text-center text-sm text-slate-400">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link
               to="/register"
-              className="text-teal-600 font-bold hover:underline"
+              className="font-bold text-teal-600 hover:underline"
             >
               Create one
             </Link>

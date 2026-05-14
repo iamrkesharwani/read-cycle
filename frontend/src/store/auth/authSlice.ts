@@ -37,7 +37,12 @@ const authThunks = [
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    sessionChecked: (state) => {
+      state.isLoading = false;
+      state.user = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(logoutUser.fulfilled, (state) => {
@@ -113,6 +118,9 @@ const authSlice = createSlice({
       .addMatcher(isRejected(...authThunks), (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        if (action.payload !== null) {
+          state.error = action.payload as string;
+        }
         if (action.type.includes("getMe")) {
           state.user = null;
         }
@@ -120,4 +128,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { sessionChecked } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
-import { logout } from "../../store/auth/authSlice";
+import { logoutUser } from "../../store/auth/authThunk";
 import {
   X,
   User,
@@ -38,7 +38,7 @@ const MobileMenu = ({ isOpen, onClose }: Props) => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
     onClose();
   };
 
