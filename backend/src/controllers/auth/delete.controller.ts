@@ -6,7 +6,7 @@ import {
   getUsersCollection,
   getInterestsCollection,
 } from '../../utils/collections.js';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 import path from 'node:path';
 import fs from 'node:fs';
 

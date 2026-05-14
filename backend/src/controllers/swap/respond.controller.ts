@@ -4,7 +4,7 @@ import {
   getSwapsCollection,
   getBooksCollection,
 } from '../../utils/collections.js';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 
 export const updateSwapStatus = async (req: Request, res: Response) => {
   try {

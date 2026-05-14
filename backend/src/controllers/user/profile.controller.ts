@@ -2,7 +2,7 @@ import { getUsersCollection } from '../../utils/collections.js';
 import { getBooksCollection } from '../../utils/collections.js';
 import { ObjectId } from 'mongodb';
 import type { Request, Response } from 'express';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 
 export const getPublicProfile = async (req: Request, res: Response) => {
   try {

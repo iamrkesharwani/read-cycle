@@ -5,7 +5,7 @@ import {
   getInterestsCollection,
   getUsersCollection,
 } from '../../utils/collections.js';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 
 export const getListingById = async (req: Request, res: Response) => {
   try {

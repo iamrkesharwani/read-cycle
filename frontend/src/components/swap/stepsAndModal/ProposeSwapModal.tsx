@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import StepSelect from "./steps/StepSelect";
-import StepConfirm from "./steps/StepConfirm";
-import StepSuccess from "./steps/StepSuccess";
+import StepSelect from "./StepSelect";
+import StepConfirm from "./StepConfirm";
+import StepSuccess from "./StepSuccess";
 
 type ModalStep = "select" | "confirm" | "success";
 

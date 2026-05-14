@@ -4,17 +4,17 @@ import { registerUser } from '../controllers/auth/register.controller.js';
 import { loginUser } from '../controllers/auth/login.controller.js';
 import { authGuard } from '../middleware/auth.middleware.js';
 import { getMe } from '../controllers/auth/me.controller.js';
-import { updateName } from '../controllers/auth/name.controller.js';
-import { updateEmail } from '../controllers/auth/email.controller.js';
-import { updatePhone } from '../controllers/auth/phone.controller.js';
-import { updateCity } from '../controllers/auth/city.controller.js';
-import { updateBio } from '../controllers/auth/bio.controller.js';
+import { updateName } from '../controllers/user/name.controller.js';
+import { updateEmail } from '../controllers/user/email.controller.js';
+import { updatePhone } from '../controllers/user/phone.controller.js';
+import { updateCity } from '../controllers/user/city.controller.js';
+import { updateBio } from '../controllers/user/bio.controller.js';
 import { deleteAccount } from '../controllers/auth/delete.controller.js';
-import { getPublicProfile } from '../controllers/public/profile.controller.js';
+import { getPublicProfile } from '../controllers/user/profile.controller.js';
 import {
   checkUsername,
   updateUsername,
-} from '../controllers/auth/username.controller.js';
+} from '../controllers/user/username.controller.js';
 import { logoutUser } from '../controllers/auth/logout.controller.js';
 
 const router = Router();

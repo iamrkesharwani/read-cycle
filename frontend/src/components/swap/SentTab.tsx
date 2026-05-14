@@ -2,7 +2,7 @@ import { ArrowLeftRight, Clock, Loader2 } from "lucide-react";
 import { cls } from "./style";
 import StatusBadge from "./StatusBadge";
 import BookCover from "./BookCover";
-import type { PopulatedSwapRequest } from "../../../../../shared/types/swap";
+import type { PopulatedSwapRequest } from "../../../../shared/types/swap";
 import Empty from "./Empty";
 
 const SentTab = ({

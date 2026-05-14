@@ -12,7 +12,7 @@ import ListingMeta from "./ListingMeta";
 import ListingActions from "./ListingActions";
 import { resetSwapStatus } from "../../store/swap/swapSlice";
 import { proposeSwap } from "../../store/swap/swapThunk";
-import ProposeSwapModal from "../swap/ProposeSwapModal";
+import ProposeSwapModal from "../swap/stepsAndModal/ProposeSwapModal";
 
 const MainListing = () => {
   const { id } = useParams<{ id: string }>();

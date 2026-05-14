@@ -4,8 +4,8 @@ import {
   getSwapsCollection,
 } from '../../utils/collections.js';
 import { ObjectId } from 'mongodb';
-import type { BookDoc } from '../../types/book.doc.js';
-import type { SwapDoc } from '../../types/swap.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
+import type { SwapDoc } from '../../models/swap.doc.js';
 
 export const proposeSwap = async (req: Request, res: Response) => {
   try {

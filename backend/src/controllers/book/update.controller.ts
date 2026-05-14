@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import fs from 'node:fs';
 import { getBooksCollection } from '../../utils/collections.js';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 import { serverBookSchema } from '../../../../shared/schemas/book/create.schema.js';
 import path from 'node:path';
 

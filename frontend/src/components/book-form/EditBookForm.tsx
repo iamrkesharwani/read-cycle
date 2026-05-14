@@ -1,17 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks.js';
-import { resetBookStatus } from '../../store/book/bookSlice.js';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks.js";
+import { resetBookStatus } from "../../store/book/bookSlice.js";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   fetchBookById,
   updateBookListing,
-} from '../../store/book/bookThunk.js';
+} from "../../store/book/bookThunk.js";
 import {
   editFormSchema,
   type EditBookInput,
-} from '../../../../shared/schemas/book/create.schema.js';
+} from "../../../../shared/schemas/book/create.schema.js";
 import {
   ChevronLeft,
   ChevronRight,
@@ -22,14 +22,14 @@ import {
   AlignLeft,
   Eye,
   Loader2,
-} from 'lucide-react';
+} from "lucide-react";
 
-import Image from './Image';
-import TitleAuthor from './TitleAuthor';
-import Detail from './Detail';
-import Description from './Description';
-import Preview from './Preview';
-import ConfirmModal from './ConfirmModal';
+import Image from "./Image.js";
+import TitleAuthor from "./TitleAuthor.js";
+import Detail from "./Detail.js";
+import Description from "./Description.js";
+import Preview from "./Preview.js";
+import ConfirmModal from "./ConfirmModal.js";
 
 type StepConfig = {
   component: React.ReactNode;
@@ -39,16 +39,16 @@ type StepConfig = {
 };
 
 const STEPS_META = [
-  { label: 'Photos', subtitle: 'Upload book images', icon: Camera },
-  { label: 'Details', subtitle: 'Title & author', icon: BookOpen },
-  { label: 'Category', subtitle: 'Genre & condition', icon: Tag },
-  { label: 'Description', subtitle: 'Tell buyers more', icon: AlignLeft },
-  { label: 'Preview', subtitle: 'Review & publish', icon: Eye },
+  { label: "Photos", subtitle: "Upload book images", icon: Camera },
+  { label: "Details", subtitle: "Title & author", icon: BookOpen },
+  { label: "Category", subtitle: "Genre & condition", icon: Tag },
+  { label: "Description", subtitle: "Tell buyers more", icon: AlignLeft },
+  { label: "Preview", subtitle: "Review & publish", icon: Eye },
 ];
 
-const BASE_URL = import.meta.env.VITE_BASE_URL ?? 'http://127.0.0.1:5000';
+const BASE_URL = import.meta.env.VITE_BASE_URL ?? "http://127.0.0.1:5000";
 
-const EditListing = () => {
+const EditBookForm = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -62,13 +62,13 @@ const EditListing = () => {
     resolver: zodResolver(editFormSchema),
     defaultValues: {
       images: [],
-      title: '',
-      author: '',
+      title: "",
+      author: "",
       genre: undefined,
       condition: undefined,
-      description: '',
+      description: "",
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const EditListing = () => {
     if (!currentBook) return;
 
     const serverImages = currentBook.images.map(
-      (path: string) => `${BASE_URL}${path}`
+      (path: string) => `${BASE_URL}${path}`,
     );
     setExistingImages(currentBook.images);
     methods.reset({
@@ -104,23 +104,23 @@ const EditListing = () => {
             onExistingImagesChange={setExistingImages}
           />
         ),
-        fields: ['images'],
+        fields: ["images"],
         ...STEPS_META[0],
       },
       {
         component: <TitleAuthor />,
-        fields: ['title', 'author'],
+        fields: ["title", "author"],
         ...STEPS_META[1],
       },
       {
         component: <Detail />,
-        fields: ['genre', 'condition'],
+        fields: ["genre", "condition"],
         ...STEPS_META[2],
       },
-      { component: <Description />, fields: ['description'], ...STEPS_META[3] },
+      { component: <Description />, fields: ["description"], ...STEPS_META[3] },
       { component: <Preview />, ...STEPS_META[4] },
     ],
-    [existingImages]
+    [existingImages],
   );
 
   const totalSteps = steps.length;
@@ -144,18 +144,18 @@ const EditListing = () => {
     const data = formValues;
     const formData = new FormData();
 
-    formData.append('title', data.title);
-    formData.append('author', data.author);
-    formData.append('condition', data.condition);
-    formData.append('genre', data.genre);
-    formData.append('description', data.description);
-    formData.append('existingImages', JSON.stringify(existingImages));
+    formData.append("title", data.title);
+    formData.append("author", data.author);
+    formData.append("condition", data.condition);
+    formData.append("genre", data.genre);
+    formData.append("description", data.description);
+    formData.append("existingImages", JSON.stringify(existingImages));
     data.images.forEach((file) => {
-      if (file instanceof File) formData.append('images', file);
+      if (file instanceof File) formData.append("images", file);
     });
 
     const resultAction = await dispatch(
-      updateBookListing({ id, data: formData })
+      updateBookListing({ id, data: formData }),
     );
 
     if (updateBookListing.fulfilled.match(resultAction)) {
@@ -166,8 +166,8 @@ const EditListing = () => {
 
   if (isLoading && !currentBook) {
     return (
-      <div className="h-[calc(100vh-4rem)] flex items-center justify-center text-slate-400">
-        <Loader2 size={20} className="animate-spin mr-2" />
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center text-slate-400">
+        <Loader2 size={20} className="mr-2 animate-spin" />
         <span className="text-sm">Loading listing...</span>
       </div>
     );
@@ -187,14 +187,14 @@ const EditListing = () => {
         onConfirm={handleConfirm}
       />
 
-      <div className="h-[calc(100vh-4rem)] flex overflow-hidden bg-slate-50">
+      <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-slate-50">
         {/* Sidebar */}
-        <aside className="hidden lg:flex flex-col w-64 xl:w-72 bg-white border-r border-slate-100 shrink-0 px-6 py-8">
+        <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-100 bg-white px-6 py-8 lg:flex xl:w-72">
           <div className="mb-10">
-            <h1 className="text-[15px] font-bold text-gray-900 tracking-tight">
+            <h1 className="text-[15px] font-bold tracking-tight text-gray-900">
               Edit Listing
             </h1>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="mt-0.5 text-xs text-gray-400">
               Update your book details
             </p>
           </div>
@@ -208,18 +208,18 @@ const EditListing = () => {
                 <div key={i} className="relative flex items-start gap-3">
                   {i < totalSteps - 1 && (
                     <div
-                      className={`absolute left-[15px] top-9 w-0.5 h-10 rounded-full transition-colors duration-500 ${
-                        isCompleted ? 'bg-teal-400' : 'bg-slate-100'
+                      className={`absolute left-[15px] top-9 h-10 w-0.5 rounded-full transition-colors duration-500 ${
+                        isCompleted ? "bg-teal-400" : "bg-slate-100"
                       }`}
                     />
                   )}
                   <div
-                    className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold transition-all duration-300 ${
+                    className={`relative z-10 mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ${
                       isCompleted
-                        ? 'bg-teal-500 text-white shadow-sm shadow-teal-200'
+                        ? "bg-teal-500 text-white shadow-sm shadow-teal-200"
                         : isActive
-                          ? 'bg-white text-teal-600 ring-2 ring-teal-500 shadow-sm'
-                          : 'bg-slate-100 text-slate-400'
+                          ? "bg-white text-teal-600 shadow-sm ring-2 ring-teal-500"
+                          : "bg-slate-100 text-slate-400"
                     }`}
                   >
                     {isCompleted ? (
@@ -230,17 +230,17 @@ const EditListing = () => {
                   </div>
                   <div
                     className={`pb-10 transition-all duration-200 ${
-                      isActive ? 'opacity-100' : 'opacity-35'
+                      isActive ? "opacity-100" : "opacity-35"
                     }`}
                   >
                     <p
                       className={`text-sm font-semibold leading-tight ${
-                        isActive ? 'text-gray-900' : 'text-gray-600'
+                        isActive ? "text-gray-900" : "text-gray-600"
                       }`}
                     >
                       {s.label}
                     </p>
-                    <p className="text-xs text-gray-400 mt-0.5">{s.subtitle}</p>
+                    <p className="mt-0.5 text-xs text-gray-400">{s.subtitle}</p>
                   </div>
                 </div>
               );
@@ -248,25 +248,25 @@ const EditListing = () => {
           </nav>
 
           <div className="mt-auto pt-4">
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <span className="text-xs text-gray-400">Progress</span>
               <span className="text-xs font-bold text-teal-600">
                 {progressPct}%
               </span>
             </div>
-            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
               <div
-                className="h-full bg-teal-500 rounded-full transition-all duration-500"
+                className="h-full rounded-full bg-teal-500 transition-all duration-500"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
           </div>
         </aside>
 
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex flex-1 flex-col overflow-hidden">
           {/* Mobile progress strip */}
-          <div className="lg:hidden bg-white border-b border-slate-100 px-5 pt-4 pb-3 shrink-0">
-            <div className="flex justify-between items-center mb-2.5">
+          <div className="shrink-0 border-b border-slate-100 bg-white px-5 pb-3 pt-4 lg:hidden">
+            <div className="mb-2.5 flex items-center justify-between">
               <span className="text-sm font-bold text-gray-800">
                 {steps[step].label}
               </span>
@@ -279,7 +279,7 @@ const EditListing = () => {
                 <div
                   key={i}
                   className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                    i <= step ? 'bg-teal-500' : 'bg-slate-200'
+                    i <= step ? "bg-teal-500" : "bg-slate-200"
                   }`}
                 />
               ))}
@@ -287,15 +287,15 @@ const EditListing = () => {
           </div>
 
           {/* Desktop step header */}
-          <div className="hidden lg:block px-8 pt-7 pb-5 shrink-0 border-b border-slate-100 bg-slate-50">
-            <div className="max-w-3xl mx-auto">
-              <p className="text-[10px] font-bold text-teal-600 uppercase tracking-[0.12em] mb-1">
+          <div className="hidden shrink-0 border-b border-slate-100 bg-slate-50 px-8 pb-5 pt-7 lg:block">
+            <div className="mx-auto max-w-3xl">
+              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-teal-600">
                 Step {step + 1} of {totalSteps}
               </p>
               <h2 className="text-xl font-bold text-gray-900">
                 {steps[step].label}
               </h2>
-              <p className="text-sm text-gray-400 mt-0.5">
+              <p className="mt-0.5 text-sm text-gray-400">
                 {steps[step].subtitle}
               </p>
             </div>
@@ -303,19 +303,19 @@ const EditListing = () => {
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-0">
-            <div className="px-5 lg:px-8 py-6 max-w-3xl mx-auto">
+            <div className="mx-auto max-w-3xl px-5 py-6 lg:px-8">
               <div
                 onKeyDown={(e) => {
                   if (
-                    e.key === 'Enter' &&
-                    (e.target as HTMLElement).tagName !== 'TEXTAREA'
+                    e.key === "Enter" &&
+                    (e.target as HTMLElement).tagName !== "TEXTAREA"
                   ) {
                     e.preventDefault();
                   }
                 }}
               >
                 {steps.map((s, i) => (
-                  <div key={i} className={i === step ? 'block' : 'hidden'}>
+                  <div key={i} className={i === step ? "block" : "hidden"}>
                     {s.component}
                   </div>
                 ))}
@@ -324,12 +324,12 @@ const EditListing = () => {
           </div>
 
           {/* Bottom navigation */}
-          <div className="shrink-0 bg-white border-t border-slate-100 px-4 lg:px-8 py-3.5 flex items-center justify-between gap-2">
+          <div className="flex shrink-0 items-center justify-between gap-2 border-t border-slate-100 bg-white px-4 py-3.5 lg:px-8">
             <button
               type="button"
               disabled={isFirstStep}
               onClick={() => setStep((prev) => Math.max(prev - 1, 0))}
-              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-500 border border-gray-200 hover:bg-gray-50 disabled:opacity-25 disabled:cursor-not-allowed transition-all whitespace-nowrap shrink-0"
+              className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-gray-200 px-3.5 py-2.5 text-sm font-semibold text-gray-500 transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-25"
             >
               <ChevronLeft size={15} />
               <span className="hidden sm:inline">Previous</span>
@@ -339,7 +339,7 @@ const EditListing = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
+                className="flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm shadow-teal-200 transition-all hover:bg-teal-700 active:scale-95"
               >
                 Continue
                 <ChevronRight size={15} />
@@ -348,7 +348,7 @@ const EditListing = () => {
               <button
                 type="button"
                 onClick={() => setConfirmOpen(true)}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-200 whitespace-nowrap"
+                className="flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm shadow-teal-200 transition-all hover:bg-teal-700 active:scale-95"
               >
                 Save Changes
                 <ChevronRight size={15} />
@@ -361,4 +361,4 @@ const EditListing = () => {
   );
 };
 
-export default EditListing;
+export default EditBookForm;

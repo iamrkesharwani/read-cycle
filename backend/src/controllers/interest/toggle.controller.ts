@@ -3,7 +3,7 @@ import {
   getBooksCollection,
   getInterestsCollection,
 } from '../../utils/collections.js';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 import { ObjectId } from 'mongodb';
 
 export const toggleInterest = async (req: Request, res: Response) => {

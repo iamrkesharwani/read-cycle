@@ -1,7 +1,7 @@
 import { cls } from "./style";
-import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { useEffect, useState } from "react";
-import { fetchMySwaps, respondToSwap } from "../../../store/swap/swapThunk";
+import { fetchMySwaps, respondToSwap } from "../../store/swap/swapThunk";
 import { Loader2 } from "lucide-react";
 import SwappedTab from "./SwappedTab";
 import ReceivedTab from "./ReceivedTab";

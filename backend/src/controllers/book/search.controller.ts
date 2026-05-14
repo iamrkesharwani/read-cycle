@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { getBooksCollection } from '../../utils/collections.js';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 
 const escapeRegex = (text: string) =>
   text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

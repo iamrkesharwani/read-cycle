@@ -3,7 +3,7 @@ import {
   getBooksCollection,
   getSwapsCollection,
 } from '../../utils/collections.js';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 import { ObjectId } from 'mongodb';
 
 export const updateBookStatus = async (req: Request, res: Response) => {

@@ -4,17 +4,17 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import Explore from "../components/explore/Explore";
 import Login from "../components/auth/Login";
 import Register from "../components/auth/Register";
-import Listing from "../components/listing/Listing";
-import ProfileLayout from "../components/profile/profile/ProfileLayout";
-import ProfileOverview from "../components/profile/profile/ProfileOverview";
+import Listing from "../components/book-form/BookForm";
+import ProfileLayout from "../components/profile/overview/ProfileLayout";
+import ProfileOverview from "../components/profile/overview/ProfileOverview";
 import PersonalInfo from "../components/profile/tabs/PersonalInfo";
 import ActiveListings from "../components/profile/tabs/ActiveListings";
 import InactiveListings from "../components/profile/tabs/InactiveListings";
 import AccountSettings from "../components/profile/tabs/AccountSettings";
 import MainListing from "../components/live/MainListing";
-import EditListing from "../components/listing/EditListing";
-import PublicProfile from "../components/public/PublicProfile";
-import MySwaps from "../components/profile/swap/MySwaps";
+import EditListing from "../components/book-form/EditBookForm";
+import PublicProfile from "../components/public-profile/PublicProfile";
+import MySwaps from "../components/swap/MySwaps";
 
 const AppRoutes = () => {
   return (

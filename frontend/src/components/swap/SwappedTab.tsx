@@ -1,5 +1,5 @@
 import { ArrowLeftRight } from "lucide-react";
-import type { PopulatedSwapRequest } from "../../../../../shared/types/swap";
+import type { PopulatedSwapRequest } from "../../../../shared/types/swap";
 import BookCover from "./BookCover";
 import Empty from "./Empty";
 import { cls } from "./style";

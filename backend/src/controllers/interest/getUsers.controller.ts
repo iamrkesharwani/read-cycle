@@ -5,8 +5,8 @@ import {
   getUsersCollection,
 } from '../../utils/collections.js';
 import { ObjectId } from 'mongodb';
-import type { BookDoc } from '../../types/book.doc.js';
-import type { InterestDoc } from '../../types/interest.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
+import type { InterestDoc } from '../../models/interest.doc.js';
 
 export const getInterestedUsers = async (req: Request, res: Response) => {
   try {

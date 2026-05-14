@@ -3,7 +3,7 @@ import BookCover from "./BookCover";
 import Empty from "./Empty";
 import { cls } from "./style";
 import { ArrowLeftRight, CheckCircle2, Loader2, XCircle } from "lucide-react";
-import type { PopulatedSwapRequest } from "../../../../../shared/types/swap";
+import type { PopulatedSwapRequest } from "../../../../shared/types/swap";
 
 const ReceivedTab = ({
   received,

@@ -6,7 +6,7 @@ import {
   getSwapsCollection,
   getInterestsCollection,
 } from '../../utils/collections.js';
-import type { BookDoc } from '../../types/book.doc.js';
+import type { BookDoc } from '../../models/book.doc.js';
 import type { Request, Response } from 'express';
 
 export const deleteListing = async (req: Request, res: Response) => {
@@ -63,7 +63,7 @@ export const deleteListing = async (req: Request, res: Response) => {
     });
 
     await booksCollection.deleteOne({ _id: new ObjectId(id) });
-    
+
     res.status(200).json({ message: 'Listing and images deleted' });
   } catch (error) {
     console.error('Delete listing error:', error);

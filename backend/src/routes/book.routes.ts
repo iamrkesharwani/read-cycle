@@ -9,8 +9,8 @@ import {
 import { deleteListing } from '../controllers/book/delete.controller.js';
 import { updateBookStatus } from '../controllers/book/status.controller.js';
 import { updateListing } from '../controllers/book/update.controller.js';
-import { searchBooks } from '../controllers/public/search.controller.js';
-import { getPublicUserListings } from '../controllers/public/profile.controller.js';
+import { searchBooks } from '../controllers/book/search.controller.js';
+import { getPublicUserListings } from '../controllers/user/profile.controller.js';
 
 const router = Router();
 
