@@ -2,19 +2,18 @@ import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { getSwapsCollection } from '../../utils/collections.js';
 
-export const getUserSwaps = async (req: Request, res: Response) => {
+export const getMySwaps = async (req: Request, res: Response) => {
   try {
     const userId = new ObjectId(req.userId);
-    const { type } = req.body;
     const swapsCollection = await getSwapsCollection();
-
-    const query =
-      type === 'incoming' ? { receiverId: userId } : { proposerId: userId };
 
     const swaps = await swapsCollection
       .aggregate([
-        { $match: query },
-        { $sort: { createdAt: -1 } },
+        {
+          $match: {
+            $or: [{ proposerId: userId }, { receiverId: userId }],
+          },
+        },
         {
           $lookup: {
             from: 'books',
@@ -31,16 +30,23 @@ export const getUserSwaps = async (req: Request, res: Response) => {
             as: 'requestedBook',
           },
         },
-        { $unwind: { path: 'offeredBook', preserveNullAndEmptyArrays: true } },
-        {
-          $unwind: { path: '$requestedBook', preserveNullAndEmptyArrays: true },
-        },
+        { $unwind: '$offeredBook' },
+        { $unwind: '$requestedBook' },
+        { $sort: { updatedAt: -1 } },
       ])
       .toArray();
 
-    return res.status(200).json(swaps);
+    const received = swaps.filter(
+      (s) => s.receiverId.toString() === userId.toString()
+    );
+    
+    const sent = swaps.filter(
+      (s) => s.proposerId.toString() === userId.toString()
+    );
+
+    res.status(200).json({ received, sent });
   } catch (error) {
-    console.error('Fetch Swaps Error:', error);
-    return res.status(500).json({ message: 'Failed to fetch swap history' });
+    console.error('Error fetching swaps:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
