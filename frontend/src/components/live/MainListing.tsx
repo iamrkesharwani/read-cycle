@@ -27,7 +27,11 @@ const MainListing = () => {
     success,
     error: swapError,
   } = useAppSelector((s) => s.swap);
+  const authUser = useAppSelector((s) => s.auth.user);
   const [isModalOpen, setisModalOpen] = useState(false);
+  const [swapOwnError, setSwapOwnError] = useState(false);
+
+  const isOwnBook = !!authUser && !!book && book.ownerId === authUser.id;
 
   useEffect(() => {
     if (id) dispatch(fetchBookById(id));
@@ -45,8 +49,6 @@ const MainListing = () => {
 
   useEffect(() => {
     if (swapError) {
-      console.error("Swap Error:", swapError);
-      <ErrorState message={swapError} />;
       dispatch(resetSwapStatus());
     }
   }, [swapError, dispatch]);
@@ -55,6 +57,11 @@ const MainListing = () => {
     navigator.clipboard?.writeText(window.location.href);
 
   const handleSwapRequest = () => {
+    if (isOwnBook) {
+      setSwapOwnError(true);
+      setTimeout(() => setSwapOwnError(false), 3500);
+      return;
+    }
     setisModalOpen(true);
   };
 
@@ -69,6 +76,7 @@ const MainListing = () => {
       bookId={book?._id}
       onSwapRequest={handleSwapRequest}
       onShare={handleShare}
+      isOwnBook={isOwnBook}
     />
   );
 
@@ -105,6 +113,12 @@ const MainListing = () => {
             description={book.description}
             actionsSlot={actions}
           />
+
+          {swapOwnError && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
+              You cannot request a swap on your own book.
+            </div>
+          )}
 
           <ListingMeta
             owner={book.owner}

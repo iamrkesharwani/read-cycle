@@ -6,11 +6,18 @@ import { Loader2 } from "lucide-react";
 import SwappedTab from "./SwappedTab";
 import ReceivedTab from "./ReceivedTab";
 import SentTab from "./SentTab";
+import ConfirmModal from "./ConfirmModal";
 
 export const BASE_URL =
   import.meta.env.VITE_BASE_URL ?? "http://127.0.0.1:5000";
 
 type TabId = "swapped" | "received" | "sent";
+type SwapAction = "accept" | "reject" | "cancel";
+
+interface ConfirmState {
+  id: string;
+  action: SwapAction;
+}
 
 const tabs: { id: TabId; label: string }[] = [
   { id: "swapped", label: "Swapped" },
@@ -22,34 +29,38 @@ const MySwaps = () => {
   const dispatch = useAppDispatch();
   const { received, sent, listLoading } = useAppSelector((s) => s.swap);
   const [tab, setTab] = useState<TabId>("swapped");
-  const [respondingId, setRespondingId] = useState<string | null>(null);
-  const [cancelingId, setCancelingId] = useState<string | null>(null);
+  const [actingId, setActingId] = useState<string | null>(null);
+  const [confirmModal, setConfirmModal] = useState<ConfirmState | null>(null);
 
   useEffect(() => {
     dispatch(fetchMySwaps());
   }, [dispatch]);
 
   const swapped = [...received, ...sent].filter((s) => s.status === "accepted");
+  const pendingReceived = received.filter((s) => s.status !== "accepted");
+  const pendingSent = sent.filter((s) => s.status !== "accepted");
 
-  const handleAccept = async (id: string) => {
-    setRespondingId(id);
-    await dispatch(respondToSwap({ id, status: "accepted" }));
-    dispatch(fetchMySwaps());
-    setRespondingId(null);
-  };
+  const handleAccept = (id: string) =>
+    setConfirmModal({ id, action: "accept" });
+  const handleReject = (id: string) =>
+    setConfirmModal({ id, action: "reject" });
+  const handleCancel = (id: string) =>
+    setConfirmModal({ id, action: "cancel" });
 
-  const handleReject = async (id: string) => {
-    setRespondingId(id);
-    await dispatch(respondToSwap({ id, status: "rejected" }));
+  const executeConfirmedAction = async () => {
+    if (!confirmModal) return;
+    const { id, action } = confirmModal;
+    const statusMap: Record<SwapAction, "accepted" | "rejected" | "canceled"> =
+      {
+        accept: "accepted",
+        reject: "rejected",
+        cancel: "canceled",
+      };
+    setConfirmModal(null);
+    setActingId(id);
+    await dispatch(respondToSwap({ id, status: statusMap[action] }));
     dispatch(fetchMySwaps());
-    setRespondingId(null);
-  };
-
-  const handleCancel = async (id: string) => {
-    setCancelingId(id);
-    await dispatch(respondToSwap({ id, status: "canceled" }));
-    dispatch(fetchMySwaps());
-    setCancelingId(null);
+    setActingId(null);
   };
 
   return (
@@ -82,20 +93,28 @@ const MySwaps = () => {
           {tab === "swapped" && <SwappedTab swapped={swapped} />}
           {tab === "received" && (
             <ReceivedTab
-              received={received}
+              received={pendingReceived}
               onAccept={handleAccept}
               onReject={handleReject}
-              respondingId={respondingId}
+              respondingId={actingId}
             />
           )}
           {tab === "sent" && (
             <SentTab
-              sent={sent}
+              sent={pendingSent}
               onCancel={handleCancel}
-              cancelingId={cancelingId}
+              cancelingId={actingId}
             />
           )}
         </>
+      )}
+
+      {confirmModal && (
+        <ConfirmModal
+          confirmModal={confirmModal}
+          setConfirmModal={setConfirmModal}
+          executeConfirmedAction={executeConfirmedAction}
+        />
       )}
     </div>
   );

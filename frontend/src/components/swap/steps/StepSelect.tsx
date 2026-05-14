@@ -1,5 +1,7 @@
 import { BookMarked, Loader2, X, AlertCircle } from "lucide-react";
-import { useAppSelector } from "../../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { useEffect } from "react";
+import { fetchUserBooks } from "../../../store/book/bookThunk";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL ?? "http://127.0.0.1:5000";
 
@@ -9,9 +11,19 @@ interface StepSelectProps {
 }
 
 const StepSelect = ({ onSelect, onClose }: StepSelectProps) => {
+  const dispatch = useAppDispatch();
   const { books, isLoading } = useAppSelector((state) => state.book);
+  const { user } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(fetchUserBooks());
+  }, [dispatch]);
+
   const myAvailableBooks = books.filter(
-    (b) => b.status === "published" && !b.isSwapped,
+    (b) =>
+      b.status === "published" &&
+      !b.isSwapped &&
+      b.ownerId === user?.id,
   );
 
   return (

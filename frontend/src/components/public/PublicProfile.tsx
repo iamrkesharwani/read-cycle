@@ -36,10 +36,10 @@ const PublicProfile = () => {
   }, [cleanUsername, dispatch]);
 
   useEffect(() => {
-    if (publicProfile?._id) {
-      dispatch(fetchPublicUserListings(publicProfile._id));
+    if (publicProfile?.id) {
+      dispatch(fetchPublicUserListings(publicProfile.id));
     }
-  }, [publicProfile?._id, dispatch]);
+  }, [publicProfile?.id, dispatch]);
 
   if (authLoading || (bookLoading && books.length === 0))
     return <LoadingState />;

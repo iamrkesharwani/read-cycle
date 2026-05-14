@@ -5,12 +5,14 @@ interface ListingActionsProps {
   bookId: string | undefined;
   onSwapRequest: () => void;
   onShare: () => void;
+  isOwnBook?: boolean;
 }
 
 const ListingActions = ({
   bookId,
   onSwapRequest,
   onShare,
+  isOwnBook = false,
 }: ListingActionsProps) => (
   <div className="flex w-full flex-col gap-2">
     <div className="flex items-center gap-2">
@@ -30,10 +32,16 @@ const ListingActions = ({
 
     <button
       onClick={onSwapRequest}
-      className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-700 active:bg-teal-800"
+      disabled={isOwnBook}
+      title={isOwnBook ? "You cannot swap your own book" : undefined}
+      className={
+        isOwnBook
+          ? "flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-100 py-3 text-sm font-semibold text-slate-400 transition-colors"
+          : "flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-700 active:bg-teal-800"
+      }
     >
       <ArrowUpDown size={15} />
-      Request swap
+      {isOwnBook ? "Your listing" : "Request swap"}
     </button>
   </div>
 );
