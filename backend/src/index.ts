@@ -9,9 +9,12 @@ import authRoutes from './routes/auth.routes.js';
 import bookRoutes from './routes/book.routes.js';
 import interestRoutes from './routes/interest.routes.js';
 import swapRoutes from './routes/swap.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
+import { getMessagesCollection } from './utils/collections.js';
+import { ObjectId } from 'mongodb';
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
@@ -40,6 +43,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/interests', interestRoutes);
 app.use('/api/swaps', swapRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.use(
   '/uploads',
@@ -60,6 +64,30 @@ io.on('connection', (socket) => {
 
   socket.on('typing_stop', (data: { swapId: string }) => {
     socket.to(data.swapId).emit('display_typing', { isTyping: false });
+  });
+
+  socket.on('send_message', async (data) => {
+    const { swapId, senderId, text } = data;
+
+    try {
+      const messagesCollection = await getMessagesCollection();
+
+      const newMessages = {
+        swapId: new ObjectId(swapId),
+        senderId: new ObjectId(senderId),
+        text: text,
+        createdAt: new Date(),
+      };
+
+      const result = await messagesCollection.insertOne(newMessages);
+
+      socket.to(swapId).emit('receive_message', {
+        ...newMessages,
+        _id: result.insertedId.toString(),
+      });
+    } catch (error) {
+      console.error('Socket Message Error:', error);
+    }
   });
 
   socket.on('disconnect', () => {

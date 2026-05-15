@@ -2,6 +2,7 @@ import { connectDb } from '../config/db.js';
 import type { UserDocument } from '../../../shared/types/user.js';
 import type { Collection, Document } from 'mongodb';
 import type { SwapRequest } from '../../../shared/types/swap.js';
+import type { MessageDoc } from '../models/message.doc.js';
 
 export const getUsersCollection = async () => {
   const db = await connectDb();
@@ -25,4 +26,9 @@ export const getInterestsCollection = async <
 export const getSwapsCollection = async () => {
   const db = await connectDb();
   return db.collection<SwapRequest>('swaps');
+};
+
+export const getMessagesCollection = async () => {
+  const db = await connectDb();
+  return db.collection<MessageDoc>('messages');
 };
