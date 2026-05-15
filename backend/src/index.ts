@@ -50,13 +50,25 @@ app.use(
   express.static(path.join(process.cwd(), 'uploads', 'books'))
 );
 
+const onlineUsers = new Map<string, Set<string>>();
+
 io.on('connection', (socket) => {
   console.log('User connected to socket:', socket.id);
 
-  socket.on('join_chat', (swapId: string) => {
-    socket.join(swapId);
-    console.log(`User ${socket.id} joined room: ${swapId}`);
-  });
+  socket.on(
+    'join_chat',
+    ({ swapId, userId }: { swapId: string; userId: string }) => {
+      socket.join(swapId);
+      socket.data.userId = userId;
+      socket.data.swapId = swapId;
+
+      if (!onlineUsers.has(swapId)) onlineUsers.set(swapId, new Set());
+      onlineUsers.get(swapId)!.add(userId);
+
+      socket.to(swapId).emit('partner_online', { userId, isOnline: true });
+      console.log(`User ${socket.id} joined room: ${swapId}`);
+    }
+  );
 
   socket.on('typing_start', (data: { swapId: string }) => {
     socket.to(data.swapId).emit('display_typing', { isTyping: true });
@@ -67,30 +79,47 @@ io.on('connection', (socket) => {
   });
 
   socket.on('send_message', async (data) => {
-    const { swapId, senderId, text } = data;
+    const { swapId, senderId, text, tempId } = data;
 
     try {
       const messagesCollection = await getMessagesCollection();
 
-      const newMessages = {
+      const newMessage = {
         swapId: new ObjectId(swapId),
         senderId: new ObjectId(senderId),
         text: text,
         createdAt: new Date(),
       };
 
-      const result = await messagesCollection.insertOne(newMessages);
+      const result = await messagesCollection.insertOne(newMessage);
 
-      socket.to(swapId).emit('receive_message', {
-        ...newMessages,
+      const savedMessage = {
         _id: result.insertedId.toString(),
-      });
+        swapId,
+        senderId,
+        text,
+        createdAt: newMessage.createdAt.toISOString(),
+      };
+
+      socket.emit('message_confirmed', { tempId, message: savedMessage });
+      socket.to(swapId).emit('receive_message', savedMessage);
     } catch (error) {
       console.error('Socket Message Error:', error);
+      socket.emit('message_error', { tempId, error: 'Failed to send message' });
     }
   });
 
   socket.on('disconnect', () => {
+    const { userId, swapId } = socket.data as {
+      userId?: string;
+      swapId?: string;
+    };
+
+    if (userId && swapId) {
+      onlineUsers.get(swapId)?.delete(userId);
+      socket.to(swapId).emit('partner_online', { userId, isOnline: false });
+    }
+    
     console.log('User disconnected from socket');
   });
 });

@@ -18,7 +18,7 @@ export const getChatHistory = async (req: Request, res: Response) => {
 
     const messages = await messagesCollection
       .find({ swapId: new ObjectId(swapId) })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .toArray();
 
     res.status(200).json(messages);

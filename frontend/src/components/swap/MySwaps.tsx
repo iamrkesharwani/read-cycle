@@ -7,6 +7,7 @@ import SwappedTab from "./SwappedTab";
 import ReceivedTab from "./ReceivedTab";
 import SentTab from "./SentTab";
 import ConfirmModal from "./ConfirmModal";
+import { useNavigate } from "react-router-dom";
 
 export const BASE_URL =
   import.meta.env.VITE_BASE_URL ?? "http://127.0.0.1:5000";
@@ -27,6 +28,7 @@ const tabs: { id: TabId; label: string }[] = [
 
 const MySwaps = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { received, sent, listLoading } = useAppSelector((s) => s.swap);
   const [tab, setTab] = useState<TabId>("swapped");
   const [actingId, setActingId] = useState<string | null>(null);
@@ -58,9 +60,16 @@ const MySwaps = () => {
       };
     setConfirmModal(null);
     setActingId(id);
-    await dispatch(respondToSwap({ id, status: statusMap[action] }));
-    dispatch(fetchMySwaps());
+
+    const result = await dispatch(
+      respondToSwap({ id, status: statusMap[action] }),
+    );
+    await dispatch(fetchMySwaps());
     setActingId(null);
+
+    if (action === "accept" && respondToSwap.fulfilled.match(result)) {
+      navigate(`/chat/${id}`);
+    }
   };
 
   return (

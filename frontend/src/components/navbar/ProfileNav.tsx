@@ -12,11 +12,17 @@ export const cls = {
     "mt-4 w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-red-50 hover:text-red-500 transition-all duration-200",
 };
 
-export type TabId = "personal" | "active" | "swapped" | "inactive" | "settings";
+export type TabId =
+  | "personal"
+  | "active"
+  | "swapped"
+  | "inactive"
+  | "settings"
+  | "messages";
 
 type Props = {
   activeTab: TabId;
-  onTabChange: (tab: TabId) => void;
+  onTabChange: (tab: TabId, path: string) => void;
 };
 
 const ProfileNav = ({ activeTab, onTabChange }: Props) => {
@@ -28,7 +34,7 @@ const ProfileNav = ({ activeTab, onTabChange }: Props) => {
           return (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id)}
+              onClick={() => onTabChange(item.id, item.path)}
               className={`${cls.navBtn} ${isActive ? cls.activeBtn : cls.inactiveBtn}`}
             >
               <item.icon size={15} className="shrink-0" />

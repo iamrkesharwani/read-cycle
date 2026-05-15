@@ -15,6 +15,7 @@ import MainListing from "../components/live/MainListing";
 import EditListing from "../components/book-form/EditBookForm";
 import PublicProfile from "../components/public-profile/PublicProfile";
 import MySwaps from "../components/swap/MySwaps";
+import ChatPage from "../components/chat/ChatPage";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,8 @@ const AppRoutes = () => {
             <Route path="/swapped" element={<MySwaps />} />
             <Route path="/inactive" element={<InactiveListings />} />
             <Route path="/settings" element={<AccountSettings />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/chat/:swapId" element={<ChatPage />} />
           </Route>
 
           <Route path="/create" element={<Listing />} />

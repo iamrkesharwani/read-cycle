@@ -1,6 +1,19 @@
-import { User, BookMarked, History, EyeOff, Settings } from "lucide-react";
+import {
+  User,
+  BookMarked,
+  History,
+  EyeOff,
+  Settings,
+  MessageCircle,
+} from "lucide-react";
 
-export type TabId = "personal" | "active" | "swapped" | "inactive" | "settings";
+export type TabId =
+  | "personal"
+  | "active"
+  | "swapped"
+  | "inactive"
+  | "settings"
+  | "messages";
 
 export interface NavItem {
   id: TabId;
@@ -27,6 +40,12 @@ export const PROFILE_NAV_ITEMS: NavItem[] = [
     label: "My Swaps",
     path: "/swapped",
     icon: History,
+  },
+  {
+    id: "messages",
+    label: "Messages",
+    path: "/chat",
+    icon: MessageCircle,
   },
   {
     id: "inactive",

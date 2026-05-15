@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
 import { logoutUser } from "../../store/auth/authThunk";
 import { X, Compass, PlusCircle, LogOut } from "lucide-react";
-import type { TabId } from "./ProfileNav";
 import { PROFILE_NAV_ITEMS } from "../../constants/navItem";
 
 type Props = {
@@ -15,8 +14,8 @@ const MobileMenu = ({ isOpen, onClose }: Props) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const goToTab = (tab: TabId) => {
-    navigate(`/${tab}`);
+  const goToItem = (path: string) => {
+    navigate(path);
     onClose();
   };
 
@@ -74,14 +73,14 @@ const MobileMenu = ({ isOpen, onClose }: Props) => {
                   Profile
                 </p>
               </div>
-              {PROFILE_NAV_ITEMS.map((tab) => (
+              {PROFILE_NAV_ITEMS.map((item) => (
                 <button
-                  key={tab.id}
-                  onClick={() => goToTab(tab.id)}
+                  key={item.id}
+                  onClick={() => goToItem(item.path)}
                   className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-gray-900"
                 >
-                  <tab.icon size={15} className="shrink-0 text-slate-400" />
-                  {tab.label}
+                  <item.icon size={15} className="shrink-0 text-slate-400" />
+                  {item.label}
                 </button>
               ))}
 

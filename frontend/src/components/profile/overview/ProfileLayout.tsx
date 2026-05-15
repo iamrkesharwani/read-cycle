@@ -17,7 +17,10 @@ const ProfileLayout = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const activeTab = pathToTab[pathname] ?? "personal";
+  const activeTab: TabId = (() => {
+    if (pathname.startsWith("/chat")) return "messages";
+    return pathToTab[pathname] ?? "personal";
+  })();
 
   return (
     <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-slate-50">
@@ -31,15 +34,21 @@ const ProfileLayout = () => {
         <ProfileStats />
         <ProfileNav
           activeTab={activeTab}
-          onTabChange={(tab) => navigate(`/${tab}`)}
+          onTabChange={(_tab, path) => navigate(path)}
         />
       </aside>
 
-      <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-0">
-        <div className="mx-auto max-w-3xl px-4 py-7">
+      {pathname.startsWith("/chat") ? (
+        <div className="flex flex-1 overflow-hidden">
           <Outlet />
         </div>
-      </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-0">
+          <div className="mx-auto max-w-3xl px-4 py-7">
+            <Outlet />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
