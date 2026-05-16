@@ -7,7 +7,7 @@ export const getChatHistory = async (req: Request, res: Response) => {
     const { swapId } = req.params;
 
     if (typeof swapId !== 'string') {
-      return res.json(400).json({ message: 'Swap ID needs to be a string' });
+      return res.status(400).json({ message: 'Swap ID needs to be a string' });
     }
 
     if (!ObjectId.isValid(swapId)) {

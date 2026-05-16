@@ -3,6 +3,7 @@ import { useAppSelector } from "../../../hooks/reduxHooks";
 import ProfileHeader from "./ProfileHeader";
 import ProfileStats from "./ProfileStats";
 import ProfileNav, { type TabId } from "../../navbar/ProfileNav";
+import { PROFILE_NAV_ITEMS } from "../../../constants/navItem";
 
 const pathToTab: Record<string, TabId> = {
   "/personal": "personal",
@@ -22,6 +23,11 @@ const ProfileLayout = () => {
     return pathToTab[pathname] ?? "personal";
   })();
 
+  const handleTabChange = (tab: TabId) => {
+    const item = PROFILE_NAV_ITEMS.find((i) => i.id === tab);
+    navigate(item?.path ?? `/${tab}`);
+  };
+
   return (
     <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-slate-50">
       <aside className="hidden w-72 shrink-0 flex-col overflow-hidden border-r border-slate-100 bg-white md:flex xl:w-80">
@@ -32,10 +38,7 @@ const ProfileLayout = () => {
           city={user?.city}
         />
         <ProfileStats />
-        <ProfileNav
-          activeTab={activeTab}
-          onTabChange={(_tab, path) => navigate(path)}
-        />
+        <ProfileNav activeTab={activeTab} onTabChange={handleTabChange} />
       </aside>
 
       {pathname.startsWith("/chat") ? (

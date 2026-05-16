@@ -21,7 +21,7 @@ export const getConversations = async (req: Request, res: Response) => {
             localField: '_id',
             foreignField: 'swapId',
             as: 'allMessages',
-            pipeline: [{ $sort: { createdAt: -1 } }, { limit: 1 }],
+            pipeline: [{ $sort: { createdAt: -1 } }, { $limit: 1 }],
           },
         },
         {
